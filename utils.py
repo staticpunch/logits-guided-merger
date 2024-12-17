@@ -3,6 +3,7 @@ import math
 from typing import List, Optional, Tuple, Union
 import torch
 import logging
+import numpy as np
 
 def are_tokenizers_same(paths: List[str]) -> bool:
     # Configure logging
@@ -108,3 +109,16 @@ def merge_tensors(modules, weight_factors, bias_factors):
         out_dict[tensor_name] = tensor_computed
     module_out.load_state_dict(out_dict)
     return module_out
+
+
+def find_mask_parameter_names(module, mask_param_names_list, parent_name=""):
+    """
+    Recursively finds full names of parameters that belong to modules of class "Mask".
+    """
+    for name, child in module.named_children():
+        full_child_name = f"{parent_name}.{name}" if parent_name else name
+        if child.__class__.__name__ == "Mask":
+            for param_name, _ in child.named_parameters():
+                full_param_name = f"{full_child_name}.{param_name}"
+                mask_param_names_list.append(full_param_name)
+        find_mask_parameter_names(child, mask_param_names_list, full_child_name)
