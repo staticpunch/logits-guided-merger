@@ -875,7 +875,56 @@ class Qwen2Model(Qwen2PreTrainedModel):
         all_self_attns = () if output_attentions else None
         next_decoder_cache = None
 
-        for decoder_layer in self.layers:
+        for i, decoder_layer in enumerate(self.layers):
+            # logger.warning(f" ---------Inputs to decoder_layer {i}:")
+            # logger.warning(f"  hidden_states: {hidden_states}")
+            # logger.warning(f"  attention_mask: {attention_mask}")
+            # logger.warning(f"  position_ids: {position_ids}")
+            # logger.warning(f"  past_key_value: {past_key_values}")
+            # logger.warning(f"  output_attentions: {output_attentions}")
+            # logger.warning(f"  use_cache: {use_cache}")
+            # logger.warning(f"  cache_position: {cache_position}")
+            # logger.warning(f"  position_embeddings: {position_embeddings}")     
+            """
+             ---------Inputs to decoder_layer 1:
+              hidden_states: tensor([[[ 0.0869, -0.0420, -0.0186,  ..., -0.1807, -0.7891, -0.3086],
+                     [-0.0273,  0.0820,  0.3281,  ...,  0.3848, -0.3438, -0.4941],
+                     [-0.1719,  0.4336, -0.2256,  ...,  0.2090,  0.0527, -0.4492],
+                     ...,
+                     [ 0.0464, -0.0293,  0.0219,  ..., -0.2490, -0.8203, -0.3145],
+                     [ 0.3066, -0.0503, -0.1299,  ...,  0.0107, -0.3887, -0.4336],
+                     [-0.2422,  0.2656, -0.0469,  ...,  0.0791,  0.0356, -0.3438]]],
+                   device='cuda:0', dtype=torch.bfloat16)
+              attention_mask: tensor([[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                     1, 1, 1, 1]], device='cuda:0')
+              position_ids: tensor([[ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17,
+                     18, 19, 20, 21, 22, 23, 24, 25, 26, 27]], device='cuda:0')
+              past_key_value: DynamicCache()
+              output_attentions: False
+              use_cache: True
+              cache_position: tensor([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17,
+                    18, 19, 20, 21, 22, 23, 24, 25, 26, 27], device='cuda:0')
+              position_embeddings: (tensor([[[ 1.0000,  1.0000,  1.0000,  ...,  1.0000,  1.0000,  1.0000],
+                     [ 0.5391,  0.6914,  0.7969,  ...,  1.0000,  1.0000,  1.0000],
+                     [-0.4160, -0.0408,  0.2695,  ...,  1.0000,  1.0000,  1.0000],
+                     ...,
+                     [ 0.9922,  0.2715, -0.8633,  ...,  1.0000,  1.0000,  1.0000],
+                     [ 0.6484, -0.5078, -0.3848,  ...,  1.0000,  1.0000,  1.0000],
+                     [-0.2930, -0.9727,  0.2520,  ...,  1.0000,  1.0000,  1.0000]]],
+                   device='cuda:0', dtype=torch.bfloat16), tensor([[[ 0.0000e+00,  0.0000e+00,  0.0000e+00,  ...,  0.0000e+00,
+                       0.0000e+00,  0.0000e+00],
+                     [ 8.3984e-01,  7.2266e-01,  6.0547e-01,  ...,  1.9073e-06,
+                       1.5423e-06,  1.2442e-06],
+                     [ 9.1016e-01,  1.0000e+00,  9.6484e-01,  ...,  3.8147e-06,
+                       3.0845e-06,  2.4885e-06],
+                     ...,
+                     [-1.3281e-01,  9.6094e-01, -5.0391e-01,  ...,  4.7684e-05,
+                       3.8385e-05,  3.0994e-05],
+                     [ 7.6172e-01,  8.6328e-01, -9.2188e-01,  ...,  4.9591e-05,
+                       4.0054e-05,  3.2187e-05],
+                     [ 9.5703e-01,  2.3145e-01, -9.6875e-01,  ...,  5.1498e-05,
+                       4.1485e-05,  3.3617e-05]]], device='cuda:0', dtype=torch.bfloat16))
+            """
             if output_hidden_states:
                 all_hidden_states += (hidden_states,)
 
@@ -892,6 +941,15 @@ class Qwen2Model(Qwen2PreTrainedModel):
                     position_embeddings,
                 )
             else:
+                # print(f" ---------Inputs to decoder_layer {i}:")
+                # print(f"  hidden_states: {hidden_states}")
+                # print(f"  attention_mask: {attention_mask}")
+                # print(f"  position_ids: {position_ids}")
+                # print(f"  past_key_value: {past_key_value}")
+                # print(f"  output_attentions: {output_attentions}")
+                # print(f"  use_cache: {use_cache}")
+                # print(f"  cache_position: {cache_position}")
+                # print(f"  position_embeddings: {position_embeddings}")                
                 layer_outputs = decoder_layer(
                     hidden_states,
                     attention_mask=causal_mask,
