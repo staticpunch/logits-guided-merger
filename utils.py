@@ -4,6 +4,53 @@ from typing import List, Optional, Tuple, Union
 import torch
 import logging
 import numpy as np
+from transformers import GenerationConfig, TextStreamer
+
+def generate(prompt, model, tokenizer, max_new_tokens=1024):
+    input_ids = tokenizer(prompt, return_tensors="pt")["input_ids"].to(model.device)
+    model.eval()
+    with torch.no_grad():
+        generation_config = GenerationConfig(
+            repetition_penalty=1.13,
+            max_new_tokens=max_new_tokens,
+            temperature=0.4,
+            top_p=0.95,
+            # top_k=20,
+            # bos_token_id=tokenizer.bos_token_id,
+            # eos_token_id=tokenizer.eos_token_id,
+            # eos_token_id=0, # for open-end generation.
+            pad_token_id=tokenizer.pad_token_id,
+            do_sample=False,
+            use_cache=True,
+            return_dict_in_generate=True,
+            output_attentions=False,
+            output_hidden_states=False,
+            output_scores=False,
+        )
+        streamer = TextStreamer(tokenizer, skip_prompt=True)
+        generated = model.generate(
+            inputs=input_ids,
+            generation_config=generation_config,
+            streamer=streamer,
+        )
+    gen_tokens = generated["sequences"].cpu()[:, len(input_ids[0]):]
+    output = tokenizer.batch_decode(gen_tokens)[0]
+    output = output.split(tokenizer.eos_token)[0]
+    return output.strip()
+
+def get_logits(text, model, tokenizer):
+    input_ids = tokenizer(text, return_tensors="pt").to(model.device)
+    model.eval()
+    with torch.no_grad():
+        logits = model(**input_ids).logits
+    return logits
+
+def get_hidden_states(text, model, tokenizer):
+    input_ids = tokenizer(text, return_tensors="pt").to(model.device)
+    model.eval()
+    with torch.no_grad():
+        outputs = model(**input_ids, output_hidden_states=True, use_cache=False)
+    return outputs
 
 def are_tokenizers_same(paths: List[str]) -> bool:
     # Configure logging
