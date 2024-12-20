@@ -1,0 +1,4506 @@
+{
+    "model.embed_tokens": {
+        "model.embed_tokens.weight": {
+            "dot": 87610.375,
+            "L2": 10.79850959777832,
+            "cosine": 0.9993353486061096,
+            "theta": 0.03646162152290344
+        }
+    },
+    "model.norm": {
+        "model.norm.weight": {
+            "dot": 30614.759765625,
+            "L2": 0.0,
+            "cosine": 1.0000001192092896,
+            "theta": 0.0
+        }
+    },
+    "lm_head": {
+        "lm_head.weight": {
+            "dot": 120197.078125,
+            "L2": 13.336548805236816,
+            "cosine": 0.999260663986206,
+            "theta": 0.03845587372779846
+        }
+    },
+    "layers.0.": {
+        "model.layers.0.input_layernorm.weight": {
+            "dot": 1.5988690853118896,
+            "L2": 0.025667931884527206,
+            "cosine": 0.9997971057891846,
+            "theta": 0.02014453150331974
+        },
+        "model.layers.0.mlp.down_proj.weight": {
+            "dot": 18333.4375,
+            "L2": 4.2704386711120605,
+            "cosine": 0.9995031356811523,
+            "theta": 0.031524766236543655
+        },
+        "model.layers.0.mlp.gate_proj.weight": {
+            "dot": 1033388.125,
+            "L2": 3.6081416606903076,
+            "cosine": 0.9999938607215881,
+            "theta": 0.003504079068079591
+        },
+        "model.layers.0.mlp.up_proj.weight": {
+            "dot": 1022040.0,
+            "L2": 3.67201566696167,
+            "cosine": 0.9999935626983643,
+            "theta": 0.0035881216172128916
+        },
+        "model.layers.0.post_attention_layernorm.weight": {
+            "dot": 4.290072441101074,
+            "L2": 0.03587182238698006,
+            "cosine": 0.9998528361320496,
+            "theta": 0.017156193032860756
+        },
+        "model.layers.0.self_attn.k_proj.weight": {
+            "dot": 256927.4375,
+            "L2": 0.16063769161701202,
+            "cosine": 0.9999999403953552,
+            "theta": 0.0003452669770922512
+        },
+        "model.layers.0.self_attn.o_proj.weight": {
+            "dot": 2914.962646484375,
+            "L2": 2.2120018005371094,
+            "cosine": 0.9991616606712341,
+            "theta": 0.04095012694597244
+        },
+        "model.layers.0.self_attn.q_proj.weight": {
+            "dot": 679262.0,
+            "L2": 0.337205708026886,
+            "cosine": 1.0,
+            "theta": 0.0
+        },
+        "model.layers.0.self_attn.v_proj.weight": {
+            "dot": 1268702.25,
+            "L2": 2.068805694580078,
+            "cosine": 0.9999983310699463,
+            "theta": 0.0018269813153892756
+        }
+    },
+    "layers.1.": {
+        "model.layers.1.mlp.gate_proj.weight": {
+            "dot": 32717.443359375,
+            "L2": 5.416852951049805,
+            "cosine": 0.9995520710945129,
+            "theta": 0.02993200160562992
+        },
+        "model.layers.1.self_attn.k_proj.weight": {
+            "dot": 5783.1240234375,
+            "L2": 0.5796121954917908,
+            "cosine": 0.9999709129333496,
+            "theta": 0.007627215702086687
+        },
+        "model.layers.1.self_attn.o_proj.weight": {
+            "dot": 6647.8994140625,
+            "L2": 2.522486925125122,
+            "cosine": 0.9995218515396118,
+            "theta": 0.030925283208489418
+        },
+        "model.layers.1.self_attn.q_proj.weight": {
+            "dot": 15735.666015625,
+            "L2": 1.2321228981018066,
+            "cosine": 0.9999518394470215,
+            "theta": 0.009814370423555374
+        },
+        "model.layers.1.self_attn.v_proj.weight": {
+            "dot": 15987.138671875,
+            "L2": 1.4703882932662964,
+            "cosine": 0.9999323487281799,
+            "theta": 0.011632027104496956
+        },
+        "model.layers.1.input_layernorm.weight": {
+            "dot": 12.931072235107422,
+            "L2": 0.03185350447893143,
+            "cosine": 0.9999637603759766,
+            "theta": 0.008513500913977623
+        },
+        "model.layers.1.mlp.down_proj.weight": {
+            "dot": 30857.62890625,
+            "L2": 6.427096843719482,
+            "cosine": 0.9993314743041992,
+            "theta": 0.036567751318216324
+        },
+        "model.layers.1.mlp.up_proj.weight": {
+            "dot": 31783.9375,
+            "L2": 5.662465572357178,
+            "cosine": 0.9994960427284241,
+            "theta": 0.03174900263547897
+        },
+        "model.layers.1.post_attention_layernorm.weight": {
+            "dot": 12.611576080322266,
+            "L2": 0.03261896222829819,
+            "cosine": 0.9999579191207886,
+            "theta": 0.009174004197120667
+        }
+    },
+    "layers.2.": {
+        "model.layers.2.input_layernorm.weight": {
+            "dot": 6.892765998840332,
+            "L2": 0.02930937148630619,
+            "cosine": 0.9999379515647888,
+            "theta": 0.01113993488252163
+        },
+        "model.layers.2.mlp.down_proj.weight": {
+            "dot": 32957.3515625,
+            "L2": 6.597932815551758,
+            "cosine": 0.999340295791626,
+            "theta": 0.03632565960288048
+        },
+        "model.layers.2.mlp.gate_proj.weight": {
+            "dot": 40487.515625,
+            "L2": 5.924753665924072,
+            "cosine": 0.9995667338371277,
+            "theta": 0.02943798340857029
+        },
+        "model.layers.2.mlp.up_proj.weight": {
+            "dot": 39803.328125,
+            "L2": 6.138944149017334,
+            "cosine": 0.9995270371437073,
+            "theta": 0.0307571180164814
+        },
+        "model.layers.2.post_attention_layernorm.weight": {
+            "dot": 20.121700286865234,
+            "L2": 0.033752139657735825,
+            "cosine": 0.999971866607666,
+            "theta": 0.007501136511564255
+        },
+        "model.layers.2.self_attn.k_proj.weight": {
+            "dot": 2741.43505859375,
+            "L2": 0.6064126491546631,
+            "cosine": 0.9999328851699829,
+            "theta": 0.01158581767231226
+        },
+        "model.layers.2.self_attn.o_proj.weight": {
+            "dot": 7826.484375,
+            "L2": 3.069270610809326,
+            "cosine": 0.9993987083435059,
+            "theta": 0.03468002378940582
+        },
+        "model.layers.2.self_attn.q_proj.weight": {
+            "dot": 8634.29296875,
+            "L2": 1.248402714729309,
+            "cosine": 0.9999098777770996,
+            "theta": 0.013425614684820175
+        },
+        "model.layers.2.self_attn.v_proj.weight": {
+            "dot": 1819.0858154296875,
+            "L2": 1.3495733737945557,
+            "cosine": 0.9994997382164001,
+            "theta": 0.03163237124681473
+        }
+    },
+    "layers.3.": {
+        "model.layers.3.input_layernorm.weight": {
+            "dot": 18.549991607666016,
+            "L2": 0.02860761247575283,
+            "cosine": 0.9999779462814331,
+            "theta": 0.0066413553431630135
+        },
+        "model.layers.3.mlp.down_proj.weight": {
+            "dot": 33341.1796875,
+            "L2": 7.587562084197998,
+            "cosine": 0.9991378784179688,
+            "theta": 0.04152699187397957
+        },
+        "model.layers.3.mlp.gate_proj.weight": {
+            "dot": 51509.33203125,
+            "L2": 6.252381801605225,
+            "cosine": 0.9996208548545837,
+            "theta": 0.027537940070033073
+        },
+        "model.layers.3.mlp.up_proj.weight": {
+            "dot": 48093.37890625,
+            "L2": 6.390957355499268,
+            "cosine": 0.9995757341384888,
+            "theta": 0.0291305985301733
+        },
+        "model.layers.3.post_attention_layernorm.weight": {
+            "dot": 27.975444793701172,
+            "L2": 0.03641417622566223,
+            "cosine": 0.9999767541885376,
+            "theta": 0.006818489637225866
+        },
+        "model.layers.3.self_attn.k_proj.weight": {
+            "dot": 8554.376953125,
+            "L2": 0.6816162467002869,
+            "cosine": 0.9999728798866272,
+            "theta": 0.0073648132383823395
+        },
+        "model.layers.3.self_attn.o_proj.weight": {
+            "dot": 7422.0234375,
+            "L2": 3.176661491394043,
+            "cosine": 0.9993209838867188,
+            "theta": 0.036853574216365814
+        },
+        "model.layers.3.self_attn.q_proj.weight": {
+            "dot": 20969.828125,
+            "L2": 1.472832441329956,
+            "cosine": 0.9999483823776245,
+            "theta": 0.010160518810153008
+        },
+        "model.layers.3.self_attn.v_proj.weight": {
+            "dot": 4453.94580078125,
+            "L2": 1.2350056171417236,
+            "cosine": 0.9998288750648499,
+            "theta": 0.01850026100873947
+        }
+    },
+    "layers.4.": {
+        "model.layers.4.self_attn.k_proj.weight": {
+            "dot": 3377.03466796875,
+            "L2": 0.8655626177787781,
+            "cosine": 0.9998891353607178,
+            "theta": 0.014890714548528194
+        },
+        "model.layers.4.self_attn.o_proj.weight": {
+            "dot": 7601.6689453125,
+            "L2": 3.2353813648223877,
+            "cosine": 0.9993122220039368,
+            "theta": 0.037090614438056946
+        },
+        "model.layers.4.self_attn.q_proj.weight": {
+            "dot": 10131.94921875,
+            "L2": 1.7687524557113647,
+            "cosine": 0.9998456239700317,
+            "theta": 0.017571568489074707
+        },
+        "model.layers.4.self_attn.v_proj.weight": {
+            "dot": 1190.0924072265625,
+            "L2": 1.1127679347991943,
+            "cosine": 0.9994802474975586,
+            "theta": 0.032242752611637115
+        },
+        "model.layers.4.input_layernorm.weight": {
+            "dot": 31.014963150024414,
+            "L2": 0.03730946406722069,
+            "cosine": 0.9999778866767883,
+            "theta": 0.0066503239795565605
+        },
+        "model.layers.4.mlp.down_proj.weight": {
+            "dot": 33730.109375,
+            "L2": 6.774969100952148,
+            "cosine": 0.9993203282356262,
+            "theta": 0.03687136620283127
+        },
+        "model.layers.4.mlp.gate_proj.weight": {
+            "dot": 41344.90234375,
+            "L2": 6.2956695556640625,
+            "cosine": 0.999521017074585,
+            "theta": 0.03095225803554058
+        },
+        "model.layers.4.mlp.up_proj.weight": {
+            "dot": 40170.2890625,
+            "L2": 6.4227471351623535,
+            "cosine": 0.999487042427063,
+            "theta": 0.032031282782554626
+        },
+        "model.layers.4.post_attention_layernorm.weight": {
+            "dot": 32.69562911987305,
+            "L2": 0.037657156586647034,
+            "cosine": 0.9999784827232361,
+            "theta": 0.006560084410011768
+        }
+    },
+    "layers.5.": {
+        "model.layers.5.input_layernorm.weight": {
+            "dot": 47.05486297607422,
+            "L2": 0.03936389833688736,
+            "cosine": 0.9999836683273315,
+            "theta": 0.005715193226933479
+        },
+        "model.layers.5.mlp.down_proj.weight": {
+            "dot": 32971.796875,
+            "L2": 6.949362754821777,
+            "cosine": 0.9992685317993164,
+            "theta": 0.03825068473815918
+        },
+        "model.layers.5.mlp.gate_proj.weight": {
+            "dot": 144444.1875,
+            "L2": 6.251949310302734,
+            "cosine": 0.9998647570610046,
+            "theta": 0.016446640715003014
+        },
+        "model.layers.5.mlp.up_proj.weight": {
+            "dot": 141532.859375,
+            "L2": 6.414945602416992,
+            "cosine": 0.9998547434806824,
+            "theta": 0.01704464852809906
+        },
+        "model.layers.5.post_attention_layernorm.weight": {
+            "dot": 31.89269256591797,
+            "L2": 0.0391944982111454,
+            "cosine": 0.9999760389328003,
+            "theta": 0.006922595668584108
+        },
+        "model.layers.5.self_attn.k_proj.weight": {
+            "dot": 3971.63134765625,
+            "L2": 0.9413470029830933,
+            "cosine": 0.9998884797096252,
+            "theta": 0.014934682287275791
+        },
+        "model.layers.5.self_attn.o_proj.weight": {
+            "dot": 7762.6748046875,
+            "L2": 3.6941792964935303,
+            "cosine": 0.9991222023963928,
+            "theta": 0.04190288856625557
+        },
+        "model.layers.5.self_attn.q_proj.weight": {
+            "dot": 12360.904296875,
+            "L2": 1.9606294631958008,
+            "cosine": 0.9998445510864258,
+            "theta": 0.01763252355158329
+        },
+        "model.layers.5.self_attn.v_proj.weight": {
+            "dot": 1403.429443359375,
+            "L2": 1.2251901626586914,
+            "cosine": 0.9994656443595886,
+            "theta": 0.03269260749220848
+        }
+    },
+    "layers.6.": {
+        "model.layers.6.input_layernorm.weight": {
+            "dot": 82.55781555175781,
+            "L2": 0.04151381179690361,
+            "cosine": 0.9999895095825195,
+            "theta": 0.004580488428473473
+        },
+        "model.layers.6.mlp.down_proj.weight": {
+            "dot": 32787.984375,
+            "L2": 7.142979145050049,
+            "cosine": 0.999222993850708,
+            "theta": 0.039423514157533646
+        },
+        "model.layers.6.mlp.gate_proj.weight": {
+            "dot": 35743.859375,
+            "L2": 6.3011250495910645,
+            "cosine": 0.9994450807571411,
+            "theta": 0.03331578150391579
+        },
+        "model.layers.6.mlp.up_proj.weight": {
+            "dot": 33919.7265625,
+            "L2": 6.495909214019775,
+            "cosine": 0.9993786811828613,
+            "theta": 0.0352528914809227
+        },
+        "model.layers.6.post_attention_layernorm.weight": {
+            "dot": 33.3878059387207,
+            "L2": 0.03952806070446968,
+            "cosine": 0.9999766945838928,
+            "theta": 0.0068272254429757595
+        },
+        "model.layers.6.self_attn.k_proj.weight": {
+            "dot": 4258.60107421875,
+            "L2": 1.0449057817459106,
+            "cosine": 0.9998719692230225,
+            "theta": 0.016002094373106956
+        },
+        "model.layers.6.self_attn.o_proj.weight": {
+            "dot": 7645.09228515625,
+            "L2": 3.6861226558685303,
+            "cosine": 0.999112606048584,
+            "theta": 0.042131345719099045
+        },
+        "model.layers.6.self_attn.q_proj.weight": {
+            "dot": 13645.5048828125,
+            "L2": 2.3001296520233154,
+            "cosine": 0.99980628490448,
+            "theta": 0.019683564081788063
+        },
+        "model.layers.6.self_attn.v_proj.weight": {
+            "dot": 963.4698486328125,
+            "L2": 1.2274848222732544,
+            "cosine": 0.9992190599441528,
+            "theta": 0.039523202925920486
+        }
+    },
+    "layers.7.": {
+        "model.layers.7.self_attn.k_proj.weight": {
+            "dot": 3784.56298828125,
+            "L2": 1.021801471710205,
+            "cosine": 0.9998621940612793,
+            "theta": 0.01660175248980522
+        },
+        "model.layers.7.self_attn.q_proj.weight": {
+            "dot": 12369.470703125,
+            "L2": 2.1248342990875244,
+            "cosine": 0.9998176097869873,
+            "theta": 0.019099516794085503
+        },
+        "model.layers.7.self_attn.v_proj.weight": {
+            "dot": 1142.423583984375,
+            "L2": 1.1831417083740234,
+            "cosine": 0.9993879199028015,
+            "theta": 0.03498978540301323
+        },
+        "model.layers.7.input_layernorm.weight": {
+            "dot": 69.17279815673828,
+            "L2": 0.04033372178673744,
+            "cosine": 0.999988317489624,
+            "theta": 0.004833742510527372
+        },
+        "model.layers.7.mlp.down_proj.weight": {
+            "dot": 32409.857421875,
+            "L2": 7.08625602722168,
+            "cosine": 0.9992262721061707,
+            "theta": 0.03934025019407272
+        },
+        "model.layers.7.mlp.gate_proj.weight": {
+            "dot": 34487.3046875,
+            "L2": 6.342932224273682,
+            "cosine": 0.9994173049926758,
+            "theta": 0.03413946554064751
+        },
+        "model.layers.7.mlp.up_proj.weight": {
+            "dot": 32553.19140625,
+            "L2": 6.520152568817139,
+            "cosine": 0.9993478059768677,
+            "theta": 0.0361182764172554
+        },
+        "model.layers.7.post_attention_layernorm.weight": {
+            "dot": 33.75937271118164,
+            "L2": 0.03963635861873627,
+            "cosine": 0.9999772310256958,
+            "theta": 0.006748193874955177
+        },
+        "model.layers.7.self_attn.o_proj.weight": {
+            "dot": 7631.115234375,
+            "L2": 3.4797043800354004,
+            "cosine": 0.999207615852356,
+            "theta": 0.03981177881360054
+        }
+    },
+    "layers.8.": {
+        "model.layers.8.input_layernorm.weight": {
+            "dot": 68.23422241210938,
+            "L2": 0.041180551052093506,
+            "cosine": 0.999988853931427,
+            "theta": 0.004721459001302719
+        },
+        "model.layers.8.mlp.down_proj.weight": {
+            "dot": 32395.466796875,
+            "L2": 7.355702877044678,
+            "cosine": 0.9991661310195923,
+            "theta": 0.04084078595042229
+        },
+        "model.layers.8.mlp.gate_proj.weight": {
+            "dot": 40739.65625,
+            "L2": 6.393397808074951,
+            "cosine": 0.9994987845420837,
+            "theta": 0.03166251257061958
+        },
+        "model.layers.8.mlp.up_proj.weight": {
+            "dot": 38483.5546875,
+            "L2": 6.552538871765137,
+            "cosine": 0.9994426965713501,
+            "theta": 0.03338727727532387
+        },
+        "model.layers.8.post_attention_layernorm.weight": {
+            "dot": 33.43409729003906,
+            "L2": 0.04307504743337631,
+            "cosine": 0.9999759197235107,
+            "theta": 0.006939794402569532
+        },
+        "model.layers.8.self_attn.k_proj.weight": {
+            "dot": 4711.21484375,
+            "L2": 0.9576336145401001,
+            "cosine": 0.9999027848243713,
+            "theta": 0.013943941332399845
+        },
+        "model.layers.8.self_attn.o_proj.weight": {
+            "dot": 8050.2041015625,
+            "L2": 3.5489206314086914,
+            "cosine": 0.999218761920929,
+            "theta": 0.03953074291348457
+        },
+        "model.layers.8.self_attn.q_proj.weight": {
+            "dot": 13751.263671875,
+            "L2": 2.1611225605010986,
+            "cosine": 0.9998303651809692,
+            "theta": 0.018419533967971802
+        },
+        "model.layers.8.self_attn.v_proj.weight": {
+            "dot": 1026.7066650390625,
+            "L2": 1.1878262758255005,
+            "cosine": 0.9993137121200562,
+            "theta": 0.037050407379865646
+        }
+    },
+    "layers.9.": {
+        "model.layers.9.input_layernorm.weight": {
+            "dot": 47.10313415527344,
+            "L2": 0.04255935549736023,
+            "cosine": 0.9999825954437256,
+            "theta": 0.0058999331668019295
+        },
+        "model.layers.9.mlp.down_proj.weight": {
+            "dot": 32681.44921875,
+            "L2": 7.604639053344727,
+            "cosine": 0.9991165995597839,
+            "theta": 0.042036425322294235
+        },
+        "model.layers.9.mlp.gate_proj.weight": {
+            "dot": 107211.0703125,
+            "L2": 6.526289463043213,
+            "cosine": 0.9998014569282532,
+            "theta": 0.01992735080420971
+        },
+        "model.layers.9.mlp.up_proj.weight": {
+            "dot": 102101.7265625,
+            "L2": 6.659610271453857,
+            "cosine": 0.999782919883728,
+            "theta": 0.020836887881159782
+        },
+        "model.layers.9.post_attention_layernorm.weight": {
+            "dot": 34.01182174682617,
+            "L2": 0.04661393538117409,
+            "cosine": 0.9999754428863525,
+            "theta": 0.00700816884636879
+        },
+        "model.layers.9.self_attn.k_proj.weight": {
+            "dot": 4209.02490234375,
+            "L2": 0.9909850358963013,
+            "cosine": 0.9998835921287537,
+            "theta": 0.015258449129760265
+        },
+        "model.layers.9.self_attn.o_proj.weight": {
+            "dot": 7985.7138671875,
+            "L2": 3.6114749908447266,
+            "cosine": 0.9991844892501831,
+            "theta": 0.04038865119218826
+        },
+        "model.layers.9.self_attn.q_proj.weight": {
+            "dot": 13575.58203125,
+            "L2": 2.1222798824310303,
+            "cosine": 0.9998342990875244,
+            "theta": 0.018204696476459503
+        },
+        "model.layers.9.self_attn.v_proj.weight": {
+            "dot": 1108.4996337890625,
+            "L2": 1.2547460794448853,
+            "cosine": 0.9992906451225281,
+            "theta": 0.03766798973083496
+        }
+    },
+    "layers.10.": {
+        "model.layers.10.input_layernorm.weight": {
+            "dot": 130.54042053222656,
+            "L2": 0.04313937947154045,
+            "cosine": 0.9999930262565613,
+            "theta": 0.003734635654836893
+        },
+        "model.layers.10.mlp.down_proj.weight": {
+            "dot": 33378.1171875,
+            "L2": 8.129707336425781,
+            "cosine": 0.9990115761756897,
+            "theta": 0.04446541517972946
+        },
+        "model.layers.10.mlp.gate_proj.weight": {
+            "dot": 35700.65625,
+            "L2": 6.933809757232666,
+            "cosine": 0.999327540397644,
+            "theta": 0.03667519614100456
+        },
+        "model.layers.10.mlp.up_proj.weight": {
+            "dot": 33315.453125,
+            "L2": 7.141149997711182,
+            "cosine": 0.9992357492446899,
+            "theta": 0.03909854590892792
+        },
+        "model.layers.10.post_attention_layernorm.weight": {
+            "dot": 43.75157928466797,
+            "L2": 0.046896398067474365,
+            "cosine": 0.9999799728393555,
+            "theta": 0.006328859366476536
+        },
+        "model.layers.10.self_attn.k_proj.weight": {
+            "dot": 4970.8212890625,
+            "L2": 1.173107385635376,
+            "cosine": 0.9998617172241211,
+            "theta": 0.016630452126264572
+        },
+        "model.layers.10.self_attn.o_proj.weight": {
+            "dot": 7569.375,
+            "L2": 3.761573076248169,
+            "cosine": 0.9990667104721069,
+            "theta": 0.043207284063100815
+        },
+        "model.layers.10.self_attn.q_proj.weight": {
+            "dot": 14829.125,
+            "L2": 2.730315923690796,
+            "cosine": 0.9997488856315613,
+            "theta": 0.022410931065678596
+        },
+        "model.layers.10.self_attn.v_proj.weight": {
+            "dot": 872.6502685546875,
+            "L2": 1.3117741346359253,
+            "cosine": 0.9990156292915344,
+            "theta": 0.044374141842126846
+        }
+    },
+    "layers.11.": {
+        "model.layers.11.input_layernorm.weight": {
+            "dot": 107.89030456542969,
+            "L2": 0.041083332151174545,
+            "cosine": 0.9999923706054688,
+            "theta": 0.0039062523283064365
+        },
+        "model.layers.11.mlp.down_proj.weight": {
+            "dot": 33921.33203125,
+            "L2": 8.050642013549805,
+            "cosine": 0.9990462064743042,
+            "theta": 0.04367940500378609
+        },
+        "model.layers.11.mlp.gate_proj.weight": {
+            "dot": 38374.19921875,
+            "L2": 7.141534805297852,
+            "cosine": 0.9993362426757812,
+            "theta": 0.03643709048628807
+        },
+        "model.layers.11.mlp.up_proj.weight": {
+            "dot": 35923.203125,
+            "L2": 7.320952892303467,
+            "cosine": 0.9992550015449524,
+            "theta": 0.03860287368297577
+        },
+        "model.layers.11.post_attention_layernorm.weight": {
+            "dot": 51.779808044433594,
+            "L2": 0.04541094973683357,
+            "cosine": 0.9999832510948181,
+            "theta": 0.00578773720189929
+        },
+        "model.layers.11.self_attn.k_proj.weight": {
+            "dot": 5577.36865234375,
+            "L2": 1.0504810810089111,
+            "cosine": 0.9999011158943176,
+            "theta": 0.014063124544918537
+        },
+        "model.layers.11.self_attn.o_proj.weight": {
+            "dot": 8029.62890625,
+            "L2": 4.0901899337768555,
+            "cosine": 0.9989598989486694,
+            "theta": 0.045613184571266174
+        },
+        "model.layers.11.self_attn.q_proj.weight": {
+            "dot": 15364.072265625,
+            "L2": 2.457291841506958,
+            "cosine": 0.9998035430908203,
+            "theta": 0.0198223777115345
+        },
+        "model.layers.11.self_attn.v_proj.weight": {
+            "dot": 959.2779541015625,
+            "L2": 1.360311508178711,
+            "cosine": 0.9990369081497192,
+            "theta": 0.04389183223247528
+        }
+    },
+    "layers.12.": {
+        "model.layers.12.mlp.gate_proj.weight": {
+            "dot": 35672.359375,
+            "L2": 6.934564590454102,
+            "cosine": 0.999326765537262,
+            "theta": 0.03669632226228714
+        },
+        "model.layers.12.mlp.up_proj.weight": {
+            "dot": 33351.171875,
+            "L2": 7.084018230438232,
+            "cosine": 0.9992485642433167,
+            "theta": 0.03876931592822075
+        },
+        "model.layers.12.self_attn.k_proj.weight": {
+            "dot": 4576.646484375,
+            "L2": 1.0451122522354126,
+            "cosine": 0.9998807907104492,
+            "theta": 0.01544096227735281
+        },
+        "model.layers.12.self_attn.o_proj.weight": {
+            "dot": 8021.1953125,
+            "L2": 3.406986713409424,
+            "cosine": 0.9992773532867432,
+            "theta": 0.03801930695772171
+        },
+        "model.layers.12.self_attn.q_proj.weight": {
+            "dot": 13691.8193359375,
+            "L2": 2.407520055770874,
+            "cosine": 0.9997885227203369,
+            "theta": 0.020566221326589584
+        },
+        "model.layers.12.self_attn.v_proj.weight": {
+            "dot": 990.77978515625,
+            "L2": 1.2230939865112305,
+            "cosine": 0.9992460012435913,
+            "theta": 0.03883538395166397
+        },
+        "model.layers.12.input_layernorm.weight": {
+            "dot": 92.86942291259766,
+            "L2": 0.04109456017613411,
+            "cosine": 0.9999916553497314,
+            "theta": 0.004085256718099117
+        },
+        "model.layers.12.mlp.down_proj.weight": {
+            "dot": 33217.671875,
+            "L2": 7.919422149658203,
+            "cosine": 0.9990575313568115,
+            "theta": 0.04341927543282509
+        },
+        "model.layers.12.post_attention_layernorm.weight": {
+            "dot": 48.018882751464844,
+            "L2": 0.04476548358798027,
+            "cosine": 0.9999822378158569,
+            "theta": 0.005960240960121155
+        }
+    },
+    "layers.13.": {
+        "model.layers.13.input_layernorm.weight": {
+            "dot": 121.59481811523438,
+            "L2": 0.0453089214861393,
+            "cosine": 0.9999926090240479,
+            "theta": 0.003844732651486993
+        },
+        "model.layers.13.mlp.down_proj.weight": {
+            "dot": 33475.125,
+            "L2": 8.118385314941406,
+            "cosine": 0.9990173578262329,
+            "theta": 0.04433516040444374
+        },
+        "model.layers.13.mlp.gate_proj.weight": {
+            "dot": 35487.421875,
+            "L2": 6.826091766357422,
+            "cosine": 0.9993442296981812,
+            "theta": 0.03621717542409897
+        },
+        "model.layers.13.mlp.up_proj.weight": {
+            "dot": 33444.1015625,
+            "L2": 6.991674423217773,
+            "cosine": 0.9992700219154358,
+            "theta": 0.03821169584989548
+        },
+        "model.layers.13.post_attention_layernorm.weight": {
+            "dot": 45.32996368408203,
+            "L2": 0.043460663408041,
+            "cosine": 0.9999812841415405,
+            "theta": 0.006118156015872955
+        },
+        "model.layers.13.self_attn.k_proj.weight": {
+            "dot": 5983.69287109375,
+            "L2": 1.2101513147354126,
+            "cosine": 0.9998778104782104,
+            "theta": 0.015632785856723785
+        },
+        "model.layers.13.self_attn.o_proj.weight": {
+            "dot": 7943.51171875,
+            "L2": 3.9899940490722656,
+            "cosine": 0.9989995956420898,
+            "theta": 0.044734127819538116
+        },
+        "model.layers.13.self_attn.q_proj.weight": {
+            "dot": 16260.31640625,
+            "L2": 2.9902937412261963,
+            "cosine": 0.999725341796875,
+            "theta": 0.02343803644180298
+        },
+        "model.layers.13.self_attn.v_proj.weight": {
+            "dot": 844.6956176757812,
+            "L2": 1.352695107460022,
+            "cosine": 0.9989187121391296,
+            "theta": 0.04650769382715225
+        }
+    },
+    "layers.14.": {
+        "model.layers.14.input_layernorm.weight": {
+            "dot": 159.0908203125,
+            "L2": 0.04256642237305641,
+            "cosine": 0.9999946355819702,
+            "theta": 0.0032754915300756693
+        },
+        "model.layers.14.mlp.down_proj.weight": {
+            "dot": 33772.18359375,
+            "L2": 8.42566967010498,
+            "cosine": 0.9989507794380188,
+            "theta": 0.04581274837255478
+        },
+        "model.layers.14.mlp.gate_proj.weight": {
+            "dot": 35998.9140625,
+            "L2": 7.033205509185791,
+            "cosine": 0.9993138313293457,
+            "theta": 0.037047192454338074
+        },
+        "model.layers.14.mlp.up_proj.weight": {
+            "dot": 33609.83203125,
+            "L2": 7.184719085693359,
+            "cosine": 0.9992330074310303,
+            "theta": 0.03916862607002258
+        },
+        "model.layers.14.post_attention_layernorm.weight": {
+            "dot": 57.03248977661133,
+            "L2": 0.04263359308242798,
+            "cosine": 0.9999849796295166,
+            "theta": 0.005480950232595205
+        },
+        "model.layers.14.self_attn.k_proj.weight": {
+            "dot": 5307.912109375,
+            "L2": 1.247094988822937,
+            "cosine": 0.9998536705970764,
+            "theta": 0.017107481136918068
+        },
+        "model.layers.14.self_attn.o_proj.weight": {
+            "dot": 7534.16748046875,
+            "L2": 3.9515511989593506,
+            "cosine": 0.9989655017852783,
+            "theta": 0.045490145683288574
+        },
+        "model.layers.14.self_attn.q_proj.weight": {
+            "dot": 16143.728515625,
+            "L2": 3.0118348598480225,
+            "cosine": 0.9997192621231079,
+            "theta": 0.023696035146713257
+        },
+        "model.layers.14.self_attn.v_proj.weight": {
+            "dot": 785.9486083984375,
+            "L2": 1.3533060550689697,
+            "cosine": 0.9988369941711426,
+            "theta": 0.04823341965675354
+        }
+    },
+    "layers.15.": {
+        "model.layers.15.mlp.gate_proj.weight": {
+            "dot": 37104.91015625,
+            "L2": 7.312591552734375,
+            "cosine": 0.9992803931236267,
+            "theta": 0.037939246743917465
+        },
+        "model.layers.15.self_attn.k_proj.weight": {
+            "dot": 5383.52392578125,
+            "L2": 1.164827585220337,
+            "cosine": 0.9998741149902344,
+            "theta": 0.015867428854107857
+        },
+        "model.layers.15.self_attn.o_proj.weight": {
+            "dot": 7834.21044921875,
+            "L2": 3.9074928760528564,
+            "cosine": 0.9990271925926208,
+            "theta": 0.04411270096898079
+        },
+        "model.layers.15.self_attn.q_proj.weight": {
+            "dot": 16078.6728515625,
+            "L2": 2.990190267562866,
+            "cosine": 0.9997222423553467,
+            "theta": 0.023569917306303978
+        },
+        "model.layers.15.self_attn.v_proj.weight": {
+            "dot": 878.1123046875,
+            "L2": 1.3586193323135376,
+            "cosine": 0.998950719833374,
+            "theta": 0.04581405594944954
+        },
+        "model.layers.15.input_layernorm.weight": {
+            "dot": 121.35277557373047,
+            "L2": 0.042719725519418716,
+            "cosine": 0.9999932050704956,
+            "theta": 0.003686444601044059
+        },
+        "model.layers.15.mlp.down_proj.weight": {
+            "dot": 33834.9765625,
+            "L2": 8.886106491088867,
+            "cosine": 0.9988353848457336,
+            "theta": 0.04826678708195686
+        },
+        "model.layers.15.mlp.up_proj.weight": {
+            "dot": 33910.05859375,
+            "L2": 7.494843482971191,
+            "cosine": 0.9991729259490967,
+            "theta": 0.04067402705550194
+        },
+        "model.layers.15.post_attention_layernorm.weight": {
+            "dot": 63.4774169921875,
+            "L2": 0.04503214359283447,
+            "cosine": 0.9999847412109375,
+            "theta": 0.0055242786183953285
+        }
+    },
+    "layers.16.": {
+        "model.layers.16.input_layernorm.weight": {
+            "dot": 133.08688354492188,
+            "L2": 0.04604122415184975,
+            "cosine": 0.9999931454658508,
+            "theta": 0.0037025781348347664
+        },
+        "model.layers.16.mlp.down_proj.weight": {
+            "dot": 34082.66015625,
+            "L2": 9.23320484161377,
+            "cosine": 0.9987518787384033,
+            "theta": 0.04996760934591293
+        },
+        "model.layers.16.mlp.gate_proj.weight": {
+            "dot": 37753.61328125,
+            "L2": 7.585275650024414,
+            "cosine": 0.9992389678955078,
+            "theta": 0.03901611641049385
+        },
+        "model.layers.16.mlp.up_proj.weight": {
+            "dot": 34292.890625,
+            "L2": 7.747647285461426,
+            "cosine": 0.9991260766983032,
+            "theta": 0.0418103002011776
+        },
+        "model.layers.16.post_attention_layernorm.weight": {
+            "dot": 74.88388061523438,
+            "L2": 0.04692426323890686,
+            "cosine": 0.999985933303833,
+            "theta": 0.005304098129272461
+        },
+        "model.layers.16.self_attn.k_proj.weight": {
+            "dot": 5296.72509765625,
+            "L2": 1.2350406646728516,
+            "cosine": 0.9998563528060913,
+            "theta": 0.016949962824583054
+        },
+        "model.layers.16.self_attn.o_proj.weight": {
+            "dot": 7928.3203125,
+            "L2": 3.8895647525787354,
+            "cosine": 0.9990473985671997,
+            "theta": 0.04365209490060806
+        },
+        "model.layers.16.self_attn.q_proj.weight": {
+            "dot": 16852.83203125,
+            "L2": 3.173938512802124,
+            "cosine": 0.9997013807296753,
+            "theta": 0.024439074099063873
+        },
+        "model.layers.16.self_attn.v_proj.weight": {
+            "dot": 867.5487670898438,
+            "L2": 1.331607699394226,
+            "cosine": 0.9989796876907349,
+            "theta": 0.04517711326479912
+        }
+    },
+    "layers.17.": {
+        "model.layers.17.input_layernorm.weight": {
+            "dot": 170.68017578125,
+            "L2": 0.04923051968216896,
+            "cosine": 0.9999932050704956,
+            "theta": 0.003686444601044059
+        },
+        "model.layers.17.mlp.down_proj.weight": {
+            "dot": 34403.98046875,
+            "L2": 9.947635650634766,
+            "cosine": 0.9985652565956116,
+            "theta": 0.05357399955391884
+        },
+        "model.layers.17.mlp.gate_proj.weight": {
+            "dot": 37915.265625,
+            "L2": 7.725772380828857,
+            "cosine": 0.9992139339447021,
+            "theta": 0.03965271636843681
+        },
+        "model.layers.17.mlp.up_proj.weight": {
+            "dot": 34439.671875,
+            "L2": 7.86790132522583,
+            "cosine": 0.9991025924682617,
+            "theta": 0.04236842691898346
+        },
+        "model.layers.17.post_attention_layernorm.weight": {
+            "dot": 88.5333251953125,
+            "L2": 0.04694028198719025,
+            "cosine": 0.9999876022338867,
+            "theta": 0.004979516379535198
+        },
+        "model.layers.17.self_attn.k_proj.weight": {
+            "dot": 6185.822265625,
+            "L2": 1.370841145515442,
+            "cosine": 0.9998483061790466,
+            "theta": 0.01741824671626091
+        },
+        "model.layers.17.self_attn.o_proj.weight": {
+            "dot": 7618.4619140625,
+            "L2": 4.532023906707764,
+            "cosine": 0.9986550211906433,
+            "theta": 0.051870618015527725
+        },
+        "model.layers.17.self_attn.q_proj.weight": {
+            "dot": 18081.07421875,
+            "L2": 3.542637586593628,
+            "cosine": 0.9996532797813416,
+            "theta": 0.026334019377827644
+        },
+        "model.layers.17.self_attn.v_proj.weight": {
+            "dot": 719.2197265625,
+            "L2": 1.5267152786254883,
+            "cosine": 0.9983835220336914,
+            "theta": 0.05686675012111664
+        }
+    },
+    "layers.18.": {
+        "model.layers.18.self_attn.k_proj.weight": {
+            "dot": 5963.3251953125,
+            "L2": 1.3561813831329346,
+            "cosine": 0.9998459815979004,
+            "theta": 0.017551202327013016
+        },
+        "model.layers.18.self_attn.o_proj.weight": {
+            "dot": 7602.6953125,
+            "L2": 4.584015846252441,
+            "cosine": 0.9986212253570557,
+            "theta": 0.05251840874552727
+        },
+        "model.layers.18.self_attn.q_proj.weight": {
+            "dot": 18604.525390625,
+            "L2": 3.582447052001953,
+            "cosine": 0.9996554255485535,
+            "theta": 0.026252400130033493
+        },
+        "model.layers.18.self_attn.v_proj.weight": {
+            "dot": 743.0196533203125,
+            "L2": 1.4745733737945557,
+            "cosine": 0.9985397458076477,
+            "theta": 0.05404830724000931
+        },
+        "model.layers.18.input_layernorm.weight": {
+            "dot": 214.63296508789062,
+            "L2": 0.04781293123960495,
+            "cosine": 0.9999949932098389,
+            "theta": 0.0031644257251173258
+        },
+        "model.layers.18.mlp.down_proj.weight": {
+            "dot": 34499.8828125,
+            "L2": 10.336136817932129,
+            "cosine": 0.9984554648399353,
+            "theta": 0.0555865615606308
+        },
+        "model.layers.18.mlp.gate_proj.weight": {
+            "dot": 38851.921875,
+            "L2": 7.9858551025390625,
+            "cosine": 0.9991804361343384,
+            "theta": 0.04048890620470047
+        },
+        "model.layers.18.mlp.up_proj.weight": {
+            "dot": 34438.125,
+            "L2": 8.14281177520752,
+            "cosine": 0.9990389347076416,
+            "theta": 0.04384562373161316
+        },
+        "model.layers.18.post_attention_layernorm.weight": {
+            "dot": 107.56303405761719,
+            "L2": 0.0506410226225853,
+            "cosine": 0.9999886751174927,
+            "theta": 0.0047591812908649445
+        }
+    },
+    "layers.19.": {
+        "model.layers.19.input_layernorm.weight": {
+            "dot": 185.31906127929688,
+            "L2": 0.04794862121343613,
+            "cosine": 0.9999938607215881,
+            "theta": 0.003504079068079591
+        },
+        "model.layers.19.mlp.down_proj.weight": {
+            "dot": 34656.3359375,
+            "L2": 10.628172874450684,
+            "cosine": 0.9983747005462646,
+            "theta": 0.05702174827456474
+        },
+        "model.layers.19.mlp.gate_proj.weight": {
+            "dot": 40048.09375,
+            "L2": 8.148524284362793,
+            "cosine": 0.9991720914840698,
+            "theta": 0.04069454222917557
+        },
+        "model.layers.19.mlp.up_proj.weight": {
+            "dot": 34275.4453125,
+            "L2": 8.357593536376953,
+            "cosine": 0.9989827871322632,
+            "theta": 0.045108433812856674
+        },
+        "model.layers.19.post_attention_layernorm.weight": {
+            "dot": 114.96142578125,
+            "L2": 0.053252603858709335,
+            "cosine": 0.9999885559082031,
+            "theta": 0.004784164484590292
+        },
+        "model.layers.19.self_attn.k_proj.weight": {
+            "dot": 6019.79248046875,
+            "L2": 1.3357383012771606,
+            "cosine": 0.9998520016670227,
+            "theta": 0.01720476523041725
+        },
+        "model.layers.19.self_attn.o_proj.weight": {
+            "dot": 8552.205078125,
+            "L2": 4.311681747436523,
+            "cosine": 0.9989150762557983,
+            "theta": 0.04658583551645279
+        },
+        "model.layers.19.self_attn.q_proj.weight": {
+            "dot": 17901.91796875,
+            "L2": 3.2886831760406494,
+            "cosine": 0.9996981620788574,
+            "theta": 0.024570433422923088
+        },
+        "model.layers.19.self_attn.v_proj.weight": {
+            "dot": 961.582275390625,
+            "L2": 1.4159655570983887,
+            "cosine": 0.9989591240882874,
+            "theta": 0.04563017934560776
+        }
+    },
+    "layers.20.": {
+        "model.layers.20.input_layernorm.weight": {
+            "dot": 213.10086059570312,
+            "L2": 0.054573629051446915,
+            "cosine": 0.999994158744812,
+            "theta": 0.0034179703798145056
+        },
+        "model.layers.20.mlp.down_proj.weight": {
+            "dot": 35136.30078125,
+            "L2": 11.093840599060059,
+            "cosine": 0.9982537031173706,
+            "theta": 0.059106774628162384
+        },
+        "model.layers.20.mlp.gate_proj.weight": {
+            "dot": 39921.21875,
+            "L2": 8.380563735961914,
+            "cosine": 0.9991216063499451,
+            "theta": 0.041917115449905396
+        },
+        "model.layers.20.mlp.up_proj.weight": {
+            "dot": 34943.4140625,
+            "L2": 8.513205528259277,
+            "cosine": 0.9989647269248962,
+            "theta": 0.04550718143582344
+        },
+        "model.layers.20.post_attention_layernorm.weight": {
+            "dot": 129.1160125732422,
+            "L2": 0.055698081851005554,
+            "cosine": 0.9999884366989136,
+            "theta": 0.004809017293155193
+        },
+        "model.layers.20.self_attn.k_proj.weight": {
+            "dot": 6962.93212890625,
+            "L2": 1.1715227365493774,
+            "cosine": 0.9999016523361206,
+            "theta": 0.014024925418198109
+        },
+        "model.layers.20.self_attn.o_proj.weight": {
+            "dot": 8385.0048828125,
+            "L2": 4.31112003326416,
+            "cosine": 0.9988939166069031,
+            "theta": 0.047038014978170395
+        },
+        "model.layers.20.self_attn.q_proj.weight": {
+            "dot": 16109.05859375,
+            "L2": 3.117211103439331,
+            "cosine": 0.9996987581253052,
+            "theta": 0.02454616129398346
+        },
+        "model.layers.20.self_attn.v_proj.weight": {
+            "dot": 881.250244140625,
+            "L2": 1.384175181388855,
+            "cosine": 0.9989146590232849,
+            "theta": 0.04659479111433029
+        }
+    },
+    "layers.21.": {
+        "model.layers.21.self_attn.k_proj.weight": {
+            "dot": 7052.890625,
+            "L2": 1.359015703201294,
+            "cosine": 0.999869167804718,
+            "theta": 0.016176220029592514
+        },
+        "model.layers.21.self_attn.q_proj.weight": {
+            "dot": 17446.2890625,
+            "L2": 3.621748447418213,
+            "cosine": 0.9996243715286255,
+            "theta": 0.027409926056861877
+        },
+        "model.layers.21.self_attn.v_proj.weight": {
+            "dot": 710.8416748046875,
+            "L2": 1.5880194902420044,
+            "cosine": 0.9982306361198425,
+            "theta": 0.05949597805738449
+        },
+        "model.layers.21.input_layernorm.weight": {
+            "dot": 308.18865966796875,
+            "L2": 0.05410505086183548,
+            "cosine": 0.999995231628418,
+            "theta": 0.0030881629791110754
+        },
+        "model.layers.21.mlp.down_proj.weight": {
+            "dot": 35212.2578125,
+            "L2": 11.14683723449707,
+            "cosine": 0.9982407093048096,
+            "theta": 0.059326328337192535
+        },
+        "model.layers.21.mlp.gate_proj.weight": {
+            "dot": 40271.12890625,
+            "L2": 8.757729530334473,
+            "cosine": 0.999049186706543,
+            "theta": 0.04361110180616379
+        },
+        "model.layers.21.mlp.up_proj.weight": {
+            "dot": 34984.0546875,
+            "L2": 8.845369338989258,
+            "cosine": 0.998883843421936,
+            "theta": 0.047251757234334946
+        },
+        "model.layers.21.post_attention_layernorm.weight": {
+            "dot": 144.6512451171875,
+            "L2": 0.0570748895406723,
+            "cosine": 0.9999889731407166,
+            "theta": 0.0046961428597569466
+        },
+        "model.layers.21.self_attn.o_proj.weight": {
+            "dot": 7869.3193359375,
+            "L2": 4.700625419616699,
+            "cosine": 0.9985994100570679,
+            "theta": 0.05293235555291176
+        }
+    },
+    "layers.22.": {
+        "model.layers.22.input_layernorm.weight": {
+            "dot": 322.378662109375,
+            "L2": 0.051409874111413956,
+            "cosine": 0.9999959468841553,
+            "theta": 0.0028471453115344048
+        },
+        "model.layers.22.mlp.down_proj.weight": {
+            "dot": 35103.5859375,
+            "L2": 11.000863075256348,
+            "cosine": 0.9982811212539673,
+            "theta": 0.05864079296588898
+        },
+        "model.layers.22.mlp.gate_proj.weight": {
+            "dot": 41071.0703125,
+            "L2": 9.01333999633789,
+            "cosine": 0.9990125894546509,
+            "theta": 0.044442616403102875
+        },
+        "model.layers.22.mlp.up_proj.weight": {
+            "dot": 34845.65234375,
+            "L2": 9.0830078125,
+            "cosine": 0.9988185167312622,
+            "theta": 0.048615142703056335
+        },
+        "model.layers.22.post_attention_layernorm.weight": {
+            "dot": 156.30178833007812,
+            "L2": 0.0601920522749424,
+            "cosine": 0.9999890923500061,
+            "theta": 0.004670689348131418
+        },
+        "model.layers.22.self_attn.k_proj.weight": {
+            "dot": 7068.1318359375,
+            "L2": 1.2332459688186646,
+            "cosine": 0.9998924732208252,
+            "theta": 0.01466483622789383
+        },
+        "model.layers.22.self_attn.o_proj.weight": {
+            "dot": 8815.2412109375,
+            "L2": 5.062954425811768,
+            "cosine": 0.9985494613647461,
+            "theta": 0.05386815965175629
+        },
+        "model.layers.22.self_attn.q_proj.weight": {
+            "dot": 16619.076171875,
+            "L2": 3.2265522480010986,
+            "cosine": 0.9996869564056396,
+            "theta": 0.025022385641932487
+        },
+        "model.layers.22.self_attn.v_proj.weight": {
+            "dot": 1010.4189453125,
+            "L2": 1.699096441268921,
+            "cosine": 0.9985743761062622,
+            "theta": 0.053403422236442566
+        }
+    },
+    "layers.23.": {
+        "model.layers.23.input_layernorm.weight": {
+            "dot": 337.33538818359375,
+            "L2": 0.05352495610713959,
+            "cosine": 0.9999958276748657,
+            "theta": 0.0028887116350233555
+        },
+        "model.layers.23.mlp.down_proj.weight": {
+            "dot": 35040.41796875,
+            "L2": 11.208333015441895,
+            "cosine": 0.9982126951217651,
+            "theta": 0.05979694798588753
+        },
+        "model.layers.23.mlp.gate_proj.weight": {
+            "dot": 41313.4765625,
+            "L2": 9.257951736450195,
+            "cosine": 0.9989643692970276,
+            "theta": 0.045515041798353195
+        },
+        "model.layers.23.mlp.up_proj.weight": {
+            "dot": 34798.890625,
+            "L2": 9.336289405822754,
+            "cosine": 0.9987502098083496,
+            "theta": 0.05000101029872894
+        },
+        "model.layers.23.post_attention_layernorm.weight": {
+            "dot": 165.986572265625,
+            "L2": 0.059281446039676666,
+            "cosine": 0.9999898672103882,
+            "theta": 0.004501734394580126
+        },
+        "model.layers.23.self_attn.k_proj.weight": {
+            "dot": 7387.6748046875,
+            "L2": 1.3176008462905884,
+            "cosine": 0.9998826384544373,
+            "theta": 0.015320825390517712
+        },
+        "model.layers.23.self_attn.o_proj.weight": {
+            "dot": 8497.603515625,
+            "L2": 4.921534061431885,
+            "cosine": 0.9985781908035278,
+            "theta": 0.05333191156387329
+        },
+        "model.layers.23.self_attn.q_proj.weight": {
+            "dot": 16958.736328125,
+            "L2": 3.4492106437683105,
+            "cosine": 0.9996495246887207,
+            "theta": 0.026476245373487473
+        },
+        "model.layers.23.self_attn.v_proj.weight": {
+            "dot": 894.3096313476562,
+            "L2": 1.6755019426345825,
+            "cosine": 0.9984339475631714,
+            "theta": 0.055972516536712646
+        }
+    },
+    "layers.24.": {
+        "model.layers.24.input_layernorm.weight": {
+            "dot": 158.0350341796875,
+            "L2": 0.06067921966314316,
+            "cosine": 0.9999903440475464,
+            "theta": 0.0043945349752902985
+        },
+        "model.layers.24.mlp.down_proj.weight": {
+            "dot": 35421.3046875,
+            "L2": 12.164156913757324,
+            "cosine": 0.997918426990509,
+            "theta": 0.06453364342451096
+        },
+        "model.layers.24.mlp.gate_proj.weight": {
+            "dot": 40993.71875,
+            "L2": 9.364978790283203,
+            "cosine": 0.9989322423934937,
+            "theta": 0.04621574655175209
+        },
+        "model.layers.24.mlp.up_proj.weight": {
+            "dot": 35401.62890625,
+            "L2": 9.411096572875977,
+            "cosine": 0.9987516403198242,
+            "theta": 0.04997238516807556
+        },
+        "model.layers.24.post_attention_layernorm.weight": {
+            "dot": 172.58998107910156,
+            "L2": 0.05894292891025543,
+            "cosine": 0.9999901056289673,
+            "theta": 0.00444845762103796
+        },
+        "model.layers.24.self_attn.k_proj.weight": {
+            "dot": 7050.923828125,
+            "L2": 1.1375460624694824,
+            "cosine": 0.999908447265625,
+            "theta": 0.013531750068068504
+        },
+        "model.layers.24.self_attn.o_proj.weight": {
+            "dot": 8559.8369140625,
+            "L2": 5.017569065093994,
+            "cosine": 0.9985332489013672,
+            "theta": 0.05416843667626381
+        },
+        "model.layers.24.self_attn.q_proj.weight": {
+            "dot": 14714.931640625,
+            "L2": 2.972128391265869,
+            "cosine": 0.999700129032135,
+            "theta": 0.024490240961313248
+        },
+        "model.layers.24.self_attn.v_proj.weight": {
+            "dot": 1031.2655029296875,
+            "L2": 1.898313045501709,
+            "cosine": 0.9982579350471497,
+            "theta": 0.05903508886694908
+        }
+    },
+    "layers.25.": {
+        "model.layers.25.input_layernorm.weight": {
+            "dot": 326.85107421875,
+            "L2": 0.05459370091557503,
+            "cosine": 0.9999955892562866,
+            "theta": 0.002970099914819002
+        },
+        "model.layers.25.mlp.down_proj.weight": {
+            "dot": 35353.9140625,
+            "L2": 11.412042617797852,
+            "cosine": 0.9981635808944702,
+            "theta": 0.060613226145505905
+        },
+        "model.layers.25.mlp.gate_proj.weight": {
+            "dot": 41214.421875,
+            "L2": 9.347420692443848,
+            "cosine": 0.9989418387413025,
+            "theta": 0.046007562428712845
+        },
+        "model.layers.25.mlp.up_proj.weight": {
+            "dot": 35539.31640625,
+            "L2": 9.392477989196777,
+            "cosine": 0.9987614154815674,
+            "theta": 0.04977630451321602
+        },
+        "model.layers.25.post_attention_layernorm.weight": {
+            "dot": 182.26638793945312,
+            "L2": 0.0588812418282032,
+            "cosine": 0.999990701675415,
+            "theta": 0.004312386270612478
+        },
+        "model.layers.25.self_attn.k_proj.weight": {
+            "dot": 7698.6923828125,
+            "L2": 1.1820459365844727,
+            "cosine": 0.9999094009399414,
+            "theta": 0.01346108689904213
+        },
+        "model.layers.25.self_attn.o_proj.weight": {
+            "dot": 8608.62890625,
+            "L2": 4.866223335266113,
+            "cosine": 0.9986278414726257,
+            "theta": 0.05239221826195717
+        },
+        "model.layers.25.self_attn.q_proj.weight": {
+            "dot": 15722.119140625,
+            "L2": 3.134127616882324,
+            "cosine": 0.999687910079956,
+            "theta": 0.024984242394566536
+        },
+        "model.layers.25.self_attn.v_proj.weight": {
+            "dot": 965.9122314453125,
+            "L2": 1.691655158996582,
+            "cosine": 0.9985218048095703,
+            "theta": 0.05437939986586571
+        }
+    },
+    "layers.26.": {
+        "model.layers.26.mlp.gate_proj.weight": {
+            "dot": 40949.79296875,
+            "L2": 9.182019233703613,
+            "cosine": 0.9989722967147827,
+            "theta": 0.04534047842025757
+        },
+        "model.layers.26.mlp.up_proj.weight": {
+            "dot": 35616.0234375,
+            "L2": 9.230698585510254,
+            "cosine": 0.9988062381744385,
+            "theta": 0.048867154866456985
+        },
+        "model.layers.26.self_attn.k_proj.weight": {
+            "dot": 7413.8603515625,
+            "L2": 1.2682253122329712,
+            "cosine": 0.9998915791511536,
+            "theta": 0.014725679531693459
+        },
+        "model.layers.26.self_attn.o_proj.weight": {
+            "dot": 8526.28515625,
+            "L2": 4.659495830535889,
+            "cosine": 0.9987295866012573,
+            "theta": 0.050411954522132874
+        },
+        "model.layers.26.self_attn.q_proj.weight": {
+            "dot": 15548.70703125,
+            "L2": 3.332035779953003,
+            "cosine": 0.9996432662010193,
+            "theta": 0.026711607351899147
+        },
+        "model.layers.26.self_attn.v_proj.weight": {
+            "dot": 948.8260498046875,
+            "L2": 1.8269058465957642,
+            "cosine": 0.9982455968856812,
+            "theta": 0.05924384295940399
+        },
+        "model.layers.26.input_layernorm.weight": {
+            "dot": 326.91461181640625,
+            "L2": 0.053521778434515,
+            "cosine": 0.9999956488609314,
+            "theta": 0.0029499635566025972
+        },
+        "model.layers.26.mlp.down_proj.weight": {
+            "dot": 35200.1015625,
+            "L2": 11.3505220413208,
+            "cosine": 0.998175323009491,
+            "theta": 0.060419075191020966
+        },
+        "model.layers.26.post_attention_layernorm.weight": {
+            "dot": 182.23434448242188,
+            "L2": 0.058178383857011795,
+            "cosine": 0.9999906420707703,
+            "theta": 0.004326186142861843
+        }
+    },
+    "layers.27.": {
+        "model.layers.27.input_layernorm.weight": {
+            "dot": 298.17535400390625,
+            "L2": 0.05492621660232544,
+            "cosine": 0.9999948740005493,
+            "theta": 0.0032018758356571198
+        },
+        "model.layers.27.mlp.down_proj.weight": {
+            "dot": 35079.3125,
+            "L2": 11.088003158569336,
+            "cosine": 0.9982527494430542,
+            "theta": 0.05912291258573532
+        },
+        "model.layers.27.mlp.gate_proj.weight": {
+            "dot": 39651.53125,
+            "L2": 9.18588638305664,
+            "cosine": 0.998937726020813,
+            "theta": 0.04609690234065056
+        },
+        "model.layers.27.mlp.up_proj.weight": {
+            "dot": 35189.89453125,
+            "L2": 9.243387222290039,
+            "cosine": 0.9987884163856506,
+            "theta": 0.04923065006732941
+        },
+        "model.layers.27.post_attention_layernorm.weight": {
+            "dot": 174.32041931152344,
+            "L2": 0.05939758941531181,
+            "cosine": 0.9999902248382568,
+            "theta": 0.004421578254550695
+        },
+        "model.layers.27.self_attn.k_proj.weight": {
+            "dot": 8127.09326171875,
+            "L2": 1.4114103317260742,
+            "cosine": 0.9998776316642761,
+            "theta": 0.015644222497940063
+        },
+        "model.layers.27.self_attn.o_proj.weight": {
+            "dot": 7923.75732421875,
+            "L2": 4.766299724578857,
+            "cosine": 0.9985703229904175,
+            "theta": 0.05347930267453194
+        },
+        "model.layers.27.self_attn.q_proj.weight": {
+            "dot": 16981.140625,
+            "L2": 3.7801530361175537,
+            "cosine": 0.9995795488357544,
+            "theta": 0.028999334201216698
+        },
+        "model.layers.27.self_attn.v_proj.weight": {
+            "dot": 650.2597045898438,
+            "L2": 1.7924057245254517,
+            "cosine": 0.9975383877754211,
+            "theta": 0.07018009573221207
+        }
+    },
+    "layers.28.": {
+        "model.layers.28.input_layernorm.weight": {
+            "dot": 381.6673278808594,
+            "L2": 0.056898314505815506,
+            "cosine": 0.9999959468841553,
+            "theta": 0.0028471453115344048
+        },
+        "model.layers.28.mlp.down_proj.weight": {
+            "dot": 34948.21484375,
+            "L2": 11.369616508483887,
+            "cosine": 0.9981563091278076,
+            "theta": 0.06073314696550369
+        },
+        "model.layers.28.mlp.gate_proj.weight": {
+            "dot": 39497.0,
+            "L2": 9.26412296295166,
+            "cosine": 0.998915433883667,
+            "theta": 0.04657815396785736
+        },
+        "model.layers.28.mlp.up_proj.weight": {
+            "dot": 35109.0546875,
+            "L2": 9.343345642089844,
+            "cosine": 0.9987592697143555,
+            "theta": 0.04981941357254982
+        },
+        "model.layers.28.post_attention_layernorm.weight": {
+            "dot": 176.18658447265625,
+            "L2": 0.06003737822175026,
+            "cosine": 0.9999904036521912,
+            "theta": 0.004380950704216957
+        },
+        "model.layers.28.self_attn.k_proj.weight": {
+            "dot": 7697.66552734375,
+            "L2": 1.4027045965194702,
+            "cosine": 0.9998723864555359,
+            "theta": 0.01597599685192108
+        },
+        "model.layers.28.self_attn.o_proj.weight": {
+            "dot": 8090.91796875,
+            "L2": 5.03949499130249,
+            "cosine": 0.9984351396560669,
+            "theta": 0.055951204150915146
+        },
+        "model.layers.28.self_attn.q_proj.weight": {
+            "dot": 15971.46875,
+            "L2": 3.7591142654418945,
+            "cosine": 0.9995582103729248,
+            "theta": 0.02972615696489811
+        },
+        "model.layers.28.self_attn.v_proj.weight": {
+            "dot": 692.942138671875,
+            "L2": 1.844336986541748,
+            "cosine": 0.9975544214248657,
+            "theta": 0.06995106488466263
+        }
+    },
+    "layers.29.": {
+        "model.layers.29.mlp.gate_proj.weight": {
+            "dot": 39347.49609375,
+            "L2": 9.325778007507324,
+            "cosine": 0.9988968372344971,
+            "theta": 0.04697585850954056
+        },
+        "model.layers.29.self_attn.k_proj.weight": {
+            "dot": 7858.9150390625,
+            "L2": 1.4158308506011963,
+            "cosine": 0.9998725652694702,
+            "theta": 0.015964800491929054
+        },
+        "model.layers.29.self_attn.o_proj.weight": {
+            "dot": 8114.4462890625,
+            "L2": 4.801421642303467,
+            "cosine": 0.9985830783843994,
+            "theta": 0.05324014276266098
+        },
+        "model.layers.29.self_attn.q_proj.weight": {
+            "dot": 15704.630859375,
+            "L2": 3.9515488147735596,
+            "cosine": 0.9995033740997314,
+            "theta": 0.03151720017194748
+        },
+        "model.layers.29.self_attn.v_proj.weight": {
+            "dot": 638.3262329101562,
+            "L2": 1.8566051721572876,
+            "cosine": 0.9973098635673523,
+            "theta": 0.07336679100990295
+        },
+        "model.layers.29.input_layernorm.weight": {
+            "dot": 394.4659423828125,
+            "L2": 0.05672554671764374,
+            "cosine": 0.9999958872795105,
+            "theta": 0.002868003910407424
+        },
+        "model.layers.29.mlp.down_proj.weight": {
+            "dot": 34674.984375,
+            "L2": 11.230112075805664,
+            "cosine": 0.9981869459152222,
+            "theta": 0.06022627651691437
+        },
+        "model.layers.29.mlp.up_proj.weight": {
+            "dot": 34953.0234375,
+            "L2": 9.385986328125,
+            "cosine": 0.9987424612045288,
+            "theta": 0.05015580356121063
+        },
+        "model.layers.29.post_attention_layernorm.weight": {
+            "dot": 181.55174255371094,
+            "L2": 0.059544291347265244,
+            "cosine": 0.9999908208847046,
+            "theta": 0.004284653812646866
+        }
+    },
+    "layers.30.": {
+        "model.layers.30.input_layernorm.weight": {
+            "dot": 295.39837646484375,
+            "L2": 0.05417183041572571,
+            "cosine": 0.9999951124191284,
+            "theta": 0.003126526717096567
+        },
+        "model.layers.30.mlp.down_proj.weight": {
+            "dot": 34548.27734375,
+            "L2": 11.049906730651855,
+            "cosine": 0.9982379674911499,
+            "theta": 0.05937255546450615
+        },
+        "model.layers.30.mlp.gate_proj.weight": {
+            "dot": 38771.3671875,
+            "L2": 9.363547325134277,
+            "cosine": 0.9988713264465332,
+            "theta": 0.04751601815223694
+        },
+        "model.layers.30.mlp.up_proj.weight": {
+            "dot": 34796.78515625,
+            "L2": 9.34952449798584,
+            "cosine": 0.9987465739250183,
+            "theta": 0.05007370561361313
+        },
+        "model.layers.30.post_attention_layernorm.weight": {
+            "dot": 179.97569274902344,
+            "L2": 0.057907793670892715,
+            "cosine": 0.9999909996986389,
+            "theta": 0.004242714960128069
+        },
+        "model.layers.30.self_attn.k_proj.weight": {
+            "dot": 7981.703125,
+            "L2": 1.4434322118759155,
+            "cosine": 0.999869704246521,
+            "theta": 0.01614302210509777
+        },
+        "model.layers.30.self_attn.o_proj.weight": {
+            "dot": 8092.21484375,
+            "L2": 4.879162788391113,
+            "cosine": 0.9985330700874329,
+            "theta": 0.054171741008758545
+        },
+        "model.layers.30.self_attn.q_proj.weight": {
+            "dot": 16417.794921875,
+            "L2": 3.93780255317688,
+            "cosine": 0.9995282888412476,
+            "theta": 0.030716387555003166
+        },
+        "model.layers.30.self_attn.v_proj.weight": {
+            "dot": 734.8026123046875,
+            "L2": 1.8252458572387695,
+            "cosine": 0.9977408647537231,
+            "theta": 0.06723073869943619
+        }
+    },
+    "layers.31.": {
+        "model.layers.31.input_layernorm.weight": {
+            "dot": 425.7674865722656,
+            "L2": 0.054679326713085175,
+            "cosine": 0.9999966025352478,
+            "theta": 0.0026067092549055815
+        },
+        "model.layers.31.mlp.down_proj.weight": {
+            "dot": 34624.1015625,
+            "L2": 10.942452430725098,
+            "cosine": 0.998275876045227,
+            "theta": 0.05873022601008415
+        },
+        "model.layers.31.mlp.gate_proj.weight": {
+            "dot": 37838.671875,
+            "L2": 9.42920207977295,
+            "cosine": 0.998827338218689,
+            "theta": 0.04843327775597572
+        },
+        "model.layers.31.mlp.up_proj.weight": {
+            "dot": 34702.5234375,
+            "L2": 9.368731498718262,
+            "cosine": 0.9987380504608154,
+            "theta": 0.05024370923638344
+        },
+        "model.layers.31.post_attention_layernorm.weight": {
+            "dot": 180.17996215820312,
+            "L2": 0.06162426248192787,
+            "cosine": 0.9999909400939941,
+            "theta": 0.004256740678101778
+        },
+        "model.layers.31.self_attn.k_proj.weight": {
+            "dot": 7788.05712890625,
+            "L2": 1.7413346767425537,
+            "cosine": 0.9998054504394531,
+            "theta": 0.019725915044546127
+        },
+        "model.layers.31.self_attn.o_proj.weight": {
+            "dot": 7524.556640625,
+            "L2": 5.158915996551514,
+            "cosine": 0.998236894607544,
+            "theta": 0.059390634298324585
+        },
+        "model.layers.31.self_attn.q_proj.weight": {
+            "dot": 17453.58203125,
+            "L2": 4.443758487701416,
+            "cosine": 0.9994348287582397,
+            "theta": 0.033622149378061295
+        },
+        "model.layers.31.self_attn.v_proj.weight": {
+            "dot": 526.3353881835938,
+            "L2": 1.8755154609680176,
+            "cosine": 0.9966739416122437,
+            "theta": 0.08158312737941742
+        }
+    },
+    "layers.32.": {
+        "model.layers.32.self_attn.k_proj.weight": {
+            "dot": 7050.6318359375,
+            "L2": 1.4125527143478394,
+            "cosine": 0.9998587369918823,
+            "theta": 0.016808707267045975
+        },
+        "model.layers.32.self_attn.o_proj.weight": {
+            "dot": 8207.109375,
+            "L2": 4.481664657592773,
+            "cosine": 0.9987792372703552,
+            "theta": 0.04941682517528534
+        },
+        "model.layers.32.self_attn.q_proj.weight": {
+            "dot": 14638.98046875,
+            "L2": 3.4929378032684326,
+            "cosine": 0.9995837807655334,
+            "theta": 0.02885301038622856
+        },
+        "model.layers.32.self_attn.v_proj.weight": {
+            "dot": 856.8013916015625,
+            "L2": 1.7932519912719727,
+            "cosine": 0.9981288313865662,
+            "theta": 0.06118419021368027
+        },
+        "model.layers.32.input_layernorm.weight": {
+            "dot": 284.1051025390625,
+            "L2": 0.05589110404253006,
+            "cosine": 0.9999949932098389,
+            "theta": 0.0031644257251173258
+        },
+        "model.layers.32.mlp.down_proj.weight": {
+            "dot": 34406.78125,
+            "L2": 11.305757522583008,
+            "cosine": 0.9981481432914734,
+            "theta": 0.060867536813020706
+        },
+        "model.layers.32.mlp.gate_proj.weight": {
+            "dot": 38154.20703125,
+            "L2": 9.493368148803711,
+            "cosine": 0.9988213181495667,
+            "theta": 0.04855746403336525
+        },
+        "model.layers.32.mlp.up_proj.weight": {
+            "dot": 34526.125,
+            "L2": 9.474295616149902,
+            "cosine": 0.998702883720398,
+            "theta": 0.05093911662697792
+        },
+        "model.layers.32.post_attention_layernorm.weight": {
+            "dot": 181.0338134765625,
+            "L2": 0.06051986664533615,
+            "cosine": 0.9999909400939941,
+            "theta": 0.004256740678101778
+        }
+    },
+    "layers.33.": {
+        "model.layers.33.input_layernorm.weight": {
+            "dot": 439.2694091796875,
+            "L2": 0.05357741937041283,
+            "cosine": 0.9999969005584717,
+            "theta": 0.00248975632712245
+        },
+        "model.layers.33.mlp.down_proj.weight": {
+            "dot": 34391.9609375,
+            "L2": 11.174723625183105,
+            "cosine": 0.9981899857521057,
+            "theta": 0.06017575040459633
+        },
+        "model.layers.33.mlp.gate_proj.weight": {
+            "dot": 194150.71875,
+            "L2": 9.543122291564941,
+            "cosine": 0.9997655749320984,
+            "theta": 0.021653370931744576
+        },
+        "model.layers.33.mlp.up_proj.weight": {
+            "dot": 183231.75,
+            "L2": 9.422172546386719,
+            "cosine": 0.9997580051422119,
+            "theta": 0.022000210359692574
+        },
+        "model.layers.33.post_attention_layernorm.weight": {
+            "dot": 183.72476196289062,
+            "L2": 0.06470256298780441,
+            "cosine": 0.9999910593032837,
+            "theta": 0.004228642676025629
+        },
+        "model.layers.33.self_attn.k_proj.weight": {
+            "dot": 7624.9375,
+            "L2": 1.6792739629745483,
+            "cosine": 0.9998152256011963,
+            "theta": 0.019223948940634727
+        },
+        "model.layers.33.self_attn.o_proj.weight": {
+            "dot": 7701.10888671875,
+            "L2": 4.947249889373779,
+            "cosine": 0.9984155297279358,
+            "theta": 0.056300777941942215
+        },
+        "model.layers.33.self_attn.q_proj.weight": {
+            "dot": 16893.326171875,
+            "L2": 4.421720504760742,
+            "cosine": 0.9994219541549683,
+            "theta": 0.034002989530563354
+        },
+        "model.layers.33.self_attn.v_proj.weight": {
+            "dot": 547.541015625,
+            "L2": 1.8272165060043335,
+            "cosine": 0.9969637393951416,
+            "theta": 0.07794611155986786
+        }
+    },
+    "layers.34.": {
+        "model.layers.34.input_layernorm.weight": {
+            "dot": 368.28021240234375,
+            "L2": 0.054274991154670715,
+            "cosine": 0.9999960064888,
+            "theta": 0.002826133044436574
+        },
+        "model.layers.34.mlp.down_proj.weight": {
+            "dot": 34669.87890625,
+            "L2": 11.125454902648926,
+            "cosine": 0.9982203245162964,
+            "theta": 0.05966914817690849
+        },
+        "model.layers.34.mlp.gate_proj.weight": {
+            "dot": 38054.2734375,
+            "L2": 9.522334098815918,
+            "cosine": 0.9988110065460205,
+            "theta": 0.04876943677663803
+        },
+        "model.layers.34.mlp.up_proj.weight": {
+            "dot": 34761.6796875,
+            "L2": 9.390888214111328,
+            "cosine": 0.9987342357635498,
+            "theta": 0.050319604575634
+        },
+        "model.layers.34.post_attention_layernorm.weight": {
+            "dot": 178.41921997070312,
+            "L2": 0.0643179640173912,
+            "cosine": 0.9999912977218628,
+            "theta": 0.00417187949642539
+        },
+        "model.layers.34.self_attn.k_proj.weight": {
+            "dot": 7812.84912109375,
+            "L2": 1.683920979499817,
+            "cosine": 0.999818742275238,
+            "theta": 0.019040124490857124
+        },
+        "model.layers.34.self_attn.o_proj.weight": {
+            "dot": 7817.66015625,
+            "L2": 4.720694541931152,
+            "cosine": 0.9985785484313965,
+            "theta": 0.05332519859075546
+        },
+        "model.layers.34.self_attn.q_proj.weight": {
+            "dot": 17523.89453125,
+            "L2": 4.338445663452148,
+            "cosine": 0.999463677406311,
+            "theta": 0.03275272622704506
+        },
+        "model.layers.34.self_attn.v_proj.weight": {
+            "dot": 660.517333984375,
+            "L2": 1.8716498613357544,
+            "cosine": 0.997357964515686,
+            "theta": 0.07270762324333191
+        }
+    },
+    "layers.35.": {
+        "model.layers.35.self_attn.k_proj.weight": {
+            "dot": 8079.373046875,
+            "L2": 1.692895531654358,
+            "cosine": 0.9998226761817932,
+            "theta": 0.018832368776202202
+        },
+        "model.layers.35.self_attn.q_proj.weight": {
+            "dot": 17257.38671875,
+            "L2": 4.3055100440979,
+            "cosine": 0.9994634389877319,
+            "theta": 0.032760005444288254
+        },
+        "model.layers.35.self_attn.v_proj.weight": {
+            "dot": 604.2495727539062,
+            "L2": 1.8864802122116089,
+            "cosine": 0.9970680475234985,
+            "theta": 0.07659485936164856
+        },
+        "model.layers.35.input_layernorm.weight": {
+            "dot": 436.7109375,
+            "L2": 0.0549023374915123,
+            "cosine": 0.999996542930603,
+            "theta": 0.0026294756680727005
+        },
+        "model.layers.35.mlp.down_proj.weight": {
+            "dot": 34671.5,
+            "L2": 11.217707633972168,
+            "cosine": 0.9981909394264221,
+            "theta": 0.060159891843795776
+        },
+        "model.layers.35.mlp.gate_proj.weight": {
+            "dot": 37882.203125,
+            "L2": 9.539877891540527,
+            "cosine": 0.9988011121749878,
+            "theta": 0.048971984535455704
+        },
+        "model.layers.35.mlp.up_proj.weight": {
+            "dot": 34375.0546875,
+            "L2": 9.425469398498535,
+            "cosine": 0.9987106919288635,
+            "theta": 0.05078553408384323
+        },
+        "model.layers.35.post_attention_layernorm.weight": {
+            "dot": 184.31686401367188,
+            "L2": 0.07152809947729111,
+            "cosine": 0.9999910593032837,
+            "theta": 0.004228642676025629
+        },
+        "model.layers.35.self_attn.o_proj.weight": {
+            "dot": 7927.830078125,
+            "L2": 4.978753089904785,
+            "cosine": 0.9984410405158997,
+            "theta": 0.055845584720373154
+        }
+    },
+    "layers.36.": {
+        "model.layers.36.input_layernorm.weight": {
+            "dot": 295.91571044921875,
+            "L2": 0.056988395750522614,
+            "cosine": 0.9999949932098389,
+            "theta": 0.0031644257251173258
+        },
+        "model.layers.36.mlp.down_proj.weight": {
+            "dot": 34532.78125,
+            "L2": 11.500633239746094,
+            "cosine": 0.9980911016464233,
+            "theta": 0.061798155307769775
+        },
+        "model.layers.36.mlp.gate_proj.weight": {
+            "dot": 38474.57421875,
+            "L2": 9.555870056152344,
+            "cosine": 0.9988157749176025,
+            "theta": 0.04867153242230415
+        },
+        "model.layers.36.mlp.up_proj.weight": {
+            "dot": 34212.13671875,
+            "L2": 9.530966758728027,
+            "cosine": 0.9986752867698669,
+            "theta": 0.05147826299071312
+        },
+        "model.layers.36.post_attention_layernorm.weight": {
+            "dot": 184.22647094726562,
+            "L2": 0.07434843480587006,
+            "cosine": 0.9999910593032837,
+            "theta": 0.004228642676025629
+        },
+        "model.layers.36.self_attn.k_proj.weight": {
+            "dot": 7954.822265625,
+            "L2": 1.3629103899002075,
+            "cosine": 0.9998834133148193,
+            "theta": 0.015270163305103779
+        },
+        "model.layers.36.self_attn.o_proj.weight": {
+            "dot": 8059.18896484375,
+            "L2": 4.605537414550781,
+            "cosine": 0.9986872673034668,
+            "theta": 0.05124490335583687
+        },
+        "model.layers.36.self_attn.q_proj.weight": {
+            "dot": 15980.0810546875,
+            "L2": 3.6036808490753174,
+            "cosine": 0.9995940923690796,
+            "theta": 0.028493335470557213
+        },
+        "model.layers.36.self_attn.v_proj.weight": {
+            "dot": 745.547119140625,
+            "L2": 1.7347158193588257,
+            "cosine": 0.997988224029541,
+            "theta": 0.06344211101531982
+        }
+    },
+    "layers.37.": {
+        "model.layers.37.input_layernorm.weight": {
+            "dot": 365.371337890625,
+            "L2": 0.053994979709386826,
+            "cosine": 0.9999959468841553,
+            "theta": 0.0028471453115344048
+        },
+        "model.layers.37.mlp.down_proj.weight": {
+            "dot": 34673.80078125,
+            "L2": 11.510394096374512,
+            "cosine": 0.9980955123901367,
+            "theta": 0.06172669306397438
+        },
+        "model.layers.37.mlp.gate_proj.weight": {
+            "dot": 38512.46484375,
+            "L2": 9.669888496398926,
+            "cosine": 0.9987884759902954,
+            "theta": 0.04922943562269211
+        },
+        "model.layers.37.mlp.up_proj.weight": {
+            "dot": 34252.92578125,
+            "L2": 9.638996124267578,
+            "cosine": 0.9986468553543091,
+            "theta": 0.0520278736948967
+        },
+        "model.layers.37.post_attention_layernorm.weight": {
+            "dot": 189.64840698242188,
+            "L2": 0.07334987074136734,
+            "cosine": 0.9999912977218628,
+            "theta": 0.00417187949642539
+        },
+        "model.layers.37.self_attn.k_proj.weight": {
+            "dot": 8592.1748046875,
+            "L2": 1.5054408311843872,
+            "cosine": 0.9998681545257568,
+            "theta": 0.01623874343931675
+        },
+        "model.layers.37.self_attn.o_proj.weight": {
+            "dot": 8124.650390625,
+            "L2": 5.129648208618164,
+            "cosine": 0.9983853101730347,
+            "theta": 0.05683527886867523
+        },
+        "model.layers.37.self_attn.q_proj.weight": {
+            "dot": 17112.95703125,
+            "L2": 4.070674896240234,
+            "cosine": 0.9995163083076477,
+            "theta": 0.031104041263461113
+        },
+        "model.layers.37.self_attn.v_proj.weight": {
+            "dot": 655.403076171875,
+            "L2": 1.8925491571426392,
+            "cosine": 0.9972795248031616,
+            "theta": 0.07377953082323074
+        }
+    },
+    "layers.38.": {
+        "model.layers.38.input_layernorm.weight": {
+            "dot": 360.6943664550781,
+            "L2": 0.05268023908138275,
+            "cosine": 0.9999963045120239,
+            "theta": 0.0027186358347535133
+        },
+        "model.layers.38.mlp.down_proj.weight": {
+            "dot": 34577.3125,
+            "L2": 11.274149894714355,
+            "cosine": 0.9981675744056702,
+            "theta": 0.06054726243019104
+        },
+        "model.layers.38.mlp.gate_proj.weight": {
+            "dot": 38938.859375,
+            "L2": 9.63443660736084,
+            "cosine": 0.9988104701042175,
+            "theta": 0.04878044128417969
+        },
+        "model.layers.38.mlp.up_proj.weight": {
+            "dot": 34108.3828125,
+            "L2": 9.57905101776123,
+            "cosine": 0.9986579418182373,
+            "theta": 0.051814254373311996
+        },
+        "model.layers.38.post_attention_layernorm.weight": {
+            "dot": 195.14158630371094,
+            "L2": 0.07087314128875732,
+            "cosine": 0.9999913573265076,
+            "theta": 0.004157567862421274
+        },
+        "model.layers.38.self_attn.k_proj.weight": {
+            "dot": 7799.712890625,
+            "L2": 1.4205325841903687,
+            "cosine": 0.9998707175254822,
+            "theta": 0.016080128028988838
+        },
+        "model.layers.38.self_attn.o_proj.weight": {
+            "dot": 8059.384765625,
+            "L2": 4.613424777984619,
+            "cosine": 0.9986824989318848,
+            "theta": 0.05133790895342827
+        },
+        "model.layers.38.self_attn.q_proj.weight": {
+            "dot": 15559.6875,
+            "L2": 3.854379177093506,
+            "cosine": 0.9995230436325073,
+            "theta": 0.030886704102158546
+        },
+        "model.layers.38.self_attn.v_proj.weight": {
+            "dot": 741.141357421875,
+            "L2": 1.783232569694519,
+            "cosine": 0.997861385345459,
+            "theta": 0.06541218608617783
+        }
+    },
+    "layers.39.": {
+        "model.layers.39.input_layernorm.weight": {
+            "dot": 360.88714599609375,
+            "L2": 0.05935847759246826,
+            "cosine": 0.9999956488609314,
+            "theta": 0.0029499635566025972
+        },
+        "model.layers.39.mlp.down_proj.weight": {
+            "dot": 34604.20703125,
+            "L2": 11.272233009338379,
+            "cosine": 0.9981696605682373,
+            "theta": 0.06051277369260788
+        },
+        "model.layers.39.mlp.gate_proj.weight": {
+            "dot": 39271.3125,
+            "L2": 9.694864273071289,
+            "cosine": 0.9988057613372803,
+            "theta": 0.048876915127038956
+        },
+        "model.layers.39.mlp.up_proj.weight": {
+            "dot": 34022.1796875,
+            "L2": 9.731468200683594,
+            "cosine": 0.998611569404602,
+            "theta": 0.052702028304338455
+        },
+        "model.layers.39.post_attention_layernorm.weight": {
+            "dot": 195.98056030273438,
+            "L2": 0.07787024229764938,
+            "cosine": 0.9999914169311523,
+            "theta": 0.004143206402659416
+        },
+        "model.layers.39.self_attn.k_proj.weight": {
+            "dot": 7954.095703125,
+            "L2": 1.374586582183838,
+            "cosine": 0.999881386756897,
+            "theta": 0.015402310527861118
+        },
+        "model.layers.39.self_attn.o_proj.weight": {
+            "dot": 8257.1982421875,
+            "L2": 4.789876937866211,
+            "cosine": 0.9986140131950378,
+            "theta": 0.05265561863780022
+        },
+        "model.layers.39.self_attn.q_proj.weight": {
+            "dot": 15122.662109375,
+            "L2": 3.573631763458252,
+            "cosine": 0.9995782375335693,
+            "theta": 0.02904452197253704
+        },
+        "model.layers.39.self_attn.v_proj.weight": {
+            "dot": 792.1033325195312,
+            "L2": 1.826438069343567,
+            "cosine": 0.9979016780853271,
+            "theta": 0.06479284167289734
+        }
+    },
+    "layers.40.": {
+        "model.layers.40.mlp.gate_proj.weight": {
+            "dot": 39660.34375,
+            "L2": 9.701876640319824,
+            "cosine": 0.9988157749176025,
+            "theta": 0.04867153242230415
+        },
+        "model.layers.40.mlp.up_proj.weight": {
+            "dot": 34093.7109375,
+            "L2": 9.762886047363281,
+            "cosine": 0.998605489730835,
+            "theta": 0.052817318588495255
+        },
+        "model.layers.40.self_attn.k_proj.weight": {
+            "dot": 6496.54541015625,
+            "L2": 1.3073859214782715,
+            "cosine": 0.9998685121536255,
+            "theta": 0.0162167027592659
+        },
+        "model.layers.40.self_attn.o_proj.weight": {
+            "dot": 8495.9345703125,
+            "L2": 4.329408168792725,
+            "cosine": 0.9988987445831299,
+            "theta": 0.046935223042964935
+        },
+        "model.layers.40.self_attn.q_proj.weight": {
+            "dot": 13895.30859375,
+            "L2": 3.2233407497406006,
+            "cosine": 0.9996263980865479,
+            "theta": 0.0273358803242445
+        },
+        "model.layers.40.self_attn.v_proj.weight": {
+            "dot": 959.0953369140625,
+            "L2": 1.744857907295227,
+            "cosine": 0.9984166622161865,
+            "theta": 0.056280650198459625
+        },
+        "model.layers.40.input_layernorm.weight": {
+            "dot": 344.5745849609375,
+            "L2": 0.04932749643921852,
+            "cosine": 0.9999967217445374,
+            "theta": 0.002560569206252694
+        },
+        "model.layers.40.mlp.down_proj.weight": {
+            "dot": 34610.23046875,
+            "L2": 11.497978210449219,
+            "cosine": 0.9980961084365845,
+            "theta": 0.06171702966094017
+        },
+        "model.layers.40.post_attention_layernorm.weight": {
+            "dot": 199.5271759033203,
+            "L2": 0.07983295619487762,
+            "cosine": 0.999991238117218,
+            "theta": 0.004186143167316914
+        }
+    },
+    "layers.41.": {
+        "model.layers.41.input_layernorm.weight": {
+            "dot": 333.7379150390625,
+            "L2": 0.05917704850435257,
+            "cosine": 0.9999949932098389,
+            "theta": 0.0031644257251173258
+        },
+        "model.layers.41.mlp.down_proj.weight": {
+            "dot": 34607.875,
+            "L2": 11.218606948852539,
+            "cosine": 0.9981869459152222,
+            "theta": 0.06022627651691437
+        },
+        "model.layers.41.mlp.gate_proj.weight": {
+            "dot": 39667.5390625,
+            "L2": 9.812138557434082,
+            "cosine": 0.9987888932228088,
+            "theta": 0.04922095686197281
+        },
+        "model.layers.41.mlp.up_proj.weight": {
+            "dot": 34110.875,
+            "L2": 9.900162696838379,
+            "cosine": 0.998566746711731,
+            "theta": 0.05354616418480873
+        },
+        "model.layers.41.post_attention_layernorm.weight": {
+            "dot": 206.8488006591797,
+            "L2": 0.07516708970069885,
+            "cosine": 0.9999917149543762,
+            "theta": 0.004070640541613102
+        },
+        "model.layers.41.self_attn.k_proj.weight": {
+            "dot": 8088.54833984375,
+            "L2": 1.3743388652801514,
+            "cosine": 0.9998832941055298,
+            "theta": 0.015277969650924206
+        },
+        "model.layers.41.self_attn.o_proj.weight": {
+            "dot": 8244.89453125,
+            "L2": 4.968109130859375,
+            "cosine": 0.9985066652297974,
+            "theta": 0.054657232016325
+        },
+        "model.layers.41.self_attn.q_proj.weight": {
+            "dot": 15085.033203125,
+            "L2": 3.433441638946533,
+            "cosine": 0.999609649181366,
+            "theta": 0.027941947802901268
+        },
+        "model.layers.41.self_attn.v_proj.weight": {
+            "dot": 819.7384033203125,
+            "L2": 2.0596120357513428,
+            "cosine": 0.9974232912063599,
+            "theta": 0.07180273532867432
+        }
+    },
+    "layers.42.": {
+        "model.layers.42.input_layernorm.weight": {
+            "dot": 233.4798126220703,
+            "L2": 0.057642702013254166,
+            "cosine": 0.9999936819076538,
+            "theta": 0.003554743016138673
+        },
+        "model.layers.42.mlp.down_proj.weight": {
+            "dot": 34506.03515625,
+            "L2": 11.212430953979492,
+            "cosine": 0.9981834888458252,
+            "theta": 0.060283683240413666
+        },
+        "model.layers.42.mlp.gate_proj.weight": {
+            "dot": 39907.2890625,
+            "L2": 9.783744812011719,
+            "cosine": 0.9988031387329102,
+            "theta": 0.048930563032627106
+        },
+        "model.layers.42.mlp.up_proj.weight": {
+            "dot": 34017.6171875,
+            "L2": 9.894527435302734,
+            "cosine": 0.9985644221305847,
+            "theta": 0.053589578717947006
+        },
+        "model.layers.42.post_attention_layernorm.weight": {
+            "dot": 212.75180053710938,
+            "L2": 0.06914009153842926,
+            "cosine": 0.9999918341636658,
+            "theta": 0.004041249398142099
+        },
+        "model.layers.42.self_attn.k_proj.weight": {
+            "dot": 6659.15625,
+            "L2": 1.0786391496658325,
+            "cosine": 0.9999127984046936,
+            "theta": 0.01320627611130476
+        },
+        "model.layers.42.self_attn.o_proj.weight": {
+            "dot": 8461.255859375,
+            "L2": 4.794025421142578,
+            "cosine": 0.9986448884010315,
+            "theta": 0.052065685391426086
+        },
+        "model.layers.42.self_attn.q_proj.weight": {
+            "dot": 12250.412109375,
+            "L2": 2.6872754096984863,
+            "cosine": 0.9997055530548096,
+            "theta": 0.024267731234431267
+        },
+        "model.layers.42.self_attn.v_proj.weight": {
+            "dot": 960.1986083984375,
+            "L2": 1.9162194728851318,
+            "cosine": 0.998094379901886,
+            "theta": 0.0617450512945652
+        }
+    },
+    "layers.43.": {
+        "model.layers.43.mlp.gate_proj.weight": {
+            "dot": 40178.28515625,
+            "L2": 9.752948760986328,
+            "cosine": 0.9988185167312622,
+            "theta": 0.048615142703056335
+        },
+        "model.layers.43.self_attn.k_proj.weight": {
+            "dot": 6640.900390625,
+            "L2": 1.0929442644119263,
+            "cosine": 0.9999101161956787,
+            "theta": 0.013407845050096512
+        },
+        "model.layers.43.self_attn.o_proj.weight": {
+            "dot": 8323.11328125,
+            "L2": 4.537716388702393,
+            "cosine": 0.9987655282020569,
+            "theta": 0.04969358071684837
+        },
+        "model.layers.43.self_attn.q_proj.weight": {
+            "dot": 12946.6943359375,
+            "L2": 2.846681833267212,
+            "cosine": 0.9996873140335083,
+            "theta": 0.02500808984041214
+        },
+        "model.layers.43.self_attn.v_proj.weight": {
+            "dot": 922.698486328125,
+            "L2": 1.9775168895721436,
+            "cosine": 0.9978882670402527,
+            "theta": 0.06499963998794556
+        },
+        "model.layers.43.input_layernorm.weight": {
+            "dot": 253.89840698242188,
+            "L2": 0.0550694465637207,
+            "cosine": 0.9999946355819702,
+            "theta": 0.0032754915300756693
+        },
+        "model.layers.43.mlp.down_proj.weight": {
+            "dot": 34501.72265625,
+            "L2": 11.453788757324219,
+            "cosine": 0.9981045126914978,
+            "theta": 0.06158062070608139
+        },
+        "model.layers.43.mlp.up_proj.weight": {
+            "dot": 34047.34375,
+            "L2": 9.86131477355957,
+            "cosine": 0.9985753297805786,
+            "theta": 0.053385552018880844
+        },
+        "model.layers.43.post_attention_layernorm.weight": {
+            "dot": 216.63172912597656,
+            "L2": 0.06883028149604797,
+            "cosine": 0.9999921321868896,
+            "theta": 0.003966818563640118
+        }
+    },
+    "layers.44.": {
+        "model.layers.44.input_layernorm.weight": {
+            "dot": 460.14422607421875,
+            "L2": 0.05563339591026306,
+            "cosine": 0.9999970197677612,
+            "theta": 0.002441406948491931
+        },
+        "model.layers.44.mlp.down_proj.weight": {
+            "dot": 34503.0546875,
+            "L2": 11.370494842529297,
+            "cosine": 0.9981321096420288,
+            "theta": 0.06113055348396301
+        },
+        "model.layers.44.mlp.gate_proj.weight": {
+            "dot": 40495.0703125,
+            "L2": 9.73395824432373,
+            "cosine": 0.9988324642181396,
+            "theta": 0.04832727834582329
+        },
+        "model.layers.44.mlp.up_proj.weight": {
+            "dot": 34103.9921875,
+            "L2": 9.85035228729248,
+            "cosine": 0.9985807538032532,
+            "theta": 0.05328380689024925
+        },
+        "model.layers.44.post_attention_layernorm.weight": {
+            "dot": 219.972900390625,
+            "L2": 0.07588876783847809,
+            "cosine": 0.9999922513961792,
+            "theta": 0.00393665162846446
+        },
+        "model.layers.44.self_attn.k_proj.weight": {
+            "dot": 7021.759765625,
+            "L2": 1.459470510482788,
+            "cosine": 0.9998483657836914,
+            "theta": 0.017414823174476624
+        },
+        "model.layers.44.self_attn.o_proj.weight": {
+            "dot": 7803.63671875,
+            "L2": 4.650940418243408,
+            "cosine": 0.9986168146133423,
+            "theta": 0.052602365612983704
+        },
+        "model.layers.44.self_attn.q_proj.weight": {
+            "dot": 14827.521484375,
+            "L2": 3.6043946743011475,
+            "cosine": 0.99956214427948,
+            "theta": 0.02959350124001503
+        },
+        "model.layers.44.self_attn.v_proj.weight": {
+            "dot": 852.8265380859375,
+            "L2": 1.963793158531189,
+            "cosine": 0.9977465867996216,
+            "theta": 0.06714551150798798
+        }
+    },
+    "layers.45.": {
+        "model.layers.45.input_layernorm.weight": {
+            "dot": 234.89234924316406,
+            "L2": 0.05042649060487747,
+            "cosine": 0.9999946355819702,
+            "theta": 0.0032754915300756693
+        },
+        "model.layers.45.mlp.down_proj.weight": {
+            "dot": 34495.859375,
+            "L2": 11.12987995147705,
+            "cosine": 0.9982096552848816,
+            "theta": 0.059847790747880936
+        },
+        "model.layers.45.mlp.gate_proj.weight": {
+            "dot": 40528.515625,
+            "L2": 9.677896499633789,
+            "cosine": 0.998846709728241,
+            "theta": 0.04803149029612541
+        },
+        "model.layers.45.mlp.up_proj.weight": {
+            "dot": 34136.21875,
+            "L2": 9.790290832519531,
+            "cosine": 0.9985993504524231,
+            "theta": 0.052933480590581894
+        },
+        "model.layers.45.post_attention_layernorm.weight": {
+            "dot": 227.67604064941406,
+            "L2": 0.07055698335170746,
+            "cosine": 0.9999927282333374,
+            "theta": 0.003813600866124034
+        },
+        "model.layers.45.self_attn.k_proj.weight": {
+            "dot": 6812.255859375,
+            "L2": 1.1133010387420654,
+            "cosine": 0.9999090433120728,
+            "theta": 0.01348762959241867
+        },
+        "model.layers.45.self_attn.o_proj.weight": {
+            "dot": 8211.7099609375,
+            "L2": 4.444851875305176,
+            "cosine": 0.9987993240356445,
+            "theta": 0.04900849610567093
+        },
+        "model.layers.45.self_attn.q_proj.weight": {
+            "dot": 12858.3720703125,
+            "L2": 2.6740610599517822,
+            "cosine": 0.9997222423553467,
+            "theta": 0.023569917306303978
+        },
+        "model.layers.45.self_attn.v_proj.weight": {
+            "dot": 973.380859375,
+            "L2": 1.925384521484375,
+            "cosine": 0.9981015920639038,
+            "theta": 0.0616280622780323
+        }
+    },
+    "layers.46.": {
+        "model.layers.46.self_attn.k_proj.weight": {
+            "dot": 3358.96240234375,
+            "L2": 0.5010794401168823,
+            "cosine": 0.9999626874923706,
+            "theta": 0.008638604544103146
+        },
+        "model.layers.46.self_attn.o_proj.weight": {
+            "dot": 8871.005859375,
+            "L2": 4.382168292999268,
+            "cosine": 0.9989194869995117,
+            "theta": 0.046491023153066635
+        },
+        "model.layers.46.self_attn.q_proj.weight": {
+            "dot": 7301.451171875,
+            "L2": 1.4778743982315063,
+            "cosine": 0.9998505115509033,
+            "theta": 0.01729116402566433
+        },
+        "model.layers.46.self_attn.v_proj.weight": {
+            "dot": 1376.0333251953125,
+            "L2": 1.7332273721694946,
+            "cosine": 0.9989103078842163,
+            "theta": 0.04668811336159706
+        },
+        "model.layers.46.input_layernorm.weight": {
+            "dot": 74.4151611328125,
+            "L2": 0.05058323219418526,
+            "cosine": 0.9999830722808838,
+            "theta": 0.005818550940603018
+        },
+        "model.layers.46.mlp.down_proj.weight": {
+            "dot": 34476.3203125,
+            "L2": 10.98029613494873,
+            "cosine": 0.9982562065124512,
+            "theta": 0.05906438082456589
+        },
+        "model.layers.46.mlp.gate_proj.weight": {
+            "dot": 40560.9453125,
+            "L2": 9.692851066589355,
+            "cosine": 0.9988440275192261,
+            "theta": 0.04808732494711876
+        },
+        "model.layers.46.mlp.up_proj.weight": {
+            "dot": 34137.453125,
+            "L2": 9.820512771606445,
+            "cosine": 0.9985905885696411,
+            "theta": 0.05309882387518883
+        },
+        "model.layers.46.post_attention_layernorm.weight": {
+            "dot": 234.91717529296875,
+            "L2": 0.06864295154809952,
+            "cosine": 0.9999926686286926,
+            "theta": 0.0038291984237730503
+        }
+    },
+    "layers.47.": {
+        "model.layers.47.input_layernorm.weight": {
+            "dot": 283.88055419921875,
+            "L2": 0.04891178756952286,
+            "cosine": 0.9999959468841553,
+            "theta": 0.0028471453115344048
+        },
+        "model.layers.47.mlp.down_proj.weight": {
+            "dot": 34528.73828125,
+            "L2": 11.074700355529785,
+            "cosine": 0.998228907585144,
+            "theta": 0.05952504277229309
+        },
+        "model.layers.47.mlp.gate_proj.weight": {
+            "dot": 40635.0078125,
+            "L2": 9.671753883361816,
+            "cosine": 0.9988512396812439,
+            "theta": 0.047937050461769104
+        },
+        "model.layers.47.mlp.up_proj.weight": {
+            "dot": 34201.7578125,
+            "L2": 9.8080472946167,
+            "cosine": 0.9985968470573425,
+            "theta": 0.05298077315092087
+        },
+        "model.layers.47.post_attention_layernorm.weight": {
+            "dot": 238.1178436279297,
+            "L2": 0.07055135816335678,
+            "cosine": 0.999992847442627,
+            "theta": 0.0037822125013917685
+        },
+        "model.layers.47.self_attn.k_proj.weight": {
+            "dot": 6113.98193359375,
+            "L2": 0.8717103600502014,
+            "cosine": 0.9999378323554993,
+            "theta": 0.011150631122291088
+        },
+        "model.layers.47.self_attn.o_proj.weight": {
+            "dot": 8382.9736328125,
+            "L2": 4.220274925231934,
+            "cosine": 0.9989392757415771,
+            "theta": 0.04606325551867485
+        },
+        "model.layers.47.self_attn.q_proj.weight": {
+            "dot": 11507.501953125,
+            "L2": 2.2844860553741455,
+            "cosine": 0.999773383140564,
+            "theta": 0.02128968946635723
+        },
+        "model.layers.47.self_attn.v_proj.weight": {
+            "dot": 1014.6157836914062,
+            "L2": 1.745934247970581,
+            "cosine": 0.9985012412071228,
+            "theta": 0.05475642904639244
+        }
+    },
+    "layers.48.": {
+        "model.layers.48.input_layernorm.weight": {
+            "dot": 285.95452880859375,
+            "L2": 0.05293150246143341,
+            "cosine": 0.9999951124191284,
+            "theta": 0.003126526717096567
+        },
+        "model.layers.48.mlp.down_proj.weight": {
+            "dot": 34539.0625,
+            "L2": 11.264510154724121,
+            "cosine": 0.9981684684753418,
+            "theta": 0.06053248420357704
+        },
+        "model.layers.48.mlp.gate_proj.weight": {
+            "dot": 40831.28125,
+            "L2": 9.633265495300293,
+            "cosine": 0.9988658428192139,
+            "theta": 0.04763132706284523
+        },
+        "model.layers.48.mlp.up_proj.weight": {
+            "dot": 34257.7421875,
+            "L2": 9.757397651672363,
+            "cosine": 0.9986134767532349,
+            "theta": 0.05266581103205681
+        },
+        "model.layers.48.post_attention_layernorm.weight": {
+            "dot": 241.56005859375,
+            "L2": 0.07183990627527237,
+            "cosine": 0.9999930262565613,
+            "theta": 0.003734635654836893
+        },
+        "model.layers.48.self_attn.k_proj.weight": {
+            "dot": 6508.98681640625,
+            "L2": 0.8764499425888062,
+            "cosine": 0.9999409317970276,
+            "theta": 0.010869110003113747
+        },
+        "model.layers.48.self_attn.o_proj.weight": {
+            "dot": 8401.392578125,
+            "L2": 4.335169315338135,
+            "cosine": 0.9988833665847778,
+            "theta": 0.04726185277104378
+        },
+        "model.layers.48.self_attn.q_proj.weight": {
+            "dot": 12134.73046875,
+            "L2": 2.3348941802978516,
+            "cosine": 0.9997754693031311,
+            "theta": 0.021191464737057686
+        },
+        "model.layers.48.self_attn.v_proj.weight": {
+            "dot": 1073.9215087890625,
+            "L2": 1.7491025924682617,
+            "cosine": 0.998578667640686,
+            "theta": 0.053322963416576385
+        }
+    },
+    "layers.49.": {
+        "model.layers.49.self_attn.k_proj.weight": {
+            "dot": 6240.4599609375,
+            "L2": 0.9764795899391174,
+            "cosine": 0.9999236464500427,
+            "theta": 0.012357549741864204
+        },
+        "model.layers.49.self_attn.q_proj.weight": {
+            "dot": 11334.224609375,
+            "L2": 2.6690385341644287,
+            "cosine": 0.9996858835220337,
+            "theta": 0.025065232068300247
+        },
+        "model.layers.49.self_attn.v_proj.weight": {
+            "dot": 964.8121948242188,
+            "L2": 1.8507932424545288,
+            "cosine": 0.9982298612594604,
+            "theta": 0.05950901284813881
+        },
+        "model.layers.49.input_layernorm.weight": {
+            "dot": 302.53277587890625,
+            "L2": 0.051304806023836136,
+            "cosine": 0.999995768070221,
+            "theta": 0.0029092722106724977
+        },
+        "model.layers.49.mlp.down_proj.weight": {
+            "dot": 34507.1953125,
+            "L2": 10.832900047302246,
+            "cosine": 0.9983041286468506,
+            "theta": 0.058246903121471405
+        },
+        "model.layers.49.mlp.gate_proj.weight": {
+            "dot": 40858.55859375,
+            "L2": 9.579000473022461,
+            "cosine": 0.9988791942596436,
+            "theta": 0.04735008254647255
+        },
+        "model.layers.49.mlp.up_proj.weight": {
+            "dot": 34284.8671875,
+            "L2": 9.710615158081055,
+            "cosine": 0.9986278414726257,
+            "theta": 0.05239221826195717
+        },
+        "model.layers.49.post_attention_layernorm.weight": {
+            "dot": 248.7794189453125,
+            "L2": 0.06785190850496292,
+            "cosine": 0.9999933242797852,
+            "theta": 0.0036539642605930567
+        },
+        "model.layers.49.self_attn.o_proj.weight": {
+            "dot": 8174.232421875,
+            "L2": 4.2761616706848145,
+            "cosine": 0.9988834857940674,
+            "theta": 0.04725933074951172
+        }
+    },
+    "layers.50.": {
+        "model.layers.50.input_layernorm.weight": {
+            "dot": 200.2578582763672,
+            "L2": 0.05941653624176979,
+            "cosine": 0.9999921321868896,
+            "theta": 0.003966818563640118
+        },
+        "model.layers.50.mlp.down_proj.weight": {
+            "dot": 34506.9296875,
+            "L2": 10.530461311340332,
+            "cosine": 0.998397171497345,
+            "theta": 0.0566260889172554
+        },
+        "model.layers.50.mlp.gate_proj.weight": {
+            "dot": 40905.046875,
+            "L2": 9.576884269714355,
+            "cosine": 0.9988809823989868,
+            "theta": 0.04731228947639465
+        },
+        "model.layers.50.mlp.up_proj.weight": {
+            "dot": 34304.4375,
+            "L2": 9.712900161743164,
+            "cosine": 0.9986279010772705,
+            "theta": 0.05239108204841614
+        },
+        "model.layers.50.post_attention_layernorm.weight": {
+            "dot": 255.57431030273438,
+            "L2": 0.06732144206762314,
+            "cosine": 0.9999933838844299,
+            "theta": 0.0036376153584569693
+        },
+        "model.layers.50.self_attn.k_proj.weight": {
+            "dot": 5019.138671875,
+            "L2": 0.7258107662200928,
+            "cosine": 0.9999475479125977,
+            "theta": 0.010242318734526634
+        },
+        "model.layers.50.self_attn.o_proj.weight": {
+            "dot": 8530.962890625,
+            "L2": 4.4244914054870605,
+            "cosine": 0.9988546371459961,
+            "theta": 0.0478660948574543
+        },
+        "model.layers.50.self_attn.q_proj.weight": {
+            "dot": 9880.73046875,
+            "L2": 2.033381700515747,
+            "cosine": 0.9997908473014832,
+            "theta": 0.020452871918678284
+        },
+        "model.layers.50.self_attn.v_proj.weight": {
+            "dot": 1175.773681640625,
+            "L2": 1.8230024576187134,
+            "cosine": 0.9985902309417725,
+            "theta": 0.053105562925338745
+        }
+    },
+    "layers.51.": {
+        "model.layers.51.input_layernorm.weight": {
+            "dot": 254.94766235351562,
+            "L2": 0.04906196892261505,
+            "cosine": 0.9999954104423523,
+            "theta": 0.0030297066550701857
+        },
+        "model.layers.51.mlp.down_proj.weight": {
+            "dot": 34574.34375,
+            "L2": 10.805261611938477,
+            "cosine": 0.9983160495758057,
+            "theta": 0.0580417662858963
+        },
+        "model.layers.51.mlp.gate_proj.weight": {
+            "dot": 40941.828125,
+            "L2": 9.514567375183105,
+            "cosine": 0.9988964796066284,
+            "theta": 0.046983473002910614
+        },
+        "model.layers.51.mlp.up_proj.weight": {
+            "dot": 34386.1953125,
+            "L2": 9.641376495361328,
+            "cosine": 0.998651385307312,
+            "theta": 0.05194069445133209
+        },
+        "model.layers.51.post_attention_layernorm.weight": {
+            "dot": 258.99224853515625,
+            "L2": 0.06979863345623016,
+            "cosine": 0.9999934434890747,
+            "theta": 0.0036211926490068436
+        },
+        "model.layers.51.self_attn.k_proj.weight": {
+            "dot": 6144.61572265625,
+            "L2": 0.9149945974349976,
+            "cosine": 0.9999318718910217,
+            "theta": 0.011672950349748135
+        },
+        "model.layers.51.self_attn.o_proj.weight": {
+            "dot": 8358.83984375,
+            "L2": 4.2980546951293945,
+            "cosine": 0.9988968372344971,
+            "theta": 0.04697585850954056
+        },
+        "model.layers.51.self_attn.q_proj.weight": {
+            "dot": 11764.3984375,
+            "L2": 2.3590033054351807,
+            "cosine": 0.9997636675834656,
+            "theta": 0.021741285920143127
+        },
+        "model.layers.51.self_attn.v_proj.weight": {
+            "dot": 1119.13134765625,
+            "L2": 1.7710468769073486,
+            "cosine": 0.9986017346382141,
+            "theta": 0.052888400852680206
+        }
+    },
+    "layers.52.": {
+        "model.layers.52.input_layernorm.weight": {
+            "dot": 474.3509521484375,
+            "L2": 0.04305122420191765,
+            "cosine": 0.9999980926513672,
+            "theta": 0.0019531252328306437
+        },
+        "model.layers.52.mlp.down_proj.weight": {
+            "dot": 34571.90234375,
+            "L2": 11.024918556213379,
+            "cosine": 0.998246967792511,
+            "theta": 0.059220682829618454
+        },
+        "model.layers.52.mlp.gate_proj.weight": {
+            "dot": 41158.9453125,
+            "L2": 9.482756614685059,
+            "cosine": 0.9989096522331238,
+            "theta": 0.04670216143131256
+        },
+        "model.layers.52.mlp.up_proj.weight": {
+            "dot": 34392.2890625,
+            "L2": 9.611540794372559,
+            "cosine": 0.9986597895622253,
+            "theta": 0.05177856609225273
+        },
+        "model.layers.52.post_attention_layernorm.weight": {
+            "dot": 263.7198486328125,
+            "L2": 0.07325330376625061,
+            "cosine": 0.9999937415122986,
+            "theta": 0.003537935670465231
+        },
+        "model.layers.52.self_attn.k_proj.weight": {
+            "dot": 6798.8173828125,
+            "L2": 1.3021233081817627,
+            "cosine": 0.9998753666877747,
+            "theta": 0.01578834466636181
+        },
+        "model.layers.52.self_attn.o_proj.weight": {
+            "dot": 7676.72802734375,
+            "L2": 4.345809459686279,
+            "cosine": 0.9987720847129822,
+            "theta": 0.04956141114234924
+        },
+        "model.layers.52.self_attn.q_proj.weight": {
+            "dot": 14260.384765625,
+            "L2": 3.1042768955230713,
+            "cosine": 0.9996623992919922,
+            "theta": 0.025985369458794594
+        },
+        "model.layers.52.self_attn.v_proj.weight": {
+            "dot": 845.5902099609375,
+            "L2": 1.7282708883285522,
+            "cosine": 0.9982385039329529,
+            "theta": 0.05936351418495178
+        }
+    },
+    "layers.53.": {
+        "model.layers.53.input_layernorm.weight": {
+            "dot": 325.50653076171875,
+            "L2": 0.049288492649793625,
+            "cosine": 0.9999964237213135,
+            "theta": 0.002674427116289735
+        },
+        "model.layers.53.mlp.down_proj.weight": {
+            "dot": 34559.734375,
+            "L2": 10.452874183654785,
+            "cosine": 0.9984232187271118,
+            "theta": 0.0561639703810215
+        },
+        "model.layers.53.mlp.gate_proj.weight": {
+            "dot": 41157.74609375,
+            "L2": 9.444927215576172,
+            "cosine": 0.9989182949066162,
+            "theta": 0.04651666805148125
+        },
+        "model.layers.53.mlp.up_proj.weight": {
+            "dot": 34411.9453125,
+            "L2": 9.577306747436523,
+            "cosine": 0.9986701011657715,
+            "theta": 0.05157894641160965
+        },
+        "model.layers.53.post_attention_layernorm.weight": {
+            "dot": 271.16204833984375,
+            "L2": 0.0673995092511177,
+            "cosine": 0.9999939203262329,
+            "theta": 0.003487027483060956
+        },
+        "model.layers.53.self_attn.k_proj.weight": {
+            "dot": 6303.24609375,
+            "L2": 0.8679138422012329,
+            "cosine": 0.9999403357505798,
+            "theta": 0.010923812165856361
+        },
+        "model.layers.53.self_attn.o_proj.weight": {
+            "dot": 8264.8017578125,
+            "L2": 4.481441020965576,
+            "cosine": 0.9987872838973999,
+            "theta": 0.04925365373492241
+        },
+        "model.layers.53.self_attn.q_proj.weight": {
+            "dot": 11690.3154296875,
+            "L2": 2.5067148208618164,
+            "cosine": 0.9997313618659973,
+            "theta": 0.023179741576313972
+        },
+        "model.layers.53.self_attn.v_proj.weight": {
+            "dot": 1017.4471435546875,
+            "L2": 1.9416112899780273,
+            "cosine": 0.9981527924537659,
+            "theta": 0.06079106032848358
+        }
+    },
+    "layers.54.": {
+        "model.layers.54.mlp.gate_proj.weight": {
+            "dot": 40890.921875,
+            "L2": 9.429433822631836,
+            "cosine": 0.9989147186279297,
+            "theta": 0.04659351333975792
+        },
+        "model.layers.54.mlp.up_proj.weight": {
+            "dot": 34579.3671875,
+            "L2": 9.549128532409668,
+            "cosine": 0.9986843466758728,
+            "theta": 0.05130188912153244
+        },
+        "model.layers.54.self_attn.k_proj.weight": {
+            "dot": 4680.033203125,
+            "L2": 0.7512503266334534,
+            "cosine": 0.9999397397041321,
+            "theta": 0.010978242382407188
+        },
+        "model.layers.54.self_attn.o_proj.weight": {
+            "dot": 8157.732421875,
+            "L2": 4.195254802703857,
+            "cosine": 0.9989230632781982,
+            "theta": 0.046414006501436234
+        },
+        "model.layers.54.self_attn.q_proj.weight": {
+            "dot": 9566.22265625,
+            "L2": 2.162184476852417,
+            "cosine": 0.999755859375,
+            "theta": 0.02209753543138504
+        },
+        "model.layers.54.self_attn.v_proj.weight": {
+            "dot": 1058.918701171875,
+            "L2": 1.799200415611267,
+            "cosine": 0.9984751343727112,
+            "theta": 0.05523138865828514
+        },
+        "model.layers.54.input_layernorm.weight": {
+            "dot": 196.15988159179688,
+            "L2": 0.04787401854991913,
+            "cosine": 0.9999942183494568,
+            "theta": 0.0034004871267825365
+        },
+        "model.layers.54.mlp.down_proj.weight": {
+            "dot": 34696.48828125,
+            "L2": 10.13149356842041,
+            "cosine": 0.9985241889953613,
+            "theta": 0.054335515946149826
+        },
+        "model.layers.54.post_attention_layernorm.weight": {
+            "dot": 276.0563659667969,
+            "L2": 0.06789921969175339,
+            "cosine": 0.9999938011169434,
+            "theta": 0.0035210479982197285
+        }
+    },
+    "layers.55.": {
+        "model.layers.55.input_layernorm.weight": {
+            "dot": 197.47412109375,
+            "L2": 0.04430590197443962,
+            "cosine": 0.9999949932098389,
+            "theta": 0.0031644257251173258
+        },
+        "model.layers.55.mlp.down_proj.weight": {
+            "dot": 34721.42578125,
+            "L2": 10.232537269592285,
+            "cosine": 0.9984956979751587,
+            "theta": 0.05485761910676956
+        },
+        "model.layers.55.mlp.gate_proj.weight": {
+            "dot": 41065.1328125,
+            "L2": 9.374014854431152,
+            "cosine": 0.9989319443702698,
+            "theta": 0.046222198754549026
+        },
+        "model.layers.55.mlp.up_proj.weight": {
+            "dot": 34615.90625,
+            "L2": 9.491342544555664,
+            "cosine": 0.9987014532089233,
+            "theta": 0.05096720531582832
+        },
+        "model.layers.55.post_attention_layernorm.weight": {
+            "dot": 280.9588623046875,
+            "L2": 0.06503999978303909,
+            "cosine": 0.9999940395355225,
+            "theta": 0.0034526714589446783
+        },
+        "model.layers.55.self_attn.k_proj.weight": {
+            "dot": 5322.09521484375,
+            "L2": 0.8926497101783752,
+            "cosine": 0.9999253153800964,
+            "theta": 0.0122217470780015
+        },
+        "model.layers.55.self_attn.o_proj.weight": {
+            "dot": 8098.44091796875,
+            "L2": 4.049525260925293,
+            "cosine": 0.9989892244338989,
+            "theta": 0.04496545344591141
+        },
+        "model.layers.55.self_attn.q_proj.weight": {
+            "dot": 10562.380859375,
+            "L2": 2.307225465774536,
+            "cosine": 0.9997481107711792,
+            "theta": 0.02244548127055168
+        },
+        "model.layers.55.self_attn.v_proj.weight": {
+            "dot": 1055.4736328125,
+            "L2": 1.6209303140640259,
+            "cosine": 0.9987578392028809,
+            "theta": 0.049848128110170364
+        }
+    },
+    "layers.56.": {
+        "model.layers.56.input_layernorm.weight": {
+            "dot": 502.6227111816406,
+            "L2": 0.042466435581445694,
+            "cosine": 0.9999982118606567,
+            "theta": 0.0018911053193733096
+        },
+        "model.layers.56.mlp.down_proj.weight": {
+            "dot": 34638.9140625,
+            "L2": 10.157742500305176,
+            "cosine": 0.9985140562057495,
+            "theta": 0.05452177673578262
+        },
+        "model.layers.56.mlp.gate_proj.weight": {
+            "dot": 41403.515625,
+            "L2": 9.327242851257324,
+            "cosine": 0.9989511966705322,
+            "theta": 0.04580364003777504
+        },
+        "model.layers.56.mlp.up_proj.weight": {
+            "dot": 34525.87109375,
+            "L2": 9.45083236694336,
+            "cosine": 0.9987090826034546,
+            "theta": 0.050817228853702545
+        },
+        "model.layers.56.post_attention_layernorm.weight": {
+            "dot": 286.2971496582031,
+            "L2": 0.06927382946014404,
+            "cosine": 0.9999940991401672,
+            "theta": 0.003435364691540599
+        },
+        "model.layers.56.self_attn.k_proj.weight": {
+            "dot": 6173.81591796875,
+            "L2": 1.3050457239151,
+            "cosine": 0.9998621344566345,
+            "theta": 0.01660534180700779
+        },
+        "model.layers.56.self_attn.o_proj.weight": {
+            "dot": 8120.7822265625,
+            "L2": 4.743319034576416,
+            "cosine": 0.9986175894737244,
+            "theta": 0.05258762463927269
+        },
+        "model.layers.56.self_attn.q_proj.weight": {
+            "dot": 13483.2978515625,
+            "L2": 3.1719601154327393,
+            "cosine": 0.9996272325515747,
+            "theta": 0.02730533294379711
+        },
+        "model.layers.56.self_attn.v_proj.weight": {
+            "dot": 987.7518920898438,
+            "L2": 1.7654286623001099,
+            "cosine": 0.998426079750061,
+            "theta": 0.05611298233270645
+        }
+    },
+    "layers.57.": {
+        "model.layers.57.mlp.gate_proj.weight": {
+            "dot": 41463.78125,
+            "L2": 9.28763484954834,
+            "cosine": 0.9989616870880127,
+            "theta": 0.04557395353913307
+        },
+        "model.layers.57.self_attn.k_proj.weight": {
+            "dot": 6310.7880859375,
+            "L2": 1.00729501247406,
+            "cosine": 0.9999196529388428,
+            "theta": 0.01267660316079855
+        },
+        "model.layers.57.self_attn.o_proj.weight": {
+            "dot": 8430.140625,
+            "L2": 4.547075271606445,
+            "cosine": 0.9987760782241821,
+            "theta": 0.04948073625564575
+        },
+        "model.layers.57.self_attn.q_proj.weight": {
+            "dot": 12121.8759765625,
+            "L2": 2.6219215393066406,
+            "cosine": 0.9997166991233826,
+            "theta": 0.023803960531949997
+        },
+        "model.layers.57.self_attn.v_proj.weight": {
+            "dot": 1187.893798828125,
+            "L2": 1.7653160095214844,
+            "cosine": 0.9986913204193115,
+            "theta": 0.05116571485996246
+        },
+        "model.layers.57.input_layernorm.weight": {
+            "dot": 308.69012451171875,
+            "L2": 0.05720527097582817,
+            "cosine": 0.9999954700469971,
+            "theta": 0.003009968902915716
+        },
+        "model.layers.57.mlp.down_proj.weight": {
+            "dot": 34626.1015625,
+            "L2": 10.055925369262695,
+            "cosine": 0.9985432028770447,
+            "theta": 0.053984276950359344
+        },
+        "model.layers.57.mlp.up_proj.weight": {
+            "dot": 34549.2421875,
+            "L2": 9.408761978149414,
+            "cosine": 0.9987214803695679,
+            "theta": 0.05057256668806076
+        },
+        "model.layers.57.post_attention_layernorm.weight": {
+            "dot": 293.89581298828125,
+            "L2": 0.06660018116235733,
+            "cosine": 0.9999942779541016,
+            "theta": 0.003382913302630186
+        }
+    },
+    "layers.58.": {
+        "model.layers.58.input_layernorm.weight": {
+            "dot": 230.9625244140625,
+            "L2": 0.049466684460639954,
+            "cosine": 0.9999949336051941,
+            "theta": 0.003183205844834447
+        },
+        "model.layers.58.mlp.down_proj.weight": {
+            "dot": 34815.6875,
+            "L2": 9.966739654541016,
+            "cosine": 0.9985766410827637,
+            "theta": 0.05336097255349159
+        },
+        "model.layers.58.mlp.gate_proj.weight": {
+            "dot": 41134.546875,
+            "L2": 9.24502182006836,
+            "cosine": 0.9989628195762634,
+            "theta": 0.04554909095168114
+        },
+        "model.layers.58.mlp.up_proj.weight": {
+            "dot": 34782.5078125,
+            "L2": 9.35692024230957,
+            "cosine": 0.9987438917160034,
+            "theta": 0.050127264112234116
+        },
+        "model.layers.58.post_attention_layernorm.weight": {
+            "dot": 299.1336975097656,
+            "L2": 0.06316251307725906,
+            "cosine": 0.9999943375587463,
+            "theta": 0.0033652479760348797
+        },
+        "model.layers.58.self_attn.k_proj.weight": {
+            "dot": 4557.14794921875,
+            "L2": 0.7721867561340332,
+            "cosine": 0.9999345541000366,
+            "theta": 0.01144085731357336
+        },
+        "model.layers.58.self_attn.o_proj.weight": {
+            "dot": 8522.65234375,
+            "L2": 4.070886611938477,
+            "cosine": 0.9990292191505432,
+            "theta": 0.044066719710826874
+        },
+        "model.layers.58.self_attn.q_proj.weight": {
+            "dot": 10144.5947265625,
+            "L2": 2.1163618564605713,
+            "cosine": 0.999779462814331,
+            "theta": 0.021002156659960747
+        },
+        "model.layers.58.self_attn.v_proj.weight": {
+            "dot": 1295.9853515625,
+            "L2": 1.667549729347229,
+            "cosine": 0.9989292025566101,
+            "theta": 0.04628150165081024
+        }
+    },
+    "layers.59.": {
+        "model.layers.59.input_layernorm.weight": {
+            "dot": 197.69752502441406,
+            "L2": 0.04904783517122269,
+            "cosine": 0.9999940395355225,
+            "theta": 0.0034526714589446783
+        },
+        "model.layers.59.mlp.down_proj.weight": {
+            "dot": 34605.5234375,
+            "L2": 9.783223152160645,
+            "cosine": 0.9986200928688049,
+            "theta": 0.05253997817635536
+        },
+        "model.layers.59.mlp.gate_proj.weight": {
+            "dot": 41667.38671875,
+            "L2": 9.18033218383789,
+            "cosine": 0.9989904165267944,
+            "theta": 0.04493892192840576
+        },
+        "model.layers.59.mlp.up_proj.weight": {
+            "dot": 34606.640625,
+            "L2": 9.297795295715332,
+            "cosine": 0.9987534880638123,
+            "theta": 0.04993537813425064
+        },
+        "model.layers.59.post_attention_layernorm.weight": {
+            "dot": 307.33355712890625,
+            "L2": 0.06376558542251587,
+            "cosine": 0.9999945759773254,
+            "theta": 0.0032936385832726955
+        },
+        "model.layers.59.self_attn.k_proj.weight": {
+            "dot": 5078.9140625,
+            "L2": 0.808867871761322,
+            "cosine": 0.9999356269836426,
+            "theta": 0.01134669128805399
+        },
+        "model.layers.59.self_attn.o_proj.weight": {
+            "dot": 8293.998046875,
+            "L2": 4.050682067871094,
+            "cosine": 0.9990123510360718,
+            "theta": 0.04444798082113266
+        },
+        "model.layers.59.self_attn.q_proj.weight": {
+            "dot": 9956.794921875,
+            "L2": 1.997843861579895,
+            "cosine": 0.9997997283935547,
+            "theta": 0.02001390978693962
+        },
+        "model.layers.59.self_attn.v_proj.weight": {
+            "dot": 1219.580810546875,
+            "L2": 1.608242154121399,
+            "cosine": 0.9989414215087891,
+            "theta": 0.0460166335105896
+        }
+    },
+    "layers.60.": {
+        "model.layers.60.self_attn.k_proj.weight": {
+            "dot": 6189.3427734375,
+            "L2": 1.129115104675293,
+            "cosine": 0.9998971223831177,
+            "theta": 0.014344293624162674
+        },
+        "model.layers.60.self_attn.o_proj.weight": {
+            "dot": 8348.4931640625,
+            "L2": 4.330185413360596,
+            "cosine": 0.9988789558410645,
+            "theta": 0.04735512286424637
+        },
+        "model.layers.60.self_attn.q_proj.weight": {
+            "dot": 13236.38671875,
+            "L2": 2.9263973236083984,
+            "cosine": 0.9996767640113831,
+            "theta": 0.02542649768292904
+        },
+        "model.layers.60.self_attn.v_proj.weight": {
+            "dot": 1214.217041015625,
+            "L2": 1.7279402017593384,
+            "cosine": 0.9987728595733643,
+            "theta": 0.0495457649230957
+        },
+        "model.layers.60.input_layernorm.weight": {
+            "dot": 474.1598205566406,
+            "L2": 0.036874935030937195,
+            "cosine": 0.9999985694885254,
+            "theta": 0.001691456069238484
+        },
+        "model.layers.60.mlp.down_proj.weight": {
+            "dot": 34465.9765625,
+            "L2": 9.86397933959961,
+            "cosine": 0.9985916614532471,
+            "theta": 0.053078606724739075
+        },
+        "model.layers.60.mlp.gate_proj.weight": {
+            "dot": 42088.1015625,
+            "L2": 9.146162986755371,
+            "cosine": 0.9990078806877136,
+            "theta": 0.04454847797751427
+        },
+        "model.layers.60.mlp.up_proj.weight": {
+            "dot": 34481.21875,
+            "L2": 9.258336067199707,
+            "cosine": 0.9987596273422241,
+            "theta": 0.049812231212854385
+        },
+        "model.layers.60.post_attention_layernorm.weight": {
+            "dot": 315.0513916015625,
+            "L2": 0.06644315272569656,
+            "cosine": 0.999994695186615,
+            "theta": 0.003257243661209941
+        }
+    },
+    "layers.61.": {
+        "model.layers.61.input_layernorm.weight": {
+            "dot": 259.62445068359375,
+            "L2": 0.060183487832546234,
+            "cosine": 0.9999940395355225,
+            "theta": 0.0034526714589446783
+        },
+        "model.layers.61.mlp.down_proj.weight": {
+            "dot": 34530.5,
+            "L2": 9.921367645263672,
+            "cosine": 0.9985778331756592,
+            "theta": 0.05333861708641052
+        },
+        "model.layers.61.mlp.gate_proj.weight": {
+            "dot": 42107.0859375,
+            "L2": 9.066264152526855,
+            "cosine": 0.9990255832672119,
+            "theta": 0.04414917901158333
+        },
+        "model.layers.61.mlp.up_proj.weight": {
+            "dot": 34601.90625,
+            "L2": 9.174866676330566,
+            "cosine": 0.9987859725952148,
+            "theta": 0.04928028583526611
+        },
+        "model.layers.61.post_attention_layernorm.weight": {
+            "dot": 322.7131042480469,
+            "L2": 0.06332249939441681,
+            "cosine": 0.9999948740005493,
+            "theta": 0.0032018758356571198
+        },
+        "model.layers.61.self_attn.k_proj.weight": {
+            "dot": 5104.529296875,
+            "L2": 0.793613851070404,
+            "cosine": 0.9999383091926575,
+            "theta": 0.011107784695923328
+        },
+        "model.layers.61.self_attn.o_proj.weight": {
+            "dot": 8517.400390625,
+            "L2": 4.127281188964844,
+            "cosine": 0.9990016222000122,
+            "theta": 0.044688791036605835
+        },
+        "model.layers.61.self_attn.q_proj.weight": {
+            "dot": 10175.732421875,
+            "L2": 2.2231643199920654,
+            "cosine": 0.9997572898864746,
+            "theta": 0.02203269861638546
+        },
+        "model.layers.61.self_attn.v_proj.weight": {
+            "dot": 1355.3399658203125,
+            "L2": 1.8367457389831543,
+            "cosine": 0.9987582564353943,
+            "theta": 0.04983975738286972
+        }
+    },
+    "layers.62.": {
+        "model.layers.62.input_layernorm.weight": {
+            "dot": 99.32154846191406,
+            "L2": 0.05103715509176254,
+            "cosine": 0.9999869465827942,
+            "theta": 0.0051094903610646725
+        },
+        "model.layers.62.mlp.down_proj.weight": {
+            "dot": 34805.56640625,
+            "L2": 9.646040916442871,
+            "cosine": 0.9986661672592163,
+            "theta": 0.05165519192814827
+        },
+        "model.layers.62.mlp.gate_proj.weight": {
+            "dot": 41829.9140625,
+            "L2": 9.024325370788574,
+            "cosine": 0.9990280866622925,
+            "theta": 0.04409242048859596
+        },
+        "model.layers.62.mlp.up_proj.weight": {
+            "dot": 34937.5234375,
+            "L2": 9.124669075012207,
+            "cosine": 0.9988106489181519,
+            "theta": 0.048776775598526
+        },
+        "model.layers.62.post_attention_layernorm.weight": {
+            "dot": 329.20819091796875,
+            "L2": 0.061230674386024475,
+            "cosine": 0.9999947547912598,
+            "theta": 0.0032388928811997175
+        },
+        "model.layers.62.self_attn.k_proj.weight": {
+            "dot": 3406.447265625,
+            "L2": 0.3940812051296234,
+            "cosine": 0.9999772310256958,
+            "theta": 0.006748193874955177
+        },
+        "model.layers.62.self_attn.o_proj.weight": {
+            "dot": 8581.640625,
+            "L2": 3.678311347961426,
+            "cosine": 0.9992127418518066,
+            "theta": 0.0396827794611454
+        },
+        "model.layers.62.self_attn.q_proj.weight": {
+            "dot": 7389.7919921875,
+            "L2": 1.387823462486267,
+            "cosine": 0.9998698234558105,
+            "theta": 0.01613563671708107
+        },
+        "model.layers.62.self_attn.v_proj.weight": {
+            "dot": 1457.2694091796875,
+            "L2": 1.6291245222091675,
+            "cosine": 0.9990906119346619,
+            "theta": 0.04265034571290016
+        }
+    },
+    "layers.63.": {
+        "model.layers.63.self_attn.k_proj.weight": {
+            "dot": 4790.61572265625,
+            "L2": 0.6766353845596313,
+            "cosine": 0.9999522566795349,
+            "theta": 0.009771766141057014
+        },
+        "model.layers.63.self_attn.q_proj.weight": {
+            "dot": 9078.330078125,
+            "L2": 2.048905611038208,
+            "cosine": 0.999768853187561,
+            "theta": 0.02150142751634121
+        },
+        "model.layers.63.self_attn.v_proj.weight": {
+            "dot": 1195.853271484375,
+            "L2": 1.535319209098816,
+            "cosine": 0.9990158677101135,
+            "theta": 0.044368766248226166
+        },
+        "model.layers.63.input_layernorm.weight": {
+            "dot": 204.13433837890625,
+            "L2": 0.05009477585554123,
+            "cosine": 0.9999940395355225,
+            "theta": 0.0034526714589446783
+        },
+        "model.layers.63.mlp.down_proj.weight": {
+            "dot": 34527.6796875,
+            "L2": 9.66998291015625,
+            "cosine": 0.9986487627029419,
+            "theta": 0.051991187036037445
+        },
+        "model.layers.63.mlp.gate_proj.weight": {
+            "dot": 42365.19140625,
+            "L2": 8.941678047180176,
+            "cosine": 0.9990577697753906,
+            "theta": 0.04341378062963486
+        },
+        "model.layers.63.mlp.up_proj.weight": {
+            "dot": 34724.26171875,
+            "L2": 9.036564826965332,
+            "cosine": 0.9988263845443726,
+            "theta": 0.048452965915203094
+        },
+        "model.layers.63.post_attention_layernorm.weight": {
+            "dot": 340.69427490234375,
+            "L2": 0.0606684535741806,
+            "cosine": 0.9999951124191284,
+            "theta": 0.003126526717096567
+        },
+        "model.layers.63.self_attn.o_proj.weight": {
+            "dot": 8142.2841796875,
+            "L2": 3.6414215564727783,
+            "cosine": 0.9991868138313293,
+            "theta": 0.04033103957772255
+        }
+    },
+    "layers.64.": {
+        "model.layers.64.input_layernorm.weight": {
+            "dot": 385.7366943359375,
+            "L2": 0.05403056740760803,
+            "cosine": 0.9999963045120239,
+            "theta": 0.0027186358347535133
+        },
+        "model.layers.64.mlp.down_proj.weight": {
+            "dot": 34126.890625,
+            "L2": 9.736825942993164,
+            "cosine": 0.9986139535903931,
+            "theta": 0.05265675112605095
+        },
+        "model.layers.64.mlp.gate_proj.weight": {
+            "dot": 43036.5546875,
+            "L2": 8.897109985351562,
+            "cosine": 0.9990817308425903,
+            "theta": 0.04285813122987747
+        },
+        "model.layers.64.mlp.up_proj.weight": {
+            "dot": 34376.90234375,
+            "L2": 8.98666000366211,
+            "cosine": 0.9988275766372681,
+            "theta": 0.04842834919691086
+        },
+        "model.layers.64.post_attention_layernorm.weight": {
+            "dot": 354.04156494140625,
+            "L2": 0.06126567721366882,
+            "cosine": 0.9999952912330627,
+            "theta": 0.003068801248446107
+        },
+        "model.layers.64.self_attn.k_proj.weight": {
+            "dot": 6257.8037109375,
+            "L2": 1.0425580739974976,
+            "cosine": 0.9999130964279175,
+            "theta": 0.013183689676225185
+        },
+        "model.layers.64.self_attn.o_proj.weight": {
+            "dot": 8585.12890625,
+            "L2": 4.308748245239258,
+            "cosine": 0.9989205598831177,
+            "theta": 0.04646793380379677
+        },
+        "model.layers.64.self_attn.q_proj.weight": {
+            "dot": 12753.57421875,
+            "L2": 2.7800188064575195,
+            "cosine": 0.999697208404541,
+            "theta": 0.024609219282865524
+        },
+        "model.layers.64.self_attn.v_proj.weight": {
+            "dot": 1353.491455078125,
+            "L2": 1.8500134944915771,
+            "cosine": 0.9987382888793945,
+            "theta": 0.0502389594912529
+        }
+    },
+    "layers.65.": {
+        "model.layers.65.input_layernorm.weight": {
+            "dot": 155.343994140625,
+            "L2": 0.055624742060899734,
+            "cosine": 0.9999903440475464,
+            "theta": 0.0043945349752902985
+        },
+        "model.layers.65.mlp.down_proj.weight": {
+            "dot": 34135.5,
+            "L2": 9.677754402160645,
+            "cosine": 0.9986310005187988,
+            "theta": 0.05233186483383179
+        },
+        "model.layers.65.mlp.gate_proj.weight": {
+            "dot": 43123.70703125,
+            "L2": 8.858434677124023,
+            "cosine": 0.9990915060043335,
+            "theta": 0.04262936860322952
+        },
+        "model.layers.65.mlp.up_proj.weight": {
+            "dot": 34447.0390625,
+            "L2": 8.94055461883545,
+            "cosine": 0.9988418221473694,
+            "theta": 0.04813317954540253
+        },
+        "model.layers.65.post_attention_layernorm.weight": {
+            "dot": 365.8544921875,
+            "L2": 0.06162121146917343,
+            "cosine": 0.9999954104423523,
+            "theta": 0.0030297066550701857
+        },
+        "model.layers.65.self_attn.k_proj.weight": {
+            "dot": 4338.0986328125,
+            "L2": 0.5847134590148926,
+            "cosine": 0.9999605417251587,
+            "theta": 0.008883527480065823
+        },
+        "model.layers.65.self_attn.o_proj.weight": {
+            "dot": 8103.544921875,
+            "L2": 3.6590168476104736,
+            "cosine": 0.999174952507019,
+            "theta": 0.04062415659427643
+        },
+        "model.layers.65.self_attn.q_proj.weight": {
+            "dot": 8740.48046875,
+            "L2": 1.6022651195526123,
+            "cosine": 0.9998531341552734,
+            "theta": 0.017138812690973282
+        },
+        "model.layers.65.self_attn.v_proj.weight": {
+            "dot": 1340.663818359375,
+            "L2": 1.6937352418899536,
+            "cosine": 0.9989319443702698,
+            "theta": 0.046222198754549026
+        }
+    },
+    "layers.66.": {
+        "model.layers.66.input_layernorm.weight": {
+            "dot": 207.69410705566406,
+            "L2": 0.042162034660577774,
+            "cosine": 0.9999957084655762,
+            "theta": 0.0029296886641532183
+        },
+        "model.layers.66.mlp.down_proj.weight": {
+            "dot": 34724.953125,
+            "L2": 9.787201881408691,
+            "cosine": 0.9986237287521362,
+            "theta": 0.052470698952674866
+        },
+        "model.layers.66.mlp.gate_proj.weight": {
+            "dot": 42232.63671875,
+            "L2": 8.89281177520752,
+            "cosine": 0.999065101146698,
+            "theta": 0.04324452951550484
+        },
+        "model.layers.66.mlp.up_proj.weight": {
+            "dot": 35089.796875,
+            "L2": 8.966727256774902,
+            "cosine": 0.9988563656806946,
+            "theta": 0.04782995581626892
+        },
+        "model.layers.66.post_attention_layernorm.weight": {
+            "dot": 370.968017578125,
+            "L2": 0.056517500430345535,
+            "cosine": 0.9999959468841553,
+            "theta": 0.0028471453115344048
+        },
+        "model.layers.66.self_attn.k_proj.weight": {
+            "dot": 5167.05908203125,
+            "L2": 0.6002543568611145,
+            "cosine": 0.9999650120735168,
+            "theta": 0.008365181274712086
+        },
+        "model.layers.66.self_attn.o_proj.weight": {
+            "dot": 8398.701171875,
+            "L2": 3.4606268405914307,
+            "cosine": 0.9992878437042236,
+            "theta": 0.03774230554699898
+        },
+        "model.layers.66.self_attn.q_proj.weight": {
+            "dot": 9790.046875,
+            "L2": 1.7371759414672852,
+            "cosine": 0.9998459219932556,
+            "theta": 0.017554597929120064
+        },
+        "model.layers.66.self_attn.v_proj.weight": {
+            "dot": 1359.5430908203125,
+            "L2": 1.524612545967102,
+            "cosine": 0.9991462826728821,
+            "theta": 0.041324056684970856
+        }
+    },
+    "layers.67.": {
+        "model.layers.67.input_layernorm.weight": {
+            "dot": 437.37506103515625,
+            "L2": 0.04591434448957443,
+            "cosine": 0.9999977350234985,
+            "theta": 0.0021283691748976707
+        },
+        "model.layers.67.mlp.down_proj.weight": {
+            "dot": 34710.734375,
+            "L2": 9.901613235473633,
+            "cosine": 0.9985907673835754,
+            "theta": 0.05309545621275902
+        },
+        "model.layers.67.mlp.gate_proj.weight": {
+            "dot": 42413.8359375,
+            "L2": 8.847795486450195,
+            "cosine": 0.999078631401062,
+            "theta": 0.04293041303753853
+        },
+        "model.layers.67.mlp.up_proj.weight": {
+            "dot": 35122.64453125,
+            "L2": 8.910231590270996,
+            "cosine": 0.9988717436790466,
+            "theta": 0.04750723019242287
+        },
+        "model.layers.67.post_attention_layernorm.weight": {
+            "dot": 384.44775390625,
+            "L2": 0.0588967427611351,
+            "cosine": 0.9999955892562866,
+            "theta": 0.002970099914819002
+        },
+        "model.layers.67.self_attn.k_proj.weight": {
+            "dot": 6232.1787109375,
+            "L2": 0.9803885817527771,
+            "cosine": 0.9999229907989502,
+            "theta": 0.012410495430231094
+        },
+        "model.layers.67.self_attn.o_proj.weight": {
+            "dot": 8668.326171875,
+            "L2": 4.030384063720703,
+            "cosine": 0.9990644454956055,
+            "theta": 0.04325968772172928
+        },
+        "model.layers.67.self_attn.q_proj.weight": {
+            "dot": 12111.9716796875,
+            "L2": 2.7245256900787354,
+            "cosine": 0.999693751335144,
+            "theta": 0.024749314412474632
+        },
+        "model.layers.67.self_attn.v_proj.weight": {
+            "dot": 1402.286376953125,
+            "L2": 1.6160550117492676,
+            "cosine": 0.9990702867507935,
+            "theta": 0.04312441125512123
+        }
+    },
+    "layers.68.": {
+        "model.layers.68.mlp.gate_proj.weight": {
+            "dot": 43174.78515625,
+            "L2": 8.734400749206543,
+            "cosine": 0.9991177916526794,
+            "theta": 0.04200804978609085
+        },
+        "model.layers.68.mlp.up_proj.weight": {
+            "dot": 34596.546875,
+            "L2": 8.7833833694458,
+            "cosine": 0.9988870024681091,
+            "theta": 0.04718482866883278
+        },
+        "model.layers.68.self_attn.k_proj.weight": {
+            "dot": 5948.03564453125,
+            "L2": 1.1923662424087524,
+            "cosine": 0.9998804330825806,
+            "theta": 0.01546410657465458
+        },
+        "model.layers.68.self_attn.o_proj.weight": {
+            "dot": 8996.8046875,
+            "L2": 4.20787239074707,
+            "cosine": 0.9990174770355225,
+            "theta": 0.04433247074484825
+        },
+        "model.layers.68.self_attn.q_proj.weight": {
+            "dot": 13021.6640625,
+            "L2": 3.025747776031494,
+            "cosine": 0.9996487498283386,
+            "theta": 0.026505500078201294
+        },
+        "model.layers.68.self_attn.v_proj.weight": {
+            "dot": 1565.9404296875,
+            "L2": 1.6503242254257202,
+            "cosine": 0.9991316199302673,
+            "theta": 0.04167747125029564
+        },
+        "model.layers.68.input_layernorm.weight": {
+            "dot": 484.4017333984375,
+            "L2": 0.051800403743982315,
+            "cosine": 0.9999971985816956,
+            "theta": 0.002367031527683139
+        },
+        "model.layers.68.mlp.down_proj.weight": {
+            "dot": 34093.40625,
+            "L2": 9.697108268737793,
+            "cosine": 0.9986238479614258,
+            "theta": 0.052468426525592804
+        },
+        "model.layers.68.post_attention_layernorm.weight": {
+            "dot": 409.5778503417969,
+            "L2": 0.0575546957552433,
+            "cosine": 0.9999960660934448,
+            "theta": 0.0028049631509929895
+        }
+    },
+    "layers.69.": {
+        "model.layers.69.input_layernorm.weight": {
+            "dot": 397.461669921875,
+            "L2": 0.04101888835430145,
+            "cosine": 0.9999979138374329,
+            "theta": 0.002042627427726984
+        },
+        "model.layers.69.mlp.down_proj.weight": {
+            "dot": 34402.359375,
+            "L2": 9.857956886291504,
+            "cosine": 0.9985907077789307,
+            "theta": 0.053096577525138855
+        },
+        "model.layers.69.mlp.gate_proj.weight": {
+            "dot": 43059.46875,
+            "L2": 8.685550689697266,
+            "cosine": 0.9991251826286316,
+            "theta": 0.04183168709278107
+        },
+        "model.layers.69.mlp.up_proj.weight": {
+            "dot": 34921.6953125,
+            "L2": 8.724039077758789,
+            "cosine": 0.9989120364189148,
+            "theta": 0.04665106534957886
+        },
+        "model.layers.69.post_attention_layernorm.weight": {
+            "dot": 424.39703369140625,
+            "L2": 0.05765286833047867,
+            "cosine": 0.9999961256980896,
+            "theta": 0.0027836323715746403
+        },
+        "model.layers.69.self_attn.k_proj.weight": {
+            "dot": 6078.75,
+            "L2": 0.9360048174858093,
+            "cosine": 0.9999281167984009,
+            "theta": 0.011990334838628769
+        },
+        "model.layers.69.self_attn.o_proj.weight": {
+            "dot": 9008.4453125,
+            "L2": 3.4800467491149902,
+            "cosine": 0.9993284940719604,
+            "theta": 0.036649178713560104
+        },
+        "model.layers.69.self_attn.q_proj.weight": {
+            "dot": 12123.7705078125,
+            "L2": 2.399162769317627,
+            "cosine": 0.9997626543045044,
+            "theta": 0.021787844598293304
+        },
+        "model.layers.69.self_attn.v_proj.weight": {
+            "dot": 1539.814208984375,
+            "L2": 1.5298898220062256,
+            "cosine": 0.9992408752441406,
+            "theta": 0.03896718844771385
+        }
+    },
+    "layers.70.": {
+        "model.layers.70.input_layernorm.weight": {
+            "dot": 415.18023681640625,
+            "L2": 0.04487520456314087,
+            "cosine": 0.9999976754188538,
+            "theta": 0.002156191971153021
+        },
+        "model.layers.70.mlp.down_proj.weight": {
+            "dot": 35235.8359375,
+            "L2": 9.650564193725586,
+            "cosine": 0.9986811280250549,
+            "theta": 0.05136461928486824
+        },
+        "model.layers.70.mlp.gate_proj.weight": {
+            "dot": 42476.10546875,
+            "L2": 8.677506446838379,
+            "cosine": 0.9991148710250854,
+            "theta": 0.04207753762602806
+        },
+        "model.layers.70.mlp.up_proj.weight": {
+            "dot": 35722.9453125,
+            "L2": 8.700013160705566,
+            "cosine": 0.9989423155784607,
+            "theta": 0.04599719122052193
+        },
+        "model.layers.70.post_attention_layernorm.weight": {
+            "dot": 433.17706298828125,
+            "L2": 0.055996090173721313,
+            "cosine": 0.9999963641166687,
+            "theta": 0.0026966221630573273
+        },
+        "model.layers.70.self_attn.k_proj.weight": {
+            "dot": 5866.6552734375,
+            "L2": 1.0601130723953247,
+            "cosine": 0.9999042749404907,
+            "theta": 0.013836661353707314
+        },
+        "model.layers.70.self_attn.o_proj.weight": {
+            "dot": 8510.44921875,
+            "L2": 3.4700489044189453,
+            "cosine": 0.999293327331543,
+            "theta": 0.037596698850393295
+        },
+        "model.layers.70.self_attn.q_proj.weight": {
+            "dot": 12916.6591796875,
+            "L2": 2.5847549438476562,
+            "cosine": 0.9997416138648987,
+            "theta": 0.022733114659786224
+        },
+        "model.layers.70.self_attn.v_proj.weight": {
+            "dot": 1362.853271484375,
+            "L2": 1.3748222589492798,
+            "cosine": 0.99930739402771,
+            "theta": 0.037220582365989685
+        }
+    },
+    "layers.71.": {
+        "model.layers.71.mlp.gate_proj.weight": {
+            "dot": 42260.3515625,
+            "L2": 8.58432674407959,
+            "cosine": 0.9991293549537659,
+            "theta": 0.04173179715871811
+        },
+        "model.layers.71.self_attn.k_proj.weight": {
+            "dot": 6205.6171875,
+            "L2": 1.4691863059997559,
+            "cosine": 0.999826192855835,
+            "theta": 0.01864468678832054
+        },
+        "model.layers.71.self_attn.o_proj.weight": {
+            "dot": 9046.20703125,
+            "L2": 4.367351055145264,
+            "cosine": 0.9989476203918457,
+            "theta": 0.04588167741894722
+        },
+        "model.layers.71.self_attn.q_proj.weight": {
+            "dot": 14674.3359375,
+            "L2": 3.4704089164733887,
+            "cosine": 0.9995899200439453,
+            "theta": 0.0286394115537405
+        },
+        "model.layers.71.self_attn.v_proj.weight": {
+            "dot": 1504.546630859375,
+            "L2": 1.7006161212921143,
+            "cosine": 0.9990406036376953,
+            "theta": 0.04380752891302109
+        },
+        "model.layers.71.input_layernorm.weight": {
+            "dot": 507.22564697265625,
+            "L2": 0.05199163779616356,
+            "cosine": 0.9999974966049194,
+            "theta": 0.0022375863045454025
+        },
+        "model.layers.71.mlp.down_proj.weight": {
+            "dot": 35130.734375,
+            "L2": 9.623332023620605,
+            "cosine": 0.9986846446990967,
+            "theta": 0.05129607766866684
+        },
+        "model.layers.71.mlp.up_proj.weight": {
+            "dot": 35632.1484375,
+            "L2": 8.588700294494629,
+            "cosine": 0.9989665150642395,
+            "theta": 0.04546785727143288
+        },
+        "model.layers.71.post_attention_layernorm.weight": {
+            "dot": 458.5936584472656,
+            "L2": 0.056146636605262756,
+            "cosine": 0.999996542930603,
+            "theta": 0.0026294756680727005
+        }
+    },
+    "layers.72.": {
+        "model.layers.72.input_layernorm.weight": {
+            "dot": 555.9531860351562,
+            "L2": 0.039824116975069046,
+            "cosine": 0.9999985694885254,
+            "theta": 0.001691456069238484
+        },
+        "model.layers.72.mlp.down_proj.weight": {
+            "dot": 34663.03125,
+            "L2": 9.776525497436523,
+            "cosine": 0.9986242055892944,
+            "theta": 0.05246160551905632
+        },
+        "model.layers.72.mlp.gate_proj.weight": {
+            "dot": 43274.2109375,
+            "L2": 8.396942138671875,
+            "cosine": 0.9991863369941711,
+            "theta": 0.04034286364912987
+        },
+        "model.layers.72.mlp.up_proj.weight": {
+            "dot": 35172.3046875,
+            "L2": 8.379971504211426,
+            "cosine": 0.9990031123161316,
+            "theta": 0.04465541988611221
+        },
+        "model.layers.72.post_attention_layernorm.weight": {
+            "dot": 495.85980224609375,
+            "L2": 0.054613880813121796,
+            "cosine": 0.9999970197677612,
+            "theta": 0.002441406948491931
+        },
+        "model.layers.72.self_attn.k_proj.weight": {
+            "dot": 6050.7080078125,
+            "L2": 1.3584485054016113,
+            "cosine": 0.9998475313186646,
+            "theta": 0.017462676391005516
+        },
+        "model.layers.72.self_attn.o_proj.weight": {
+            "dot": 8921.884765625,
+            "L2": 3.745482921600342,
+            "cosine": 0.9992148876190186,
+            "theta": 0.03962865471839905
+        },
+        "model.layers.72.self_attn.q_proj.weight": {
+            "dot": 14733.478515625,
+            "L2": 3.25421142578125,
+            "cosine": 0.999640941619873,
+            "theta": 0.02679850347340107
+        },
+        "model.layers.72.self_attn.v_proj.weight": {
+            "dot": 1516.745849609375,
+            "L2": 1.4268618822097778,
+            "cosine": 0.9993295669555664,
+            "theta": 0.036619883030653
+        }
+    },
+    "layers.73.": {
+        "model.layers.73.input_layernorm.weight": {
+            "dot": 576.0814208984375,
+            "L2": 0.03878072276711464,
+            "cosine": 0.9999986886978149,
+            "theta": 0.0016194459749385715
+        },
+        "model.layers.73.mlp.down_proj.weight": {
+            "dot": 34902.7265625,
+            "L2": 9.43509292602539,
+            "cosine": 0.9987272620201111,
+            "theta": 0.05045806244015694
+        },
+        "model.layers.73.mlp.gate_proj.weight": {
+            "dot": 43291.74609375,
+            "L2": 8.252744674682617,
+            "cosine": 0.9992142915725708,
+            "theta": 0.03964369744062424
+        },
+        "model.layers.73.mlp.up_proj.weight": {
+            "dot": 35407.7890625,
+            "L2": 8.197582244873047,
+            "cosine": 0.9990525245666504,
+            "theta": 0.043534472584724426
+        },
+        "model.layers.73.post_attention_layernorm.weight": {
+            "dot": 526.5370483398438,
+            "L2": 0.04899385944008827,
+            "cosine": 0.9999976754188538,
+            "theta": 0.002156191971153021
+        },
+        "model.layers.73.self_attn.k_proj.weight": {
+            "dot": 5893.48681640625,
+            "L2": 1.5138740539550781,
+            "cosine": 0.999805748462677,
+            "theta": 0.019710799679160118
+        },
+        "model.layers.73.self_attn.o_proj.weight": {
+            "dot": 9176.3603515625,
+            "L2": 4.489421844482422,
+            "cosine": 0.998903751373291,
+            "theta": 0.046828389167785645
+        },
+        "model.layers.73.self_attn.q_proj.weight": {
+            "dot": 14029.8388671875,
+            "L2": 3.7239274978637695,
+            "cosine": 0.9995062351226807,
+            "theta": 0.03142628073692322
+        },
+        "model.layers.73.self_attn.v_proj.weight": {
+            "dot": 1593.138916015625,
+            "L2": 1.5799169540405273,
+            "cosine": 0.9992177486419678,
+            "theta": 0.03955637291073799
+        }
+    },
+    "layers.74.": {
+        "model.layers.74.self_attn.k_proj.weight": {
+            "dot": 5795.541015625,
+            "L2": 1.4080140590667725,
+            "cosine": 0.9998290538787842,
+            "theta": 0.018490592017769814
+        },
+        "model.layers.74.self_attn.o_proj.weight": {
+            "dot": 8904.552734375,
+            "L2": 3.944758415222168,
+            "cosine": 0.9991275072097778,
+            "theta": 0.041776061058044434
+        },
+        "model.layers.74.self_attn.q_proj.weight": {
+            "dot": 14177.2314453125,
+            "L2": 3.4526548385620117,
+            "cosine": 0.9995800256729126,
+            "theta": 0.02898288331925869
+        },
+        "model.layers.74.self_attn.v_proj.weight": {
+            "dot": 1596.963623046875,
+            "L2": 1.406968355178833,
+            "cosine": 0.9993808269500732,
+            "theta": 0.03519195690751076
+        },
+        "model.layers.74.input_layernorm.weight": {
+            "dot": 579.6742553710938,
+            "L2": 0.033075422048568726,
+            "cosine": 0.9999990463256836,
+            "theta": 0.0013810680247843266
+        },
+        "model.layers.74.mlp.down_proj.weight": {
+            "dot": 35240.625,
+            "L2": 9.212445259094238,
+            "cosine": 0.9987980723381042,
+            "theta": 0.04903404042124748
+        },
+        "model.layers.74.mlp.gate_proj.weight": {
+            "dot": 43315.55078125,
+            "L2": 8.168442726135254,
+            "cosine": 0.9992308020591736,
+            "theta": 0.03922490403056145
+        },
+        "model.layers.74.mlp.up_proj.weight": {
+            "dot": 35735.2109375,
+            "L2": 8.06436538696289,
+            "cosine": 0.9990912675857544,
+            "theta": 0.04263496398925781
+        },
+        "model.layers.74.post_attention_layernorm.weight": {
+            "dot": 567.2435302734375,
+            "L2": 0.046969637274742126,
+            "cosine": 0.9999980926513672,
+            "theta": 0.0019531252328306437
+        }
+    },
+    "layers.75.": {
+        "model.layers.75.input_layernorm.weight": {
+            "dot": 569.9957275390625,
+            "L2": 0.04465571790933609,
+            "cosine": 0.9999983906745911,
+            "theta": 0.0017940601101145148
+        },
+        "model.layers.75.mlp.down_proj.weight": {
+            "dot": 35088.9921875,
+            "L2": 9.220827102661133,
+            "cosine": 0.9987908005714417,
+            "theta": 0.04918217658996582
+        },
+        "model.layers.75.mlp.gate_proj.weight": {
+            "dot": 44369.3046875,
+            "L2": 8.093620300292969,
+            "cosine": 0.9992626905441284,
+            "theta": 0.03840312361717224
+        },
+        "model.layers.75.mlp.up_proj.weight": {
+            "dot": 35637.66015625,
+            "L2": 8.019290924072266,
+            "cosine": 0.9990990161895752,
+            "theta": 0.04245277866721153
+        },
+        "model.layers.75.post_attention_layernorm.weight": {
+            "dot": 599.6091918945312,
+            "L2": 0.03807028383016586,
+            "cosine": 0.9999988079071045,
+            "theta": 0.0015440810238942504
+        },
+        "model.layers.75.self_attn.k_proj.weight": {
+            "dot": 5360.5224609375,
+            "L2": 1.5379763841629028,
+            "cosine": 0.9997795820236206,
+            "theta": 0.02099647931754589
+        },
+        "model.layers.75.self_attn.o_proj.weight": {
+            "dot": 9835.9677734375,
+            "L2": 4.313989639282227,
+            "cosine": 0.9990554451942444,
+            "theta": 0.043467313051223755
+        },
+        "model.layers.75.self_attn.q_proj.weight": {
+            "dot": 14910.720703125,
+            "L2": 3.700253486633301,
+            "cosine": 0.9995414018630981,
+            "theta": 0.030286405235528946
+        },
+        "model.layers.75.self_attn.v_proj.weight": {
+            "dot": 1796.7183837890625,
+            "L2": 1.5102488994598389,
+            "cosine": 0.9993661642074585,
+            "theta": 0.0356062576174736
+        }
+    },
+    "layers.76.": {
+        "model.layers.76.input_layernorm.weight": {
+            "dot": 578.7030029296875,
+            "L2": 0.019965866580605507,
+            "cosine": 0.9999996423721313,
+            "theta": 0.0008457279182039201
+        },
+        "model.layers.76.mlp.down_proj.weight": {
+            "dot": 31600.7890625,
+            "L2": 8.945749282836914,
+            "cosine": 0.9987363815307617,
+            "theta": 0.05027692764997482
+        },
+        "model.layers.76.mlp.gate_proj.weight": {
+            "dot": 50180.8515625,
+            "L2": 8.079094886779785,
+            "cosine": 0.9993504285812378,
+            "theta": 0.03604557737708092
+        },
+        "model.layers.76.mlp.up_proj.weight": {
+            "dot": 32849.67578125,
+            "L2": 7.804889678955078,
+            "cosine": 0.9990741014480591,
+            "theta": 0.043035831302404404
+        },
+        "model.layers.76.post_attention_layernorm.weight": {
+            "dot": 776.3778076171875,
+            "L2": 0.03565121814608574,
+            "cosine": 0.9999992847442627,
+            "theta": 0.0011960400734096766
+        },
+        "model.layers.76.self_attn.k_proj.weight": {
+            "dot": 5118.32421875,
+            "L2": 1.216866374015808,
+            "cosine": 0.9998553991317749,
+            "theta": 0.01700613647699356
+        },
+        "model.layers.76.self_attn.o_proj.weight": {
+            "dot": 9434.99609375,
+            "L2": 3.0157599449157715,
+            "cosine": 0.9995185136795044,
+            "theta": 0.031033046543598175
+        },
+        "model.layers.76.self_attn.q_proj.weight": {
+            "dot": 13980.66015625,
+            "L2": 3.08475399017334,
+            "cosine": 0.9996599555015564,
+            "theta": 0.02607925608754158
+        },
+        "model.layers.76.self_attn.v_proj.weight": {
+            "dot": 1758.1314697265625,
+            "L2": 1.1035206317901611,
+            "cosine": 0.9996539354324341,
+            "theta": 0.02630910463631153
+        }
+    },
+    "layers.77.": {
+        "model.layers.77.self_attn.k_proj.weight": {
+            "dot": 5424.54248046875,
+            "L2": 1.504679560661316,
+            "cosine": 0.9997913241386414,
+            "theta": 0.020429544150829315
+        },
+        "model.layers.77.self_attn.q_proj.weight": {
+            "dot": 14345.953125,
+            "L2": 3.7205467224121094,
+            "cosine": 0.9995179176330566,
+            "theta": 0.031052250415086746
+        },
+        "model.layers.77.self_attn.v_proj.weight": {
+            "dot": 2011.1416015625,
+            "L2": 1.3377944231033325,
+            "cosine": 0.9995555877685547,
+            "theta": 0.029814263805747032
+        },
+        "model.layers.77.input_layernorm.weight": {
+            "dot": 643.2611083984375,
+            "L2": 0.030637459829449654,
+            "cosine": 0.9999992847442627,
+            "theta": 0.0011960400734096766
+        },
+        "model.layers.77.mlp.down_proj.weight": {
+            "dot": 35481.296875,
+            "L2": 8.61058521270752,
+            "cosine": 0.9989569187164307,
+            "theta": 0.04567850008606911
+        },
+        "model.layers.77.mlp.gate_proj.weight": {
+            "dot": 45943.0625,
+            "L2": 7.757411479949951,
+            "cosine": 0.9993457794189453,
+            "theta": 0.03617434948682785
+        },
+        "model.layers.77.mlp.up_proj.weight": {
+            "dot": 36329.8671875,
+            "L2": 7.538034915924072,
+            "cosine": 0.9992188215255737,
+            "theta": 0.039529234170913696
+        },
+        "model.layers.77.post_attention_layernorm.weight": {
+            "dot": 700.6992797851562,
+            "L2": 0.03382206708192825,
+            "cosine": 0.9999991655349731,
+            "theta": 0.0012918708380311728
+        },
+        "model.layers.77.self_attn.o_proj.weight": {
+            "dot": 10182.25,
+            "L2": 3.717130184173584,
+            "cosine": 0.9993224143981934,
+            "theta": 0.03681473061442375
+        }
+    },
+    "layers.78.": {
+        "model.layers.78.input_layernorm.weight": {
+            "dot": 546.482177734375,
+            "L2": 0.030769968405365944,
+            "cosine": 0.9999991655349731,
+            "theta": 0.0012918708380311728
+        },
+        "model.layers.78.mlp.down_proj.weight": {
+            "dot": 36066.265625,
+            "L2": 8.038646697998047,
+            "cosine": 0.9991055727005005,
+            "theta": 0.042298004031181335
+        },
+        "model.layers.78.mlp.gate_proj.weight": {
+            "dot": 47179.421875,
+            "L2": 7.336031436920166,
+            "cosine": 0.999430239200592,
+            "theta": 0.03375840187072754
+        },
+        "model.layers.78.mlp.up_proj.weight": {
+            "dot": 38074.6484375,
+            "L2": 7.155016899108887,
+            "cosine": 0.9993283748626709,
+            "theta": 0.03665243089199066
+        },
+        "model.layers.78.post_attention_layernorm.weight": {
+            "dot": 663.461181640625,
+            "L2": 0.019074242562055588,
+            "cosine": 0.9999997615814209,
+            "theta": 0.0006905339541845024
+        },
+        "model.layers.78.self_attn.k_proj.weight": {
+            "dot": 5788.7373046875,
+            "L2": 1.258698582649231,
+            "cosine": 0.9998631477355957,
+            "theta": 0.01654420606791973
+        },
+        "model.layers.78.self_attn.o_proj.weight": {
+            "dot": 9598.080078125,
+            "L2": 3.3902156352996826,
+            "cosine": 0.9994020462036133,
+            "theta": 0.034583620727062225
+        },
+        "model.layers.78.self_attn.q_proj.weight": {
+            "dot": 14183.6640625,
+            "L2": 3.2525172233581543,
+            "cosine": 0.999627411365509,
+            "theta": 0.027298782020807266
+        },
+        "model.layers.78.self_attn.v_proj.weight": {
+            "dot": 1724.784423828125,
+            "L2": 1.1465059518814087,
+            "cosine": 0.9996193647384644,
+            "theta": 0.0275920070707798
+        }
+    },
+    "layers.79.": {
+        "model.layers.79.input_layernorm.weight": {
+            "dot": 307.69757080078125,
+            "L2": 0.02353552356362343,
+            "cosine": 0.9999990463256836,
+            "theta": 0.0013810680247843266
+        },
+        "model.layers.79.mlp.down_proj.weight": {
+            "dot": 36716.46875,
+            "L2": 5.718676567077637,
+            "cosine": 0.9995551109313965,
+            "theta": 0.02983025647699833
+        },
+        "model.layers.79.mlp.gate_proj.weight": {
+            "dot": 52026.5234375,
+            "L2": 6.155852794647217,
+            "cosine": 0.9996360540390015,
+            "theta": 0.026980290189385414
+        },
+        "model.layers.79.mlp.up_proj.weight": {
+            "dot": 43800.90625,
+            "L2": 6.061076641082764,
+            "cosine": 0.999580979347229,
+            "theta": 0.028949953615665436
+        },
+        "model.layers.79.post_attention_layernorm.weight": {
+            "dot": 411.60272216796875,
+            "L2": 0.02418871782720089,
+            "cosine": 0.9999992847442627,
+            "theta": 0.0011960400734096766
+        },
+        "model.layers.79.self_attn.k_proj.weight": {
+            "dot": 5312.24755859375,
+            "L2": 0.8650540113449097,
+            "cosine": 0.9999295473098755,
+            "theta": 0.011870427057147026
+        },
+        "model.layers.79.self_attn.o_proj.weight": {
+            "dot": 8992.0400390625,
+            "L2": 2.529423236846924,
+            "cosine": 0.9996445178985596,
+            "theta": 0.026664702221751213
+        },
+        "model.layers.79.self_attn.q_proj.weight": {
+            "dot": 10794.314453125,
+            "L2": 2.234987497329712,
+            "cosine": 0.9997687935829163,
+            "theta": 0.021504199132323265
+        },
+        "model.layers.79.self_attn.v_proj.weight": {
+            "dot": 1883.0010986328125,
+            "L2": 0.8619332313537598,
+            "cosine": 0.9998027682304382,
+            "theta": 0.019861431792378426
+        }
+    }
+}
