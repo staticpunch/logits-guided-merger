@@ -1,0 +1,5 @@
+sources:
+  - model: /workspace/HUB_LLM/Llama-3.2-3B
+  - model: /workspace/HUB_LLM/Llama-3.2-3B-Instruct
+
+output_dir: /workspace/dont15/logits-guided-merger/comparisons/

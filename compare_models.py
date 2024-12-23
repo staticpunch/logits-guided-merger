@@ -47,8 +47,19 @@ def compute_theta(
     if not isinstance(v1, torch.Tensor):
         v1 = torch.from_numpy(v1)
 
-    v0 = v0.float().to(device)
-    v1 = v1.float().to(device)
+    v0 = v0.to(device)
+    v1 = v1.to(device)
+
+    mul = v0 * v1
+    diff = torch.abs(v0 - v1)
+    max_diff = torch.max(diff).cpu().item()
+    min_diff = torch.min(diff).cpu().item()
+    numel = torch.numel(diff)
+
+    # diff_indices = diff != torch.tensor(0e-16, device=v0.device, dtype=v0.dtype)
+    diff_indices = diff > eps
+    num_diff = torch.numel(diff[diff_indices]) / numel
+    num_opposites = torch.numel(mul[mul < 0.0]) / numel
 
     # Copy the vectors to reuse them later   
     v0_copy = v0.clone()
@@ -68,13 +79,21 @@ def compute_theta(
 
     # Dot product with the normalized vectors (can't use np.dot in W)
     cosine = torch.sum(v0 * v1)
+    diff_cosine = torch.sum(v0[diff_indices] * v1[diff_indices]).cpu().item()
 
     # Calculate initial angle between v0 and v1
     theta_0 = torch.arccos(torch.clamp(cosine, -1.0, 1.0))
     # degree = np.degrees(theta_0)
 
     return {
-        "lengths": lengths,
+        "len_a": lengths[0],
+        "len_b": lengths[1],
+        "max_diff": max_diff,
+        "min_diff": min_diff,
+        "numel": numel,
+        "percent_diff": num_diff,
+        "diff_cosine": diff_cosine,
+        "percent_oppo": num_opposites,
         "dot": dot.cpu().item(),
         "L2": euclide.cpu().item(),
         "cosine": cosine.cpu().item(),
@@ -145,6 +164,7 @@ if __name__ == "__main__":
         "--config",
         type=str,
         required=True,
+        default="config.yaml",
         help="Path to the configuration file (YAML).",
     )
     args = parser.parse_args()
@@ -155,8 +175,9 @@ if __name__ == "__main__":
     output_dir = merge_config["output_dir"]
     
     # Create a subdirectory with the current date and time
-    current_time = datetime.now().strftime("%Y%m%d-%H%M%S")
+    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     output_dir = os.path.join(output_dir, current_time)
+    print(f"Writing results to {output_dir} ...")
     merge_config["output_dir"] = output_dir
 
     if not os.path.exists(output_dir):

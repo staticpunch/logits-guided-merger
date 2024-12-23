@@ -2,4 +2,4 @@ sources:
   - model: /workspace/dont15/models/llama32_smol_rewrite_20k
   - model: /workspace/dont15/models/llama32_smol_summarize_20k
 
-output_dir: /workspace/dont15/logits-guided-merger/comparisons
+output_dir: /workspace/dont15/logits-guided-merger/comparisons/
