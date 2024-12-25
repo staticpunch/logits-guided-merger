@@ -67,7 +67,9 @@ def compute_theta(
 
     lengths = [
         torch.norm(v0_copy).cpu().item(),
-        torch.norm(v1_copy).cpu().item()
+        torch.norm(v1_copy).cpu().item(),
+        torch.norm(v0_copy[diff_indices]).cpu().item(),
+        torch.norm(v1_copy[diff_indices]).cpu().item()
     ]
     
     euclide = torch.norm(v0_copy - v1_copy)
@@ -88,6 +90,8 @@ def compute_theta(
     return {
         "len_a": lengths[0],
         "len_b": lengths[1],
+        "diff_len_a": lengths[2],
+        "diff_len_b": lengths[3],
         "max_diff": max_diff,
         "min_diff": min_diff,
         "numel": numel,
