@@ -6,32 +6,48 @@ import logging
 import numpy as np
 from transformers import GenerationConfig, TextStreamer
 
-def generate(prompt, model, tokenizer, max_new_tokens=1024):
+def generate(
+    prompt, model, tokenizer,
+    repetition_penalty=1.13,
+    top_p=0.95,
+    top_k=50,
+    max_new_tokens=1024,
+    temperature=0.4,
+    eos_token_id=None,
+    do_sample=False,
+    use_cache=True,
+    return_dict_in_generate=True,
+    output_attentions=False,
+    output_hidden_states=False,
+    output_scores=False,
+    streaming=True
+):
     input_ids = tokenizer(prompt, return_tensors="pt")["input_ids"].to(model.device)
     model.eval()
     with torch.no_grad():
         generation_config = GenerationConfig(
-            repetition_penalty=1.13,
+            repetition_penalty=repetition_penalty,
             max_new_tokens=max_new_tokens,
-            temperature=0.4,
-            top_p=0.95,
-            # top_k=20,
+            temperature=temperature,
+            top_p=top_p,
+            top_k=top_k,
             # bos_token_id=tokenizer.bos_token_id,
             # eos_token_id=tokenizer.eos_token_id,
             # eos_token_id=0, # for open-end generation.
+            eos_token_id=eos_token_id if eos_token_id is not None else tokenizer.eos_token_id,
             pad_token_id=tokenizer.pad_token_id,
-            do_sample=False,
-            use_cache=True,
-            return_dict_in_generate=True,
-            output_attentions=False,
-            output_hidden_states=False,
-            output_scores=False,
+            do_sample=do_sample,
+            use_cache=use_cache,
+            return_dict_in_generate=return_dict_in_generate,
+            output_attentions=output_attentions,
+            output_hidden_states=output_hidden_states,
+            output_scores=output_scores,
         )
         streamer = TextStreamer(tokenizer, skip_prompt=True)
         generated = model.generate(
             inputs=input_ids,
             generation_config=generation_config,
-            streamer=streamer,
+            streamer=streamer if streaming else None,
         )
     gen_tokens = generated["sequences"].cpu()[:, len(input_ids[0]):]
     output = tokenizer.batch_decode(gen_tokens)[0]
@@ -169,3 +185,19 @@ def find_mask_parameter_names(module, mask_param_names_list, parent_name=""):
                 full_param_name = f"{full_child_name}.{param_name}"
                 mask_param_names_list.append(full_param_name)
         find_mask_parameter_names(child, mask_param_names_list, full_child_name)
+
+def free_memory():
+    if not torch.cuda.is_available():
+        logger.info("CUDA is not available. No GPU memory to free.")
+        return
+        
+    initial_memory = torch.cuda.memory_allocated()
+    logger.info(f"Initial GPU memory allocated: {initial_memory / 1024**3:.2f} GB")
+    gc.collect()
+    torch.cuda.empty_cache()
+
+    final_memory = torch.cuda.memory_allocated()
+    logger.info(f"Final GPU memory allocated: {final_memory / 1024**3:.2f} GB")
+
+    freed_memory = initial_memory - final_memory
+    logger.info(f"Freed GPU memory: {freed_memory / 1024**3:.2f} GB")

@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 
 import datasets
 import torch
+import torch.nn.functional as F
 import numpy as np
 import torch.nn as nn
 import logging
@@ -22,10 +23,28 @@ from transformers import (
     Trainer,
     TrainingArguments,
     AutoTokenizer,
-    HfArgumentParser
+    HfArgumentParser,
+    default_data_collator,
+    is_torch_xla_available,
+    set_seed,
+)
+from transformers import (
+    HfArgumentParser,
+    TrainingArguments,
+    Trainer
 )
 
-from utils import get_logits, generate
+from transformers.modeling_outputs import (
+    BaseModelOutputWithPast,
+    CausalLMOutputWithPast
+)
+
+from utils import (
+    generate, 
+    get_hidden_states, 
+    get_logits,
+    free_memory
+)
 
 # Configure logger
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -354,7 +373,7 @@ class RMSNormsWithMasks(ModulesWithMasks):
         super().__init__()
         sizes = [norm.weight.shape for norm in rms_norms]
         if any([mode != "scalar" for mode in modes]):
-            logger.warning(
+            logger.warning_once(
                 f"Though you want to make a masks of modes {modes} " + \
                 "for RMSNorms' weights, by default a mask only accepts a scalar mask. " + \
                 "Converting modes to `scalar`."
@@ -606,7 +625,7 @@ class Merger(PreTrainedModel):
         num_logits_to_keep: int = 0,
         **loss_kwargs,
     ) -> Union[Tuple, CausalLMOutputWithPast]:
-        output_attentions = output_attentions if output_attentions is not None else True
+        output_attentions = output_attentions if output_attentions is not None else False
         output_hidden_states = (
             output_hidden_states if output_hidden_states is not None else True
         )
