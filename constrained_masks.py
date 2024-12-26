@@ -115,6 +115,9 @@ class Mask(nn.Module):
             logger.warning("Warning: Input shape does not match mask shape.")
         return x * self.weight
 
+    def extra_repr(self):
+        return f"mask_mode={self.config.mode}"
+
 class ModuleWithMask(nn.Module, ABC):
     def __init__(self, *args, **kwargs):
         super(ModuleWithMask, self).__init__()
@@ -139,6 +142,18 @@ class ModulesWithMasks(nn.Module, ABC):
     def get_constrained_masks(self):
         pass
 
+def silu_01(x: torch.Tensor) -> torch.Tensor:
+    return F.silu(x) - F.silu(x - 1.0)
+
+def relu_01(x: torch.Tensor) -> torch.Tensor:
+    return F.relu(x) - F.relu(x - 1.0)
+
+def normalize(v, dim, eps: float = 1e-8):
+    norm_v = torch.linalg.norm(v, dim=dim)
+    norm_v[norm_v < eps] = 1.0
+    v = v / norm_v
+    return v
+
 class Constrainer(nn.Module):
 
     def __init__(self, component_weights, constrain_mode, mask_mode):
@@ -146,7 +161,7 @@ class Constrainer(nn.Module):
         self.statistics = None
         self.constrain_mode = constrain_mode
         self.mask_mode = mask_mode
-        if self.constrain_mode not in ("identity", "01", "-11", "spherical"):
+        if self.constrain_mode not in ("identity", "01", "-11", "spherical", "sum1"):
             raise ValueError(f"Does not support {self.constrain_mode} constraint yet!")
             
         if (self.constrain_mode == "spherical" and all([w is not None for w in component_weights])):
@@ -155,7 +170,7 @@ class Constrainer(nn.Module):
     def _get_spherical_stats(
         self, 
         component_weights: List[torch.Tensor], 
-        DOT_THRESHOLD: float = 0.9995
+        DOT_THRESHOLD: float = 0.99995
     ):
         with torch.no_grad():
             if any([w is None for w in component_weights]):
@@ -166,25 +181,23 @@ class Constrainer(nn.Module):
                     f"{len(component_weights)} components found."
                 )
 
+            
             dim = 0 if self.mask_mode in ("vector_input") else None
-            v0 = self._normalize(component_weights[0], dim=dim)
-            v1 = self._normalize(component_weights[1], dim=dim)
+            v0 = normalize(component_weights[0], dim=dim)
+            v1 = normalize(component_weights[1], dim=dim)
             self.dots = torch.sum(v0 * v1, dim=dim, keepdim=False) ## (out_features, in_features) -> (in_features, )
             self.theta_0s = torch.arccos(self.dots)
             self.sin_theta_0s = torch.sin(self.theta_0s)
-            
-    def _normalize(self, v, dim, eps: float = 1e-8):
-        norm_v = torch.linalg.norm(v, dim=dim)
-        norm_v[norm_v < eps] = 1.0
-        v = v / norm_v
-        return v
-
+        
     def _constrain_identity(self, mask_weights: List[torch.Tensor]):
         return mask_weights
 
+    def _constrain_sumone(self, mask_weights: List[torch.Tensor]):
+        W = [w / sum(mask_weights) for w in mask_weights]
+        return W
+
     def _constrain_0_1(self, mask_weights: List[torch.Tensor]):
-        W = [torch.exp(w) for w in mask_weights]
-        W = [w / sum(W) for w in W]
+        W = [relu_01(w) for w in mask_weights]
         return W
 
     def _constrain_neg1_1(self, mask_weights: List[torch.Tensor]):
@@ -198,8 +211,11 @@ class Constrainer(nn.Module):
         # Transform raw masks to factor t's.
         ## QUESTION MASK: Does this modify mask_weights in-place? I only 
         ## update them via backprop.
-        W = [torch.exp(w) for w in mask_weights]
-        T = W[0] / sum(W)
+        # W = [torch.exp(w) for w in mask_weights]
+        # T = W[0] / sum(W)
+
+        ## ignore mask_weights[1]
+        T = silu_01(mask_weights[0])
 
         # Angle at timestep t's
         theta_ts = self.theta_0s * T
@@ -210,8 +226,9 @@ class Constrainer(nn.Module):
         S1 = sin_theta_ts / self.sin_theta_0s
 
         # Avoid NaN
-        S0[self.dots > DOT_THRESHOLD] = 1 - T[self.dots > DOT_THRESHOLD]
-        S1[self.dots > DOT_THRESHOLD] = T[self.dots > DOT_THRESHOLD]
+        nan_indices = self.dots.float() > DOT_THRESHOLD
+        S0[nan_indices] = 1 - T[nan_indices]
+        S1[nan_indices] = T[nan_indices]
         
         return [S0, S1]
         
@@ -225,11 +242,16 @@ class Constrainer(nn.Module):
             return self._constrain_0_1(mask_weights)
         elif self.constrain_mode == "-11":
             return self._constrain_neg1_1(mask_weights)
+        elif self.constrain_mode == "sum1":
+            return self._constrain_sumone(mask_weights)
         elif self.constrain_mode == "spherical":
             return self._constrain_spherical(mask_weights)
         else:
             raise ValueError(f"Does not support {self.constrain_mode} constraint yet!")
 
+    def extra_repr(self):
+        return f"constrain_mode={self.constrain_mode}"
+            
 class LinearsWithMasks(ModulesWithMasks):
     def __init__(
         self,
@@ -670,14 +692,13 @@ def init_masks(target_module: nn.Module, ref_modules: nn.Module, merge_config: M
 if __name__ == "__main__":
     merge_config = MergerConfig(
         model_paths = [
-            # "/workspace/models/Arcee-VyLinh/",
-            # "/workspace/models/Qwen2.5-Coder-3B/",
-            "/workspace/models/L3.2-JametMini-3B-MK.III/",
-            "/workspace/models/Llama-3.2-3B-Instruct-abliterated/"
+            "/workspace/dont15/models/llama32_smol_rewrite_50k/",
+            "/workspace/dont15/models/llama32_smol_summarize_50k/",
+            # "/workspace/HUB_LLM/Llama-3.2-3B-Instruct",
         ],
-        # mode = "vector_input",
-        mode = "scalar",
-        constrain_mode = "identity"
+        mode = "vector_input",
+        # mode = "scalar",
+        constrain_mode = "01"
     )
     tokenizer = AutoTokenizer.from_pretrained(merge_config.model_paths[0])
     system = "You are a helpful assistant."
