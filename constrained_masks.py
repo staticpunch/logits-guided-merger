@@ -644,9 +644,14 @@ class Merger(PreTrainedModel):
             return_dict=return_dict,
             cache_position=cache_position,
         )
+        merger_outputs = self.merger(**inputs)
+        components_outputs = []
+        for i in range(len(self.models)):
+            compout = self.models[i](**inputs)
+            components_outputs.append(compout)
         return {
-            "merger_outputs": self.merger(**inputs),
-            "components_outputs": [model(**inputs) for model in self.models]
+            "merger_outputs": merger_outputs,
+            "components_outputs": components_outputs
         }
 
 def find_modules_to_add_masks(target_module):
