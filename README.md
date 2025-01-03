@@ -9,3 +9,4 @@
   ```
 - `debug-training-2.ipynb` is a rough implementation of training loop: customized `compute_loss` with KL divergence loss, automatic logits' coefficent calculation (prioritize logits of models with higher levels of confidence, aka lower entropies) and customized `collator` to process batching.
 - `train.py` is a `.py` equivalent of `debug-training-2.ipynb` for easier viewing. untested.
+- migrating to h100
