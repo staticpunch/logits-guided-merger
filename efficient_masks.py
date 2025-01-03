@@ -330,7 +330,9 @@ class LinearsWithMasks(ModulesWithMasks):
             for b_mask, linear in zip(constrained_bias_masks, self.linears)
         ]
         merged_bias = (
-            sum(b if b is not None else torch.zeros_like(merged_weight[:, 0]) for b in masked_biases)
+            sum(b if b is not None else torch.zeros_like(
+                self.linears[0].weight[:, 0]) for b in masked_biases
+               ) 
             if not all(b is None for b in masked_biases) else None
         )
         
@@ -446,9 +448,6 @@ class EmbeddingsWithMasks(ModulesWithMasks):
 
     def forward(self, input_ids):
         constrained_masks = self.masks_constrainer([m.weight for m in self.masks])
-        masked_weights = [mask * emb.weight for mask, emb in zip(constrained_masks, self.embeddings)]
-        merged_weight = sum(masked_weights)
-        
         an_embedding = self.embeddings[0]
         for other_embedding in self.embeddings:
             assert an_embedding.padding_idx == other_embedding.padding_idx
@@ -639,7 +638,7 @@ class Merger(PreTrainedModel):
         output_hidden_states = (
             output_hidden_states if output_hidden_states is not None else False
         )
-        return_dict = return_dict if return_dict is not None else False
+        return_dict = return_dict if return_dict is not None else True
 
         # decoder outputs consists of (dec_features, layer_state, dec_hidden, dec_attn)
         inputs = dict(
