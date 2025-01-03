@@ -10,9 +10,12 @@ import torch.nn as nn
 import logging
 import copy
 import gc
+import os
 
 from datasets import load_dataset
+from accelerate import dispatch_model, infer_auto_device_map
 from tqdm import tqdm
+
 from transformers import (
     PreTrainedModel,
     PretrainedConfig,
@@ -28,10 +31,10 @@ from transformers import (
     is_torch_xla_available,
     set_seed,
 )
-from transformers import (
-    HfArgumentParser,
-    TrainingArguments,
-    Trainer
+
+from transformers.modeling_utils import (
+    is_fsdp_enabled, 
+    is_deepspeed_zero3_enabled
 )
 
 from transformers.modeling_outputs import (
@@ -710,25 +713,27 @@ class NewMerger(PreTrainedModel):
             return model
             
         if not is_fsdp_enabled() and not is_deepspeed_zero3_enabled():
-            if device_map == "auto":
-                # Get max memory available on each GPU
-                max_memory = {i: f"{int(torch.cuda.get_device_properties(i).total_memory / 1024**3 - 2)}GiB" 
-                             for i in range(torch.cuda.device_count())}
-                
-                # Compute optimal device map
-                device_map = infer_auto_device_map(
-                    model, 
-                    max_memory=max_memory,
-                    no_split_module_classes=[
-                        "LinearsWithMasks", 
-                        "EmbeddingsWithMasks", 
-                        "RMSNormsWithMasks"
-                    ]
-                )
-                
-            model = dispatch_model(model, device_map=device_map)
-        
-        return model
+            return model
+            
+        if device_map == "auto":
+            # Reserve 2GB buffer per GPU
+            max_memory = {
+                i: f"{int(torch.cuda.get_device_properties(i).total_memory / 1024**3 - 2)}GiB" 
+                for i in range(torch.cuda.device_count())
+            }
+            
+            # Compute optimal device map
+            device_map = infer_auto_device_map(
+                model, 
+                max_memory=max_memory,
+                no_split_module_classes=[
+                    "LinearsWithMasks", 
+                    "EmbeddingsWithMasks", 
+                    "RMSNormsWithMasks"
+                ]
+            )
+            
+        return dispatch_model(model, device_map=device_map)
 
     def forward(
         self,
