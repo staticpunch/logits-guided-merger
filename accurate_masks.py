@@ -831,6 +831,12 @@ def init_masks(target_module: nn.Module, ref_modules: nn.Module, merge_config: M
         elif "RMSNorm" in type(target_child).__name__:
             new_module = RMSNormsWithMasks(ref_children, modes, factors, constrain_mode)
 
+        # Move new module's mask parameters to correct dtype
+        target_dtype = ref_children[0].weight.dtype
+        for param in new_module.parameters():
+            if param.requires_grad:  # Only convert mask parameters, not the frozen model weights
+                param.data = param.data.to(dtype=target_dtype)
+
         # Replace the original module with the new masked module
         parent_module = target_module
         for m_name in module_names[:-1]:
