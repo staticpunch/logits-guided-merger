@@ -647,6 +647,12 @@ class NewMerger(PreTrainedModel):
         state_dict: Optional[dict] = None,
         **kwargs,
     ):
+        """
+        Every save calls during training point back to this function.
+        Trainer._save_checkpoint() -> Trainer.save_model() -> Trainer._save()
+        -> Merger.save_pretrained()
+        Basically I only have to customize .save_pretrained()
+        """
         if state_dict is None:
             state_dict = self.state_dict()
             
@@ -662,6 +668,16 @@ class NewMerger(PreTrainedModel):
             state_dict=trainable_state,
             **kwargs
         )
+
+        # Rename the files after saving
+        safe_file = os.path.join(save_directory, "model.safetensors")
+        pytorch_file = os.path.join(save_directory, "pytorch_model.bin")
+        
+        if os.path.exists(safe_file):
+            os.rename(safe_file, os.path.join(save_directory, "masks.safetensors"))
+        elif os.path.exists(pytorch_file):
+            os.rename(pytorch_file, os.path.join(save_directory, "masks.bin"))
+        
 
     @classmethod
     def from_pretrained(
