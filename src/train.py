@@ -16,6 +16,7 @@ import torch.nn as nn
 import logging
 import copy
 import gc
+import os
 
 from datasets import load_dataset
 from tqdm import tqdm
@@ -37,6 +38,7 @@ from transformers import (
 )
 
 from transformers.utils import CONFIG_NAME
+from transformers.pytorch_utils import is_torch_greater_or_equal_than_1_13
 
 # from accurate_masks import (
 # from efficient_masks import (
@@ -64,15 +66,20 @@ logger = logging.getLogger(__name__)
 class DataProcessor:
     """Handles data loading and preprocessing."""
     
-    def __init__(self, tokenizer: PreTrainedTokenizerBase):
+    def __init__(self, tokenizer: PreTrainedTokenizerBase, dataset_name, dataset_config, data_source_key, split):
         self.tokenizer = tokenizer
+        self.dataset_name = dataset_name
+        self.dataset_config = dataset_config
+        self.data_source_key = data_source_key
+        self.split = split
+
     
     def load_dataset(self):
         """Load and prepare the training dataset."""
-        summarize_train = load_dataset("HuggingFaceTB/smoltalk", "smol-summarize", split="train")
-        summarize_train = summarize_train.add_column(name="data_source", column=[1 for _ in summarize_train])
-        rewrite_train = load_dataset("HuggingFaceTB/smoltalk", "smol-rewrite", split="train")
-        rewrite_train = rewrite_train.add_column(name="data_source", column=[0 for _ in rewrite_train])
+        summarize_train = load_dataset(self.dataset_name, self.dataset_config[0], split=self.split)
+        summarize_train = summarize_train.add_column(name="data_source", column=[self.data_source_key[0] for _ in summarize_train])
+        rewrite_train = load_dataset(self.dataset_name, self.dataset_config[1], split=self.split)
+        rewrite_train = rewrite_train.add_column(name="data_source", column=[self.data_source_key[1] for _ in rewrite_train])
         
         train_dataset = datasets.concatenate_datasets([
             rewrite_train, 
@@ -231,7 +238,7 @@ class MergerTrainer(Trainer):
         )
         # Look for trainable parameters file
         masks_file = os.path.join(resume_from_checkpoint, "masks.safetensors")
-        if not os.path.isfile(trainable_params_file):
+        if not os.path.isfile(masks_file):
             masks_file = os.path.join(resume_from_checkpoint, "masks.bin")
         
         if not os.path.isfile(masks_file):
@@ -256,7 +263,7 @@ class MergerTrainer(Trainer):
             # If the model is on the GPU, it still works!
             # We load the model state dict on the CPU to avoid an OOM error.
             if self.args.save_safetensors and masks_file.endswith(".safetensors"):
-                state_dict = safetensors.torch.load_file(safe_weights_file, device="cpu")
+                state_dict = safetensors.torch.load_file(masks_file, device="cpu")
             else:
                 state_dict = torch.load(
                     masks_file,
@@ -279,42 +286,46 @@ class MergerTrainer(Trainer):
 
 @dataclass
 class Args:
-    model_name: str = "..."  # You can replace this with any causal language model from HuggingFace
-    dataset_name: str = "..."  # Replace with your dataset name (e.g., "your_username/your_dataset")
-    train_split: str = "train"  # e.g., "train[:80%]" for an 80/20 train/validation split
-    validation_split: str = None  # e.g., "train[80%:]"
-    output_dir: str = "./trained_masks"
-    per_device_train_batch_size: int = 1
-    per_device_eval_batch_size: int = 8
-    gradient_accumulation_steps: int = 32
-    learning_rate: float = 3e-3
-    num_train_epochs: int = 3
-    save_steps: int = 100
-    eval_steps: int = 5000
-    logging_steps: int = 10
-    logging_dir: str = "./trained_masks/logs"
-    eval_strategy: str = "steps"
-    report_to: str = None
-    remove_unused_columns: bool = False
-    logging_first_step: bool = True
-    gradient_checkpointing: bool = False
+    model_paths: List[str]
+    dataset_name: str
+    dataset_config: List[str]
+    data_source_key: List[int]
+    mode: str
+    constrain_mode: str
+    train_split: str
+    output_dir: str
+    per_device_train_batch_size: int
+    per_device_eval_batch_size: int
+    gradient_accumulation_steps: int
+    learning_rate: float
+    num_train_epochs: int
+    save_steps: int
+    eval_steps: int
+    logging_steps: int
+    logging_dir: str
+    eval_strategy: str
+    report_to: str
+    remove_unused_columns: bool
+    logging_first_step: bool
+    gradient_checkpointing: bool
+    validation_split: str = None
 
 def main():
     """Main training function."""
+    parser = HfArgumentParser(Args)
+    (args,) = parser.parse_args_into_dataclasses()
+
     # Initialize configuration
     merge_config = MergerConfig(
-        model_paths=[
-            "nguyenthanhdo/llama32_smol_rewrite_50k",
-            "nguyenthanhdo/llama32_smol_summarize_50k",
-        ],
-        mode="vector_input",
-        constrain_mode="01"
+        model_paths=args.model_paths,
+        mode=args.mode,
+        constrain_mode=args.constrain_mode
     )
     
     # Setup tokenizer and data processing
     tokenizer = AutoTokenizer.from_pretrained(merge_config.model_paths[0])
     tokenizer.pad_token = tokenizer.eos_token
-    data_processor = DataProcessor(tokenizer)
+    data_processor = DataProcessor(tokenizer, args.dataset_name, args.dataset_config, args.data_source_key, args.train_split)
     train_dataset = data_processor.load_dataset()
     tokenized_dataset = train_dataset.map(
         data_processor.tokenize,
@@ -334,10 +345,10 @@ def main():
         name for name, buffer in merger.named_buffers() 
         if buffer.dtype == torch.bool
     ]
-    set_masks(merger.merger, strategy="uniform", factors=[0.5, 0.5])
+    # set_masks(merger.merger, strategy="uniform", factors=[0.5, 0.5])
+    set_masks(merger.merger, strategy="random")
     
     # Setup training arguments and data collator
-    args = Args()
     training_args = TrainingArguments(
         output_dir=args.output_dir,
         per_device_train_batch_size=args.per_device_train_batch_size,

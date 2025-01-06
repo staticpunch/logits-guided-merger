@@ -2,3 +2,6 @@ __pycache__/
 .ipynb_checkpoints/
 *.pyc
 trained_masks/
+*trained_masks/*
+trained_masks/*
+*random_masks/*
