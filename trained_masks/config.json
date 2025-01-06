@@ -2,7 +2,7 @@
   "architectures": [
     "NewMerger"
   ],
-  "constrain_mode": "01",
+  "constrain_mode": "identity",
   "mode": "vector_input",
   "model_paths": [
     "nguyenthanhdo/llama32_smol_rewrite_50k",

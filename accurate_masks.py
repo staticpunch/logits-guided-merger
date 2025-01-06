@@ -576,87 +576,6 @@ class MergerConfig(PretrainedConfig):
         self.constrain_mode = constrain_mode
         super().__init__(**kwargs)
 
-class Merger(PreTrainedModel):
-    def __init__(self, merge_config):
-        super().__init__(merge_config)
-        """
-        Need to check whether models are mergeable (having some sort of the same config)
-        """
-        self.merge_config = merge_config
-        self.num_models = len(merge_config.model_paths)
-        self.configs = [
-            AutoConfig.from_pretrained(path) 
-            # Qwen2Config.from_pretrained(path)
-            for path in merge_config.model_paths
-        ]
-        # self.merger = Qwen2ForCausalLM(self.config)
-        self.models = nn.ModuleList([
-            # Qwen2ForCausalLM.from_pretrained(
-            AutoModelForCausalLM.from_pretrained(
-                merge_config.model_paths[i], 
-                config=self.configs[i],
-                torch_dtype=torch.bfloat16
-            ) 
-            for i in range(self.num_models)
-        ])
-        # self.__post_init__(merge_config)
-        
-    def __post_init__(self):
-        for model in self.models:
-            for param in model.parameters():
-                param.requires_grad = False
-                
-        self.merger = copy.deepcopy(self.models[0])
-        init_masks(
-            self.merger, self.models, self.merge_config
-        )
-        free_memory()
-        
-    def forward(
-        self,
-        input_ids: torch.LongTensor = None,
-        attention_mask: Optional[torch.Tensor] = None,
-        position_ids: Optional[torch.LongTensor] = None,
-        past_key_values: Optional[List[torch.FloatTensor]] = None,
-        inputs_embeds: Optional[torch.FloatTensor] = None,
-        labels: Optional[torch.LongTensor] = None,
-        use_cache: Optional[bool] = None,
-        output_attentions: Optional[bool] = None,
-        output_hidden_states: Optional[bool] = None,
-        return_dict: Optional[bool] = None,
-        cache_position: Optional[torch.LongTensor] = None,
-        num_logits_to_keep: int = 0,
-        **loss_kwargs,
-    ) -> Union[Tuple, CausalLMOutputWithPast]:
-        output_attentions = output_attentions if output_attentions is not None else False
-        output_hidden_states = (
-            output_hidden_states if output_hidden_states is not None else False
-        )
-        return_dict = return_dict if return_dict is not None else True
-
-        # decoder outputs consists of (dec_features, layer_state, dec_hidden, dec_attn)
-        inputs = dict(
-            input_ids=input_ids,
-            attention_mask=attention_mask,
-            position_ids=position_ids,
-            past_key_values=past_key_values,
-            inputs_embeds=inputs_embeds,
-            use_cache=use_cache,
-            output_attentions=output_attentions,
-            output_hidden_states=output_hidden_states,
-            return_dict=return_dict,
-            cache_position=cache_position,
-        )
-        merger_outputs = self.merger(**inputs)
-        components_outputs = []
-        for i in range(len(self.models)):
-            compout = self.models[i](**inputs)
-            components_outputs.append(compout)
-        return {
-            "merger_outputs": merger_outputs,
-            "components_outputs": components_outputs
-        }
-
 class NewMerger(PreTrainedModel):
     def __init__(self, config: MergerConfig):
         super().__init__(config)
@@ -678,62 +597,6 @@ class NewMerger(PreTrainedModel):
             config.model_paths[0],  # Use first model path
             config=self.configs[0]
         )
-
-    @classmethod
-    def from_pretrained(
-        cls,
-        pretrained_model_name_or_path: Optional[Union[str, os.PathLike]],
-        config: Optional[Union[PretrainedConfig, str, os.PathLike]] = None,
-        *model_args,
-        **kwargs,
-    ):
-        device_map = kwargs.pop('device_map', None)  # Remove device_map from kwargs
-        
-        # Initialize model instance
-        model = cls(config, *model_args)
-        
-        # Load component models without device_map
-        for i in range(model.num_models):
-            loaded_model = AutoModelForCausalLM.from_pretrained(
-                config.model_paths[i],
-                config=model.configs[i],
-                **kwargs
-            )
-            model.models.append(loaded_model)
-            
-            # Freeze component model parameters
-            for param in loaded_model.parameters():
-                param.requires_grad = False
-        
-        # Initialize masks before device mapping
-        init_masks(model.merger, model.models, config)
-        
-        # Apply device mapping after masks are initialized
-        if device_map is None:
-            return model
-            
-        if not is_fsdp_enabled() and not is_deepspeed_zero3_enabled():
-            return model
-            
-        if device_map == "auto":
-            # Reserve 2GB buffer per GPU
-            max_memory = {
-                i: f"{int(torch.cuda.get_device_properties(i).total_memory / 1024**3 - 2)}GiB" 
-                for i in range(torch.cuda.device_count())
-            }
-            
-            # Compute optimal device map
-            device_map = infer_auto_device_map(
-                model, 
-                max_memory=max_memory,
-                no_split_module_classes=[
-                    "LinearsWithMasks", 
-                    "EmbeddingsWithMasks", 
-                    "RMSNormsWithMasks"
-                ]
-            )
-            
-        return dispatch_model(model, device_map=device_map)
 
     def forward(
         self,
@@ -777,6 +640,120 @@ class NewMerger(PreTrainedModel):
             "merger_outputs": merger_outputs,
             "components_outputs": components_outputs
         }
+
+    def save_pretrained(
+        self,
+        save_directory: Union[str, os.PathLike],
+        state_dict: Optional[dict] = None,
+        **kwargs,
+    ):
+        if state_dict is None:
+            state_dict = self.state_dict()
+            
+        # Filter for only trainable parameters (masks)
+        trainable_state = {
+            k: v for k, v in state_dict.items() 
+            if any(trainable_key in k for trainable_key in [
+                'weight_masks', 'bias_masks', 'masks'
+            ])
+        }
+        super().save_pretrained(
+            save_directory=save_directory,
+            state_dict=trainable_state,
+            **kwargs
+        )
+
+    @classmethod
+    def from_pretrained(
+        cls,
+        pretrained_model_name_or_path: Optional[Union[str, os.PathLike]],
+        config: Optional[Union[PretrainedConfig, str, os.PathLike]] = None,
+        *model_args,
+        **kwargs,
+    ):
+        device_map = kwargs.pop('device_map', None)  # Remove device_map from kwargs
+        
+        # Initialize model instance
+        model = cls(config, *model_args)
+        
+        # Load component models without device_map
+        for i in range(model.num_models):
+            loaded_model = AutoModelForCausalLM.from_pretrained(
+                config.model_paths[i],
+                config=model.configs[i],
+                **kwargs
+            )
+            model.models.append(loaded_model)
+            
+            # Freeze component model parameters
+            for param in loaded_model.parameters():
+                param.requires_grad = False
+        
+        # Initialize masks before device mapping
+        init_masks(model.merger, model.models, config)
+        
+        # If loading from a checkpoint, load saved trainable parameters
+        if pretrained_model_name_or_path is not None:
+            state_dict = self.load_masks_state_dict(pretrained_model_name_or_path)
+            missing_keys, unexpected_keys = model.load_state_dict(
+                state_dict, strict=False
+            )
+        # Apply device mapping after masks are initialized
+        if device_map is None:
+            return model
+            
+        if not is_fsdp_enabled() and not is_deepspeed_zero3_enabled():
+            return model
+            
+        if device_map == "auto":
+            # Reserve 2GB buffer per GPU
+            max_memory = {
+                i: f"{int(torch.cuda.get_device_properties(i).total_memory / 1024**3 - 2)}GiB" 
+                for i in range(torch.cuda.device_count())
+            }
+            
+            # Compute optimal device map
+            device_map = infer_auto_device_map(
+                model, 
+                max_memory=max_memory,
+                no_split_module_classes=[
+                    "LinearsWithMasks", 
+                    "EmbeddingsWithMasks", 
+                    "RMSNormsWithMasks"
+                ]
+            )
+            
+        return dispatch_model(model, device_map=device_map)
+
+    def load_masks_state_dict(
+        self, 
+        pretrained_model_name_or_path: Optional[Union[str, os.PathLike]]
+    ):
+        # Try loading from safetensors first
+        trainable_path = os.path.join(pretrained_model_name_or_path, "masks.safetensors")
+        if not os.path.exists(trainable_path):
+            trainable_path = os.path.join(pretrained_model_name_or_path, "masks.bin")
+        if os.path.exists(trainable_path):
+            if trainable_path.endswith('.safetensors'):
+                from safetensors.torch import load_file as safe_load_file
+                state_dict = safe_load_file(trainable_path)
+            else:
+                state_dict = torch.load(trainable_path, map_location="cpu")
+
+            return state_dict
+        else:
+            raise ValueError(f"`{trainable_path}` does not exist.")
+
+    
+    def load_masks(
+        self, 
+        pretrained_model_name_or_path: Optional[Union[str, os.PathLike]]
+    ):  
+        # Load only the trainable parameters
+        state_dict = self.load_masks_state_dict(pretrained_model_name_or_path)
+        missing_keys, unexpected_keys = self.merger.load_state_dict(
+            state_dict, strict=False
+        )
 
 def find_modules_to_add_masks(target_module):
     module_names_to_replace = []
