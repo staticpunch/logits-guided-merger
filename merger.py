@@ -298,7 +298,7 @@ class NewMerger(PreTrainedModel):
         
         # If loading from a checkpoint, load saved trainable parameters
         if pretrained_model_name_or_path is not None:
-            state_dict = self.load_masks_state_dict(pretrained_model_name_or_path)
+            state_dict = model.load_masks_state_dict(pretrained_model_name_or_path)
             missing_keys, unexpected_keys = model.load_state_dict(
                 state_dict, strict=False
             )

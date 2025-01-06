@@ -287,8 +287,8 @@ class Args:
     per_device_train_batch_size: int = 1
     per_device_eval_batch_size: int = 8
     gradient_accumulation_steps: int = 32
-    learning_rate: float = 3e-2
-    num_train_epochs: int = 1
+    learning_rate: float = 3e-3
+    num_train_epochs: int = 3
     save_steps: int = 100
     eval_steps: int = 5000
     logging_steps: int = 10
@@ -329,6 +329,11 @@ def main():
         device_map="auto",
         attn_implementation="flash_attention_2",
     )
+    # torch distributed hack
+    merger._ddp_params_and_buffers_to_ignore = [
+        name for name, buffer in merger.named_buffers() 
+        if buffer.dtype == torch.bool
+    ]
     set_masks(merger.merger, strategy="uniform", factors=[0.5, 0.5])
     
     # Setup training arguments and data collator
@@ -348,7 +353,8 @@ def main():
         report_to=args.report_to,  # Enable TensorBoard logging
         remove_unused_columns=args.remove_unused_columns,
         logging_first_step=args.logging_first_step,
-        gradient_checkpointing=args.gradient_checkpointing
+        gradient_checkpointing=args.gradient_checkpointing,
+        ddp_find_unused_parameters=False
     )
     
     data_collator = MergerDataCollator(
