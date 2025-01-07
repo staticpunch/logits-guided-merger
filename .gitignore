@@ -5,3 +5,5 @@ trained_masks/
 *trained_masks/*
 trained_masks/*
 *random_masks/*
+results/
+src/results

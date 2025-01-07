@@ -76,13 +76,13 @@ class DataProcessor:
     
     def load_dataset(self):
         """Load and prepare the training dataset."""
-        summarize_train = load_dataset(self.dataset_name, self.dataset_config[0], split=self.split)
-        summarize_train = summarize_train.add_column(name="data_source", column=[self.data_source_key[0] for _ in summarize_train])
-        rewrite_train = load_dataset(self.dataset_name, self.dataset_config[1], split=self.split)
-        rewrite_train = rewrite_train.add_column(name="data_source", column=[self.data_source_key[1] for _ in rewrite_train])
+        summarize_train = load_dataset(self.dataset_name, self.dataset_config[1], split=self.split)
+        summarize_train = summarize_train.add_column(name="data_source", column=[self.data_source_key[1] for _ in summarize_train])
+        rewrite_train = load_dataset(self.dataset_name, self.dataset_config[0], split=self.split)
+        rewrite_train = rewrite_train.add_column(name="data_source", column=[self.data_source_key[0] for _ in rewrite_train])
         
         train_dataset = datasets.concatenate_datasets([
-            rewrite_train, 
+            # rewrite_train, 
             summarize_train
         ])
         return train_dataset.shuffle(seed=42).select(range(30000))
@@ -345,8 +345,8 @@ def main():
         name for name, buffer in merger.named_buffers() 
         if buffer.dtype == torch.bool
     ]
-    # set_masks(merger.merger, strategy="uniform", factors=[0.5, 0.5])
-    set_masks(merger.merger, strategy="random")
+    set_masks(merger.merger, strategy="uniform", factors=[0.99, 0.01])
+    # set_masks(merger.merger, strategy="random")
     
     # Setup training arguments and data collator
     training_args = TrainingArguments(
