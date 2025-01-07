@@ -183,7 +183,7 @@ class Constrainer(nn.Module):
         self.statistics = None
         self.constrain_mode = constrain_mode
         self.mask_mode = mask_mode
-        if self.constrain_mode not in ("identity", "01", "-11", "spherical", "sum1"):
+        if self.constrain_mode not in ("identity", "01", "-11", "spherical", "sum1", "cosine"):
             raise ValueError(f"Does not support {self.constrain_mode} constraint yet!")
             
         if (self.constrain_mode == "spherical" and all([w is not None for w in component_weights])):
@@ -213,6 +213,10 @@ class Constrainer(nn.Module):
         
     def _constrain_identity(self, mask_weights: List[torch.Tensor]):
         return mask_weights
+        
+    def _constrain_cosine(self, mask_weights: List[torch.Tensor]):
+        W = [1.0 / 2 - torch.cos(torch.pi * w) / 2 for w in mask_weights]
+        return W
 
     def _constrain_sumone(self, mask_weights: List[torch.Tensor]):
         W = [w / sum(mask_weights) for w in mask_weights]
@@ -260,6 +264,8 @@ class Constrainer(nn.Module):
             
         if self.constrain_mode == "identity":
             return self._constrain_identity(mask_weights)
+        if self.constrain_mode == "cosine":
+            return self._constrain_cosine(mask_weights)
         elif self.constrain_mode == "01":
             return self._constrain_0_1(mask_weights)
         elif self.constrain_mode == "-11":
