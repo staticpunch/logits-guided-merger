@@ -8,14 +8,14 @@ DATASET_NAME="HuggingFaceTB/smoltalk"
 DATASET_CONFIG=("smol-rewrite" "smol-summarize")
 DATA_SOURCE_KEY=(0 1)
 MODE="vector_input"
-CONSTRAIN_MODE="cosine"
+CONSTRAIN_MODE="-11"
 TRAIN_SPLIT="train"
-OUTPUT_DIR="./results/random_masks_cosine"
+OUTPUT_DIR="./results/random_masks_tanh"
 PER_DEVICE_TRAIN_BATCH_SIZE=1
 PER_DEVICE_EVAL_BATCH_SIZE=8
 GRADIENT_ACCUMULATION_STEPS=32
 LEARNING_RATE=3e-3
-NUM_TRAIN_EPOCHS=10
+NUM_TRAIN_EPOCHS=5
 SAVE_STEPS=100
 EVAL_STEPS=5000
 LOGGING_STEPS=10
@@ -24,6 +24,7 @@ EVAL_STRATEGY="steps"
 REPORT_TO="none"
 REMOVE_UNUSED_COLUMNS=False
 LOGGING_FIRST_STEP=True
+BF16=True
 GRADIENT_CHECKPOINTING=False
 
 # Get the name of the current script
@@ -52,6 +53,7 @@ CMD="accelerate launch train-debug-3.py \
     --report_to $REPORT_TO \
     --remove_unused_columns $REMOVE_UNUSED_COLUMNS \
     --logging_first_step $LOGGING_FIRST_STEP \
+    --bf16 $BF16 \
     --gradient_checkpointing $GRADIENT_CHECKPOINTING"
 
 # Create output directory if it doesn't exist

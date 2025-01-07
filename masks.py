@@ -223,10 +223,13 @@ class Constrainer(nn.Module):
         return W
 
     def _constrain_0_1(self, mask_weights: List[torch.Tensor]):
-        W = [relu_01(w) for w in mask_weights]
+        # W = [relu_01(w) for w in mask_weights]
+        W = [torch.sigmoid(w) for w in mask_weights]
         return W
 
     def _constrain_neg1_1(self, mask_weights: List[torch.Tensor]):
+        mask_weights = [torch.tanh(w) for w in mask_weights]
+        # W = [2 * torch.sigmoid(w) - 1 for w in mask_weights]
         return mask_weights
 
     def _constrain_spherical(self, mask_weights: List[torch.Tensor], DOT_THRESHOLD: float = 0.9995):
@@ -241,7 +244,8 @@ class Constrainer(nn.Module):
         # T = W[0] / sum(W)
 
         ## ignore mask_weights[1]
-        T = silu_01(mask_weights[0])
+        # T = silu_01(mask_weights[0])
+        T = torch.sigmoid(mask_weights[0])
 
         # Angle at timestep t's
         theta_ts = self.theta_0s * T

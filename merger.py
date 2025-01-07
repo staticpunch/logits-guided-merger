@@ -175,7 +175,7 @@ class NewMerger(PreTrainedModel):
             AutoConfig.from_pretrained(path) 
             for path in config.model_paths
         ]
-        
+        self.config = self.configs[0] # For DeepSpeed to read.
         # Initialize empty ModuleList for models - will be populated in from_pretrained
         self.models = nn.ModuleList()
         
@@ -242,7 +242,13 @@ class NewMerger(PreTrainedModel):
         Basically I only have to customize .save_pretrained()
         """
         if state_dict is None:
-            state_dict = self.state_dict()
+            # Check if using DeepSpeed
+            if hasattr(self, 'ds_engine'):
+                # Get the DeepSpeed engine's state dict
+                state_dict = self.ds_engine.module.state_dict()
+            else:
+                state_dict = self.state_dict()
+
             
         # Filter for only trainable parameters (masks)
         trainable_state = {

@@ -307,6 +307,7 @@ class Args:
     report_to: str
     remove_unused_columns: bool
     logging_first_step: bool
+    bf16: bool
     gradient_checkpointing: bool
     validation_split: str = None
 
@@ -340,7 +341,7 @@ def main():
         None,
         merge_config,
         torch_dtype=torch.bfloat16,
-        device_map="auto",
+        # device_map="auto",
         attn_implementation="flash_attention_2",
     )
     # torch distributed hack
@@ -348,8 +349,8 @@ def main():
         name for name, buffer in merger.named_buffers() 
         if buffer.dtype == torch.bool
     ]
-    set_masks(merger.merger, strategy="uniform", factors=[0.99, 0.01])
-    # set_masks(merger.merger, strategy="random")
+    # set_masks(merger.merger, strategy="uniform", factors=[0.99, 0.01])
+    set_masks(merger.merger, strategy="random")
     
     # Setup training arguments and data collator
     training_args = TrainingArguments(
@@ -368,6 +369,8 @@ def main():
         remove_unused_columns=args.remove_unused_columns,
         logging_first_step=args.logging_first_step,
         gradient_checkpointing=args.gradient_checkpointing,
+        # bf16=args.bf16,
+        # fp16=not args.bf16,
         ddp_find_unused_parameters=False
     )
     
