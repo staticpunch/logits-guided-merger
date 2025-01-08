@@ -52,6 +52,7 @@ from utils import (
 # Configure logger
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+logger.info("--------- EFFICIENT MASKS ----------")
 
 def free_memory():
     if not torch.cuda.is_available():
@@ -335,11 +336,6 @@ class LinearsWithMasks(ModulesWithMasks):
 
     def forward(self, x):
         constrained_weight_masks = self.weight_masks_constrainer([m.weight for m in self.weight_masks])
-        masked_weights = [
-            w_mask * linear.weight for w_mask, linear in zip(constrained_weight_masks, self.linears)
-        ]
-        merged_weight = sum(masked_weights)
-
         constrained_bias_masks = self.bias_masks_constrainer(
             [m.weight if m is not None else None for m in self.bias_masks]
         )
@@ -347,13 +343,22 @@ class LinearsWithMasks(ModulesWithMasks):
             b_mask * linear.bias if linear.bias is not None and b_mask is not None else linear.bias
             for b_mask, linear in zip(constrained_bias_masks, self.linears)
         ]
-
         merged_bias = (
-            sum(b if b is not None else torch.zeros_like(merged_weight[:, 0]) for b in masked_biases)
+            sum(b if b is not None else torch.zeros_like(
+                self.linears[0].weight[:, 0]) for b in masked_biases
+               ) 
             if not all(b is None for b in masked_biases) else None
         )
+        
+        output = 0.0
+        for i, linear in enumerate(self.linears):
+            masked_input = constrained_weight_masks[i] * x
+            output = output + nn.functional.linear(masked_input, linear.weight, None)
 
-        return nn.functional.linear(x, merged_weight, merged_bias)
+        if merged_bias:
+            output = output + merged_bias
+
+        return output
 
     def get_raw_masks(self):
         with torch.no_grad():
@@ -408,16 +413,20 @@ class RMSNormsWithMasks(ModulesWithMasks):
 
     def forward(self, hidden_states):
         constrained_masks = self.masks_constrainer([m.weight for m in self.masks])
-        masked_weights = [mask * norm.weight for mask, norm in zip(constrained_masks, self.rms_norms)]
-        merged_weight = sum(masked_weights)
-        variance_epsilon = self.rms_norms[0].variance_epsilon
-        for norm in self.rms_norms:
-            assert variance_epsilon == norm.variance_epsilon, ("Variance epsilon among models must be consistent")
         input_dtype = hidden_states.dtype
         hidden_states = hidden_states.to(torch.float32)
         variance = hidden_states.pow(2).mean(-1, keepdim=True)
+        # all rms norms share the same variance_epsilon.
+        variance_epsilon = self.rms_norms[0].variance_epsilon
+        for norm in self.rms_norms:
+            assert variance_epsilon == norm.variance_epsilon, ("Variance epsilon among models must be consistent")
         hidden_states = hidden_states * torch.rsqrt(variance + variance_epsilon)
-        return merged_weight * hidden_states.to(input_dtype)
+        
+        out = 0.0
+        for i, norm in enumerate(self.rms_norms):
+            masked_input = constrained_masks[i] * hidden_states.to(input_dtype)
+            out = out + norm.weight * masked_input
+        return out
 
     def get_raw_masks(self):
         with torch.no_grad():
@@ -450,11 +459,6 @@ class EmbeddingsWithMasks(ModulesWithMasks):
             component_weights=[emb.weight for emb in self.embeddings], 
             constrain_mode=constrain_mode, mask_mode=modes[0]
         )
-
-    def forward(self, input_ids):
-        constrained_masks = self.masks_constrainer([m.weight for m in self.masks])
-        masked_weights = [mask * emb.weight for mask, emb in zip(constrained_masks, self.embeddings)]
-        merged_weight = sum(masked_weights)
         
         an_embedding = self.embeddings[0]
         for other_embedding in self.embeddings:
@@ -464,15 +468,23 @@ class EmbeddingsWithMasks(ModulesWithMasks):
             assert an_embedding.scale_grad_by_freq == other_embedding.scale_grad_by_freq
             assert an_embedding.sparse == other_embedding.sparse
             
-        return nn.functional.embedding(
-            input_ids,
-            merged_weight,
-            padding_idx=an_embedding.padding_idx,
-            max_norm=an_embedding.max_norm,
-            norm_type=an_embedding.norm_type,
-            scale_grad_by_freq=an_embedding.scale_grad_by_freq,
-            sparse=an_embedding.sparse,
-        )
+    def forward(self, input_ids):
+        constrained_masks = self.masks_constrainer([m.weight for m in self.masks])
+        an_embedding = self.embeddings[0]
+
+        out = 0.0
+        for i, emb in enumerate(self.embeddings):
+            mask = constrained_masks[i]
+            out = out + nn.functional.embedding(
+                input_ids,
+                emb.weight * mask,
+                padding_idx=an_embedding.padding_idx,
+                max_norm=an_embedding.max_norm,
+                norm_type=an_embedding.norm_type,
+                scale_grad_by_freq=an_embedding.scale_grad_by_freq,
+                sparse=an_embedding.sparse,
+            )
+        return out
         
     def get_raw_masks(self):
         with torch.no_grad():

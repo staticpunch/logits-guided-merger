@@ -76,14 +76,14 @@ class DataProcessor:
     
     def load_dataset(self):
         """Load and prepare the training dataset."""
-        summarize_train = load_dataset(self.dataset_name, self.dataset_config[1], split=self.split)
-        summarize_train = summarize_train.add_column(name="data_source", column=[self.data_source_key[1] for _ in summarize_train])
-        rewrite_train = load_dataset(self.dataset_name, self.dataset_config[0], split=self.split)
-        rewrite_train = rewrite_train.add_column(name="data_source", column=[self.data_source_key[0] for _ in rewrite_train])
-        
+        datasets_list = []
+        for data_config, source_key in zip(self.dataset_config, self.data_source_key):
+            new_dataset = load_dataset(self.dataset_name, data_config, split=self.split)
+            new_dataset = new_dataset.add_column(name="data_source", column=[source_key for _ in new_dataset])
+            datasets_list.append(new_dataset)
+            
         train_dataset = datasets.concatenate_datasets([
-            # rewrite_train, 
-            summarize_train
+            ds for ds in datasets_list[:] # 0 for rewrite, 1 for summarize.
         ])
         return train_dataset.shuffle(seed=42).select(range(30000))
     
@@ -307,6 +307,7 @@ class Args:
     report_to: str
     remove_unused_columns: bool
     logging_first_step: bool
+    bf16: bool
     gradient_checkpointing: bool
     validation_split: str = None
 
@@ -325,7 +326,10 @@ def main():
     # Setup tokenizer and data processing
     tokenizer = AutoTokenizer.from_pretrained(merge_config.model_paths[0])
     tokenizer.pad_token = tokenizer.eos_token
-    data_processor = DataProcessor(tokenizer, args.dataset_name, args.dataset_config, args.data_source_key, args.train_split)
+    data_processor = DataProcessor(
+        tokenizer, args.dataset_name, args.dataset_config, 
+        args.data_source_key, args.train_split
+    )
     train_dataset = data_processor.load_dataset()
     tokenized_dataset = train_dataset.map(
         data_processor.tokenize,
@@ -337,7 +341,7 @@ def main():
         None,
         merge_config,
         torch_dtype=torch.bfloat16,
-        device_map="auto",
+        # device_map="auto",
         attn_implementation="flash_attention_2",
     )
     # torch distributed hack
@@ -345,8 +349,8 @@ def main():
         name for name, buffer in merger.named_buffers() 
         if buffer.dtype == torch.bool
     ]
-    set_masks(merger.merger, strategy="uniform", factors=[0.99, 0.01])
-    # set_masks(merger.merger, strategy="random")
+    # set_masks(merger.merger, strategy="uniform", factors=[0.99, 0.01])
+    set_masks(merger.merger, strategy="random")
     
     # Setup training arguments and data collator
     training_args = TrainingArguments(
@@ -365,6 +369,8 @@ def main():
         remove_unused_columns=args.remove_unused_columns,
         logging_first_step=args.logging_first_step,
         gradient_checkpointing=args.gradient_checkpointing,
+        # bf16=args.bf16,
+        # fp16=not args.bf16,
         ddp_find_unused_parameters=False
     )
     

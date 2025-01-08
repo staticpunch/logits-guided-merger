@@ -49,7 +49,7 @@ from utils import (
     free_memory
 )
 
-from masks import (
+from masks_accurate import (
     Mask, MaskConfig,
     Constrainer,
     LinearsWithMasks,
@@ -222,7 +222,10 @@ class NewMerger(PreTrainedModel):
             
         # During training, we want both merger and component outputs
         merger_outputs = self.merger(**inputs)
-        components_outputs = [model(**inputs) for model in self.models]
+        with torch.no_grad():
+            components_outputs = [
+                model(**inputs) for model in self.models
+            ]
         
         return {
             "merger_outputs": merger_outputs,
@@ -414,7 +417,9 @@ def init_masks(target_module: nn.Module, ref_modules: nn.Module, merge_config: M
             )
 
         elif isinstance(target_child, nn.Embedding):
-            new_module = EmbeddingsWithMasks(ref_children, modes, factors, constrain_mode)
+            # new_module = EmbeddingsWithMasks(ref_children, modes, factors, constrain_mode)
+            logger.info("Not replacing embedding layer.")
+            new_module = ref_children[0]
         elif "RMSNorm" in type(target_child).__name__:
             new_module = RMSNormsWithMasks(ref_children, modes, factors, constrain_mode)
 
