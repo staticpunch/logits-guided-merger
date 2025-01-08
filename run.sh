@@ -7,7 +7,7 @@ MODEL_PATHS=("nguyenthanhdo/llama32_smol_rewrite_50k" "nguyenthanhdo/llama32_smo
 DATASET_NAME="HuggingFaceTB/smoltalk"
 DATASET_CONFIG=("smol-rewrite" "smol-summarize")
 DATA_SOURCE_KEY=(0 1)
-MODE="vector_input"
+MODE="vector_output"
 CONSTRAIN_MODE="identity"
 TRAIN_SPLIT="train"
 OUTPUT_DIR="./results/random_masks_tanh"
@@ -26,7 +26,7 @@ REMOVE_UNUSED_COLUMNS=False
 LOGGING_FIRST_STEP=True
 BF16=True
 GRADIENT_CHECKPOINTING=False
-MAX_LENGTH=1024
+MAX_LENGTH=2048
 
 # Get the name of the current script
 SCRIPT_NAME=$(basename "$0")

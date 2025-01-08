@@ -48,4 +48,38 @@ Memory behaviors:
 - I suspected the memory high usage comes inference of component models. However this is wrong, as I disabled the component models inference and only let merger run forward, the memory is still the same. This means that running inference with component models costs nothing.
 - In another note, I suspected high memory is because of the computational graph. I want the autograd only track gradient of trainable params, which are masks, and ignore every other weights. I explicitly tried tricks like calling `detach()` when operating with model weights, using in-place operations like `_add`. Nothing works.
 - I tried to reduce the context length. The memory reduced significanly. Would investigate further from here.
-- Context length -> Memory: 2048 -> 37GB, 128 -> 25GB.
+- Context length -> Memory: 2048 -> 37GB, 128 -> 25GB, 1024 -> 29GB.
+
+New trick to try:
+```py
+in_features = 4
+out_features = 10
+
+x = torch.rand(in_features)
+W = torch.rand(out_features, in_features)
+
+mask_in = torch.rand(in_features)
+mask_out = torch.rand(out_features)
+```
+```
+x @ (mask_in * W).T == (mask_in * x) @ W.T
+```
+This means that masking the weight with `mask_in` is equivalent to masking the input.
+
+```
+remask_out = mask_out.unsqueeze(0).T ~ (out_features, 1)
+x @ (remask_out * W).T == x @ (W.T * mask_out) == (x @ W.T) * mask_out
+```
+This means that masking the weight with `mask_out` is equivalent to masking the output.
+
+I tried to move the matrix multiplication under no_grad() (decouple at outputs). Conceptually:
+```py
+partial_outputs = []
+with torch.no_grad():
+    for linear in self.linears:
+        # standard forward: y = xW^T + b
+        y = linear(x)
+        partial_outputs.append(y)
+```
+This works horribly. Check `masks_output.py`. This does nothing but increases memory to 60GB and slower converging loss. Maybe the buffer reserved for multiple linear forwards is too much.
+

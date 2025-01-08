@@ -372,9 +372,9 @@ def main():
         remove_unused_columns=args.remove_unused_columns,
         logging_first_step=args.logging_first_step,
         gradient_checkpointing=args.gradient_checkpointing,
-        # bf16=args.bf16,
-        # fp16=not args.bf16,
-        ddp_find_unused_parameters=False
+        bf16=args.bf16,
+        fp16=not args.bf16,
+        ddp_find_unused_parameters=True
     )
     
     data_collator = MergerDataCollator(

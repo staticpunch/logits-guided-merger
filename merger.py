@@ -49,7 +49,9 @@ from utils import (
     free_memory
 )
 
-from masks_accurate import (
+# from masks_accurate import (
+# from masks_efficient import (
+from masks_output import (
     Mask, MaskConfig,
     Constrainer,
     LinearsWithMasks,
