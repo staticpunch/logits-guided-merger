@@ -66,12 +66,13 @@ logger = logging.getLogger(__name__)
 class DataProcessor:
     """Handles data loading and preprocessing."""
     
-    def __init__(self, tokenizer: PreTrainedTokenizerBase, dataset_name, dataset_config, data_source_key, split):
+    def __init__(self, tokenizer: PreTrainedTokenizerBase, dataset_name, dataset_config, data_source_key, split, max_length):
         self.tokenizer = tokenizer
         self.dataset_name = dataset_name
         self.dataset_config = dataset_config
         self.data_source_key = data_source_key
         self.split = split
+        self.max_length = max_length
 
     
     def load_dataset(self):
@@ -97,7 +98,7 @@ class DataProcessor:
         return self.tokenizer(
             templated,
             truncation=True,
-            max_length=2048,
+            max_length=self.max_length,
             add_special_tokens=False
         )
 
@@ -224,7 +225,8 @@ class MergerTrainer(Trainer):
         
         outputs = model(**inputs)
         logits_merged = outputs["merger_outputs"].logits
-        logits_components = [x.logits for x in outputs["components_outputs"]]
+        # logits_target = logits_merged
+        logits_components = [x.logits.detach() for x in outputs["components_outputs"]]
 
         # Compute target logits and KL divergence
         logits_target = selective_logits_target(logits_components, data_source)
@@ -310,6 +312,7 @@ class Args:
     bf16: bool
     gradient_checkpointing: bool
     validation_split: str = None
+    max_length: int = 4096
 
 def main():
     """Main training function."""
@@ -328,7 +331,7 @@ def main():
     tokenizer.pad_token = tokenizer.eos_token
     data_processor = DataProcessor(
         tokenizer, args.dataset_name, args.dataset_config, 
-        args.data_source_key, args.train_split
+        args.data_source_key, args.train_split, args.max_length
     )
     train_dataset = data_processor.load_dataset()
     tokenized_dataset = train_dataset.map(

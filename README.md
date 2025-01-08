@@ -41,3 +41,11 @@ Experiments Milestones:
 - Minimum: English benchmark -> translate to target languages.
 - Expected: Distinct benchmark 
 3. Ablation studies: regularization of weights, initialization, loss (selective loss, entropy based, v..v..), scale data (10k, 20k, 50k)
+
+## 08-01-2025
+Memory behaviors:
+- I used DeepSpeed ZeRO-2 & ZeRO-3 but surprisingly they did not save any memory at all, and even incur addtional memory overhead for communication! This is disappointing.
+- I suspected the memory high usage comes inference of component models. However this is wrong, as I disabled the component models inference and only let merger run forward, the memory is still the same. This means that running inference with component models costs nothing.
+- In another note, I suspected high memory is because of the computational graph. I want the autograd only track gradient of trainable params, which are masks, and ignore every other weights. I explicitly tried tricks like calling `detach()` when operating with model weights, using in-place operations like `_add`. Nothing works.
+- I tried to reduce the context length. The memory reduced significanly. Would investigate further from here.
+- Context length -> Memory: 2048 -> 37GB, 128 -> 25GB.

@@ -26,6 +26,7 @@ REMOVE_UNUSED_COLUMNS=False
 LOGGING_FIRST_STEP=True
 BF16=True
 GRADIENT_CHECKPOINTING=False
+MAX_LENGTH=1024
 
 # Get the name of the current script
 SCRIPT_NAME=$(basename "$0")
@@ -54,7 +55,8 @@ CMD="accelerate launch train-debug-3.py \
     --remove_unused_columns $REMOVE_UNUSED_COLUMNS \
     --logging_first_step $LOGGING_FIRST_STEP \
     --bf16 $BF16 \
-    --gradient_checkpointing $GRADIENT_CHECKPOINTING"
+    --gradient_checkpointing $GRADIENT_CHECKPOINTING \
+    --max_length $MAX_LENGTH"
 
 # Create output directory if it doesn't exist
 mkdir -p "$OUTPUT_DIR"
