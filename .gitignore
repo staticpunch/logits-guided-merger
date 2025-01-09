@@ -7,3 +7,4 @@ trained_masks/*
 *random_masks/*
 results/
 src/results
+data/

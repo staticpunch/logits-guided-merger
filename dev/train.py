@@ -66,10 +66,9 @@ logger = logging.getLogger(__name__)
 class DataProcessor:
     """Handles data loading and preprocessing."""
     
-    def __init__(self, tokenizer: PreTrainedTokenizerBase, dataset_name, dataset_config, data_source_key, split, max_length):
+    def __init__(self, tokenizer: PreTrainedTokenizerBase, dataset_configs, data_source_key, split, max_length):
         self.tokenizer = tokenizer
-        self.dataset_name = dataset_name
-        self.dataset_config = dataset_config
+        self.dataset_configs = dataset_configs
         self.data_source_key = data_source_key
         self.split = split
         self.max_length = max_length
@@ -78,15 +77,17 @@ class DataProcessor:
     def load_dataset(self):
         """Load and prepare the training dataset."""
         datasets_list = []
-        for data_config, source_key in zip(self.dataset_config, self.data_source_key):
-            new_dataset = load_dataset(self.dataset_name, data_config, split=self.split)
-            new_dataset = new_dataset.add_column(name="data_source", column=[source_key for _ in new_dataset])
+        for data_config, source_key in zip(self.dataset_configs, self.data_source_key):
+            new_dataset = load_dataset(data_config, split=self.split)
+            new_dataset = new_dataset.add_column(
+                name="data_source", column=[source_key for _ in new_dataset]
+            )
             datasets_list.append(new_dataset)
             
         train_dataset = datasets.concatenate_datasets([
             ds for ds in datasets_list[:] # 0 for rewrite, 1 for summarize.
         ])
-        return train_dataset.shuffle(seed=42).select(range(30000))
+        return train_dataset.shuffle(seed=42)
     
     def tokenize(self, element):
         """Tokenize a single element from the dataset."""
@@ -289,8 +290,7 @@ class MergerTrainer(Trainer):
 @dataclass
 class Args:
     model_paths: List[str]
-    dataset_name: str
-    dataset_config: List[str]
+    dataset_configs: List[str]
     data_source_key: List[int]
     mode: str
     constrain_mode: str
@@ -330,7 +330,7 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(merge_config.model_paths[0])
     tokenizer.pad_token = tokenizer.eos_token
     data_processor = DataProcessor(
-        tokenizer, args.dataset_name, args.dataset_config, 
+        tokenizer, args.dataset_configs, 
         args.data_source_key, args.train_split, args.max_length
     )
     train_dataset = data_processor.load_dataset()
@@ -352,8 +352,8 @@ def main():
         name for name, buffer in merger.named_buffers() 
         if buffer.dtype == torch.bool
     ]
-    # set_masks(merger.merger, strategy="uniform", factors=[0.99, 0.01])
-    set_masks(merger.merger, strategy="random")
+    set_masks(merger.merger, strategy="uniform", factors=[0.5, 0.5])
+    # set_masks(merger.merger, strategy="random")
     
     # Setup training arguments and data collator
     training_args = TrainingArguments(

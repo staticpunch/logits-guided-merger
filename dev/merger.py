@@ -49,9 +49,7 @@ from utils import (
     free_memory
 )
 
-from masks_accurate import (
-# from masks_efficient import (
-# from masks_output import (
+from masks import (
     Mask, MaskConfig,
     Constrainer,
     LinearsWithMasks,
@@ -177,7 +175,7 @@ class NewMerger(PreTrainedModel):
             AutoConfig.from_pretrained(path) 
             for path in config.model_paths
         ]
-        self.config = self.configs[0] # For DeepSpeed to read.
+        
         # Initialize empty ModuleList for models - will be populated in from_pretrained
         self.models = nn.ModuleList()
         
@@ -224,10 +222,7 @@ class NewMerger(PreTrainedModel):
             
         # During training, we want both merger and component outputs
         merger_outputs = self.merger(**inputs)
-        with torch.no_grad():
-            components_outputs = [
-                model(**inputs) for model in self.models
-            ]
+        components_outputs = [model(**inputs) for model in self.models]
         
         return {
             "merger_outputs": merger_outputs,
@@ -247,13 +242,7 @@ class NewMerger(PreTrainedModel):
         Basically I only have to customize .save_pretrained()
         """
         if state_dict is None:
-            # Check if using DeepSpeed
-            if hasattr(self, 'ds_engine'):
-                # Get the DeepSpeed engine's state dict
-                state_dict = self.ds_engine.module.state_dict()
-            else:
-                state_dict = self.state_dict()
-
+            state_dict = self.state_dict()
             
         # Filter for only trainable parameters (masks)
         trainable_state = {
@@ -419,9 +408,7 @@ def init_masks(target_module: nn.Module, ref_modules: nn.Module, merge_config: M
             )
 
         elif isinstance(target_child, nn.Embedding):
-            # new_module = EmbeddingsWithMasks(ref_children, modes, factors, constrain_mode)
-            logger.info("Not replacing embedding layer.")
-            new_module = ref_children[0]
+            new_module = EmbeddingsWithMasks(ref_children, modes, factors, constrain_mode)
         elif "RMSNorm" in type(target_child).__name__:
             new_module = RMSNormsWithMasks(ref_children, modes, factors, constrain_mode)
 
