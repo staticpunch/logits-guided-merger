@@ -82,4 +82,4 @@ with torch.no_grad():
         partial_outputs.append(y)
 ```
 This works horribly. Check `masks_output.py`. This does nothing but increases memory to 60GB and slower converging loss. Maybe the buffer reserved for multiple linear forwards is too much.
-
+- move to a100
