@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export CUDA_VISIBLE_DEVICES=0,1,2,3
+export CUDA_VISIBLE_DEVICES=0
 
 # Define default values for arguments
 MODEL_PATHS=("Qwen/Qwen2-7B-Instruct" "minhhien0811/model_v2_0927")

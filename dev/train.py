@@ -225,21 +225,36 @@ def builtin_kl_div(logits_a, logits_b, effective_idxs, temperature=1.0):
 
 class MergerTrainer(Trainer):
     """Custom trainer for merged model training."""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.mean_a = []
+        self.mean_b = []
+        
+    def track_masks_params(self):
+        params_a, params_b = [], []
+        for name, param in self.model.named_parameters():
+            if param.requires_grad:
+                if "masks.0." in name:
+                    params_a.append(param.flatten())
+                elif "masks.1." in name:
+                    params_b.append(param.flatten())
+        return {
+            "params_a": torch.cat(params_a),
+            "params_b": torch.cat(params_b)
+        }
+                
+        
     def log(self, logs: Dict[str, float], start_time: Optional[float] = None) -> None:
         with torch.no_grad():
-            count = 0
-            param_sum = 0
-            for param in self.model.parameters():
-                if param.requires_grad:
-                    count += param.numel()
-                    param_sum += torch.sum(param)
-            param_mean = (param_sum / count).item()
-            
-            count_millions = count / 1_000_000
+            all_params = self.track_masks_params()
+            params_a, params_b = all_params["params_a"], all_params["params_b"]
+
+            count_millions = (params_a.numel() + params_b.numel()) / 1_000_000
             formatted_count = f"{count_millions:.2f}M"
-        
-        logs["param_mean"] = param_mean
-        logs["trainable_params"] = formatted_count
+
+            logs["mean_a"] = params_a.mean().item()
+            logs["mean_b"] = params_b.mean().item()
+            logs["trainable_params"] = formatted_count
         
         if self.state.epoch is not None:
             logs["epoch"] = self.state.epoch
@@ -253,6 +268,12 @@ class MergerTrainer(Trainer):
         self.control = self.callback_handler.on_log(self.args, self.state, self.control, logs)
     
     def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
+        # Before computing loss
+        for name, param in model.named_parameters():
+            if param.requires_grad and torch.isnan(param).any():
+                print(f"NaN detected in parameter {name}")
+                import pdb; pdb.set_trace()
+                
         labels = inputs.pop("labels")
         data_source = inputs.pop("data_source")
         effective_idxs = (labels != -100).float()
