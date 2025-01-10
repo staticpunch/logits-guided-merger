@@ -3,18 +3,18 @@
 export CUDA_VISIBLE_DEVICES=0,1,2,3
 
 # Define default values for arguments
-MODEL_PATHS=("Qwen/Qwen2-7B-Instruct" "minhhien0811/model_v2_0927")
-DATASET_CONFIGS=("/workspace/data/general" "/workspace/data/tasks")
-DATA_SOURCE_KEY=(0 1)
+MODEL_PATHS=("nguyenthanhdo/llama32_smol_rewrite_50k" "nguyenthanhdo/llama32_smol_summarize_50k")
+DATASET_CONFIGS=("/workspace/data/summarize")
+DATA_SOURCE_KEY=(1)
 MODE="vector_input"
 CONSTRAIN_MODE="identity"
 TRAIN_SPLIT="train"
-OUTPUT_DIR="../results/rag-run-1"
+OUTPUT_DIR="../results/dummy-run-1"
 PER_DEVICE_TRAIN_BATCH_SIZE=1
 PER_DEVICE_EVAL_BATCH_SIZE=8
 GRADIENT_ACCUMULATION_STEPS=32
-LEARNING_RATE=1e-3
-NUM_TRAIN_EPOCHS=3
+LEARNING_RATE=5e-3
+NUM_TRAIN_EPOCHS=6
 SAVE_STEPS=100
 EVAL_STEPS=5000
 LOGGING_STEPS=10

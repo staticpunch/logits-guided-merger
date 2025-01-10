@@ -90,7 +90,7 @@ class DataProcessor:
             ds for ds in datasets_list[:] # 0 for rewrite, 1 for summarize.
         ])
         logger.info(f">>> Training {len(train_dataset)} samples.")
-        return train_dataset.shuffle(seed=101)
+        return train_dataset.shuffle(seed=101).select(range(20000))
     
     def tokenize(self, element):
         """Tokenize a single element from the dataset."""
@@ -273,7 +273,10 @@ class MergerTrainer(Trainer):
             if param.requires_grad and torch.isnan(param).any():
                 print(f"NaN detected in parameter {name}")
                 import pdb; pdb.set_trace()
-                
+
+        params_b = self.track_masks_params()["params_b"]
+        loss_b = torch.mean(params_b **2) * 0.01
+        
         labels = inputs.pop("labels")
         data_source = inputs.pop("data_source")
         effective_idxs = (labels != -100).float()
@@ -285,7 +288,8 @@ class MergerTrainer(Trainer):
 
         # Compute target logits and KL divergence
         logits_target = selective_logits_target(logits_components, data_source)
-        loss = builtin_kl_div(logits_merged, logits_target, effective_idxs)
+        loss_kl = builtin_kl_div(logits_merged, logits_target, effective_idxs)
+        loss = loss_kl + loss_b
         # if torch.isnan(loss):
         #     import pdb; pdb.set_trace()
 
@@ -408,7 +412,7 @@ def main():
         name for name, buffer in merger.named_buffers() 
         if buffer.dtype == torch.bool
     ]
-    set_masks(merger.merger, strategy="uniform", factors=[0.5, 0.5])
+    set_masks(merger.merger, strategy="uniform", factors=[0.99, 0.01])
     # set_masks(merger.merger, strategy="random")
     
     # Setup training arguments and data collator
