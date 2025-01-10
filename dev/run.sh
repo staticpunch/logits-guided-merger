@@ -3,18 +3,18 @@
 export CUDA_VISIBLE_DEVICES=0,1,2,3
 
 # Define default values for arguments
-MODEL_PATHS=("nguyenthanhdo/Llama-3.2-3B-Instruct" "nguyenthanhdo/llama32_3b_wizard_vi_27k_from_base")
-DATASET_CONFIGS=("/workspace/logits-guided-merger/data/wizard-en-27k" "/workspace/logits-guided-merger/data/wizard-vi-27k")
+MODEL_PATHS=("Qwen/Qwen2-7B-Instruct" "minhhien0811/model_v2_0927")
+DATASET_CONFIGS=("/workspace/data/general" "/workspace/data/tasks")
 DATA_SOURCE_KEY=(0 1)
 MODE="vector_input"
 CONSTRAIN_MODE="identity"
 TRAIN_SPLIT="train"
-OUTPUT_DIR="../results/wizard-run-2"
+OUTPUT_DIR="../results/rag-run-1"
 PER_DEVICE_TRAIN_BATCH_SIZE=1
 PER_DEVICE_EVAL_BATCH_SIZE=8
 GRADIENT_ACCUMULATION_STEPS=32
-LEARNING_RATE=5e-3
-NUM_TRAIN_EPOCHS=5
+LEARNING_RATE=1e-3
+NUM_TRAIN_EPOCHS=3
 SAVE_STEPS=100
 EVAL_STEPS=5000
 LOGGING_STEPS=10
@@ -25,7 +25,7 @@ REMOVE_UNUSED_COLUMNS=False
 LOGGING_FIRST_STEP=True
 BF16=True
 GRADIENT_CHECKPOINTING=False
-MAX_LENGTH=2048
+MAX_LENGTH=3072
 
 # Get the name of the current script
 SCRIPT_NAME=$(basename "$0")

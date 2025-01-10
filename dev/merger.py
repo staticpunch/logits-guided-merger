@@ -61,6 +61,8 @@ from masks import (
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+HF_TOKEN = "HF_TOKEN"
+ 
 """
 BEGIN - INIT STRATEGIES
 """
@@ -172,9 +174,10 @@ class NewMerger(PreTrainedModel):
 
         # Initialize configs but don't load models yet
         self.configs = [
-            AutoConfig.from_pretrained(path) 
+            AutoConfig.from_pretrained(path, token=HF_TOKEN) 
             for path in config.model_paths
         ]
+        self.config = self.configs[0]
         
         # Initialize empty ModuleList for models - will be populated in from_pretrained
         self.models = nn.ModuleList()
@@ -183,7 +186,9 @@ class NewMerger(PreTrainedModel):
         logger.info("Creating merger with dummy weights ...")
         self.merger = AutoModelForCausalLM.from_pretrained(
             config.model_paths[0],  # Use first model path
-            config=self.configs[0]
+            config=self.configs[0],
+            device_map="cpu",
+            low_cpu_mem_usage=True,
         )
 
     def forward(
@@ -285,6 +290,7 @@ class NewMerger(PreTrainedModel):
             loaded_model = AutoModelForCausalLM.from_pretrained(
                 config.model_paths[i],
                 config=model.configs[i],
+                token=HF_TOKEN,
                 **kwargs
             )
             model.models.append(loaded_model)

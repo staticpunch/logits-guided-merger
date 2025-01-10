@@ -76,8 +76,10 @@ class DataProcessor:
     
     def load_dataset(self):
         """Load and prepare the training dataset."""
+        logger.info(f">>> Datasets: {self.dataset_configs}")
         datasets_list = []
         for data_config, source_key in zip(self.dataset_configs, self.data_source_key):
+            logger.info(f"Loading {data_config} with source {source_key}.")
             new_dataset = load_dataset(data_config, split=self.split)
             new_dataset = new_dataset.add_column(
                 name="data_source", column=[source_key for _ in new_dataset]
@@ -87,7 +89,8 @@ class DataProcessor:
         train_dataset = datasets.concatenate_datasets([
             ds for ds in datasets_list[:] # 0 for rewrite, 1 for summarize.
         ])
-        return train_dataset.shuffle(seed=42)
+        logger.info(f">>> Training {len(train_dataset)} samples.")
+        return train_dataset.shuffle(seed=101)
     
     def tokenize(self, element):
         """Tokenize a single element from the dataset."""
@@ -147,7 +150,11 @@ class MergerDataCollator:
             data_sources.append(examples[i].pop("data_source"))
             
         batch = pad_without_fast_tokenizer_warning(
-            self.tokenizer, inputs_ids, return_tensors="pt", 
+            self.tokenizer, 
+            inputs_ids, 
+            # padding='max_length',  # This forces padding to max_length
+            # max_length=3072,
+            return_tensors="pt",
             pad_to_multiple_of=self.pad_to_multiple_of
         )
 
@@ -218,6 +225,32 @@ def builtin_kl_div(logits_a, logits_b, effective_idxs, temperature=1.0):
 
 class MergerTrainer(Trainer):
     """Custom trainer for merged model training."""
+    def log(self, logs: Dict[str, float], start_time: Optional[float] = None) -> None:
+        with torch.no_grad():
+            count = 0
+            param_sum = 0
+            for param in self.model.parameters():
+                if param.requires_grad:
+                    count += param.numel()
+                    param_sum += torch.sum(param)
+            param_mean = (param_sum / count).item()
+            
+            count_millions = count / 1_000_000
+            formatted_count = f"{count_millions:.2f}M"
+        
+        logs["param_mean"] = param_mean
+        logs["trainable_params"] = formatted_count
+        
+        if self.state.epoch is not None:
+            logs["epoch"] = self.state.epoch
+        if self.args.include_num_input_tokens_seen:
+            logs["num_input_tokens_seen"] = self.state.num_input_tokens_seen
+            if start_time is not None:
+                speed_metrics("train", start_time, num_tokens=self.state.num_input_tokens_seen)
+
+        output = {**logs, **{"step": self.state.global_step}}
+        self.state.log_history.append(output)
+        self.control = self.callback_handler.on_log(self.args, self.state, self.control, logs)
     
     def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
         labels = inputs.pop("labels")
@@ -232,6 +265,8 @@ class MergerTrainer(Trainer):
         # Compute target logits and KL divergence
         logits_target = selective_logits_target(logits_components, data_source)
         loss = builtin_kl_div(logits_merged, logits_target, effective_idxs)
+        # if torch.isnan(loss):
+        #     import pdb; pdb.set_trace()
 
         return (loss, outputs) if return_outputs else loss
 
