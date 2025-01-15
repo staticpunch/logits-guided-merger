@@ -26,6 +26,7 @@ import gc
 import os
 import argparse
 import sys
+import shutil
 
 from tqdm import tqdm
 from transformers import (
@@ -253,7 +254,8 @@ class MergerTrainer(Trainer):
 
         # Compute target logits and KL divergence
         logits_target = selective_logits_target(logits_components, data_source)
-        loss = builtin_kl_div(logits_merged, logits_target, effective_idxs)
+        loss_kl = builtin_kl_div(logits_merged, logits_target, effective_idxs)
+        loss = loss_kl
 
         if False:
             params_a = self.track_masks_params()["params_a"]
@@ -263,13 +265,13 @@ class MergerTrainer(Trainer):
             mean_b = torch.mean(params_b**2)
             loss_w = self.decay * (mean_b / (mean_a + mean_b))
             
-            loss = loss + loss_w
+            loss = loss_kl + loss_w
             
         # if torch.isnan(loss):
         #     import pdb; pdb.set_trace()
 
         return (loss, outputs) if return_outputs else loss
-    
+        
 @dataclass
 class TrainingConfig:
     """Configuration for training loaded from YAML."""
@@ -295,7 +297,6 @@ class TrainingConfig:
     save_steps: int
     eval_steps: int
     logging_steps: int
-    logging_dir: str
     eval_strategy: str
     report_to: str
     remove_unused_columns: bool = False
@@ -349,27 +350,13 @@ def main():
         # device_map="auto",
         attn_implementation="flash_attention_2",
     )
+    set_masks(merger, args.mask_init)
+    
     # torch distributed hack
     merger._ddp_params_and_buffers_to_ignore = [
         name for name, buffer in merger.named_buffers() 
         if buffer.dtype == torch.bool
     ]
-    # set_masks(merger.merger, strategy="uniform", factors=[0.5, 0.5])
-    # set_masks(merger.merger, strategy="random")
-
-    # Initialize masks based on config
-    mask_strategy = args.mask_init["strategy"]
-    if mask_strategy == "uniform":
-        if not args.mask_init["factors"]:
-            raise ValueError("Factors must be provided for uniform strategy")
-        factors = args.mask_init["factors"]
-        logger.info(f"Applying uniform masks with factors = {factors}.")
-        set_masks(merger.merger, strategy="uniform", factors=factors)
-    elif mask_strategy == "random":
-        logger.info(f"Applying random masks.")
-        set_masks(merger.merger, strategy="random")
-    else:
-        raise ValueError(f"Unknown mask initialization strategy: {mask_strategy}.")
     
     # Setup training arguments and data collator
     training_args = TrainingArguments(
@@ -383,7 +370,7 @@ def main():
         eval_strategy=args.eval_strategy if args.validation_split else "no",
         eval_steps=args.eval_steps if args.validation_split else None,
         logging_steps=args.logging_steps,
-        logging_dir=args.logging_dir,
+        logging_dir=os.path.join(args.output_dir, "logs"),
         report_to=args.report_to,  # Enable TensorBoard logging
         remove_unused_columns=args.remove_unused_columns,
         logging_first_step=args.logging_first_step,
@@ -410,8 +397,7 @@ def main():
     
     # Copy config to output directory
     os.makedirs(args.output_dir, exist_ok=True)
-    with open(os.path.join(args.output_dir, "config.yaml"), "w") as f:
-        yaml.dump(args.__dict__, f)
+    shutil.copy(config_file, os.path.join(args.output_dir, "config.yaml"))
     
     # Start training
     trainer.train()

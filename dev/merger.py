@@ -58,8 +58,9 @@ from masks import (
 )
 
 # Configure logger
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
+from logging_config import configure_logging
+configure_logging()
+logger = logging.getLogger("merger")
 
 HF_TOKEN = "HF_TOKEN"
  
@@ -139,19 +140,34 @@ def get_init_method(strategy):
     selected_init_method = MAP[strategy]
     
     return selected_init_method
-    
-def set_masks(root_module, strategy="random", **kwargs):
 
-    init_method = get_init_method(strategy)
-    masked_module_names = find_masked_modules(root_module)
+def set_masks(merger, mask_init):
+    def _set_masks(root_module, strategy="random", **kwargs):
+        init_method = get_init_method(strategy)
+        masked_module_names = find_masked_modules(root_module)
+        
+        for module_name in tqdm(masked_module_names, desc="Setting up masks"):
+            module_names = module_name.split(".")
+            target_module = root_module
+            for m_name in module_names:
+                target_module = getattr(target_module, m_name)
     
-    for module_name in tqdm(masked_module_names, desc="Setting up masks"):
-        module_names = module_name.split(".")
-        target_module = root_module
-        for m_name in module_names:
-            target_module = getattr(target_module, m_name)
+            init_method(target_module, **kwargs)
+    # Initialize masks based on config
+    mask_strategy = mask_init["strategy"]
+    if mask_strategy == "uniform":
+        if not mask_init["factors"]:
+            raise ValueError("Factors must be provided for uniform strategy")
+        factors = mask_init["factors"]
+        logger.info(f"Applying uniform masks with factors = {factors}.")
+        _set_masks(merger.merger, strategy="uniform", factors=factors)
+    elif mask_strategy == "random":
+        logger.info(f"Applying random masks.")
+        _set_masks(merger.merger, strategy="random")
+    else:
+        raise ValueError(f"Unknown mask initialization strategy: {mask_strategy}.")
+    
 
-        init_method(target_module, **kwargs)
 
 class MergerConfig(PretrainedConfig):
     def __init__(
