@@ -82,15 +82,12 @@ class DataProcessor:
 
     def load_dataset(self):
         """Load and prepare the training dataset."""
-        logger.info(f">>> Datasets: {self.dataset_configs}")
         datasets_list = []
         
         for (data_config, num_samples), source_key in zip(
             self.dataset_configs.items(), self.data_source_key
         ):
-            logger.info(f"Loading {data_config} with source {source_key}.")
-            logger.info(f"Will sample {num_samples} examples from this dataset.")
-            
+            logger.info(f"Loading {num_samples} samples from {data_config} with source {source_key}.")
             new_dataset = load_dataset(data_config, split=self.split)
             
             # Randomly sample the specified number of examples
@@ -272,7 +269,7 @@ class MergerTrainer(Trainer):
         #     import pdb; pdb.set_trace()
 
         return (loss, outputs) if return_outputs else loss
-
+    
 @dataclass
 class TrainingConfig:
     """Configuration for training loaded from YAML."""
@@ -280,6 +277,7 @@ class TrainingConfig:
     model_paths: List[str]
     mode: str
     constrain_mode: str
+    mask_init: dict
     
     # Dataset configuration
     dataset_configs: Dict[str, int]  # Path to dataset -> number of samples
@@ -297,6 +295,7 @@ class TrainingConfig:
     save_steps: int
     eval_steps: int
     logging_steps: int
+    logging_dir: str
     eval_strategy: str
     report_to: str
     remove_unused_columns: bool = False
@@ -355,8 +354,22 @@ def main():
         name for name, buffer in merger.named_buffers() 
         if buffer.dtype == torch.bool
     ]
-    set_masks(merger.merger, strategy="uniform", factors=[0.5, 0.5])
+    # set_masks(merger.merger, strategy="uniform", factors=[0.5, 0.5])
     # set_masks(merger.merger, strategy="random")
+
+    # Initialize masks based on config
+    mask_strategy = args.mask_init["strategy"]
+    if mask_strategy == "uniform":
+        if not args.mask_init["factors"]:
+            raise ValueError("Factors must be provided for uniform strategy")
+        factors = args.mask_init["factors"]
+        logger.info(f"Applying uniform masks with factors = {factors}.")
+        set_masks(merger.merger, strategy="uniform", factors=factors)
+    elif mask_strategy == "random":
+        logger.info(f"Applying random masks.")
+        set_masks(merger.merger, strategy="random")
+    else:
+        raise ValueError(f"Unknown mask initialization strategy: {mask_strategy}.")
     
     # Setup training arguments and data collator
     training_args = TrainingArguments(
@@ -370,6 +383,7 @@ def main():
         eval_strategy=args.eval_strategy if args.validation_split else "no",
         eval_steps=args.eval_steps if args.validation_split else None,
         logging_steps=args.logging_steps,
+        logging_dir=args.logging_dir,
         report_to=args.report_to,  # Enable TensorBoard logging
         remove_unused_columns=args.remove_unused_columns,
         logging_first_step=args.logging_first_step,

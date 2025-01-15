@@ -13,6 +13,15 @@ source_keys: [0, 1]
 train_split: "train"
 max_length: 3072
 
+# For uniform initialization:
+mask_init:
+  strategy: "uniform"
+  factors: [0.5, 0.5]
+
+# # OR for random initialization:
+# mask_init:
+#   strategy: "random"
+
 # Training parameters
 output_dir: "/workspace/logits-guided-merger/results/run_01"
 per_device_train_batch_size: 1
@@ -25,6 +34,7 @@ eval_steps: 5000
 logging_steps: 10
 eval_strategy: "steps"
 report_to: "none"
+logging_dir: "/workspace/logits-guided-merger/results/run_01/logging"
 remove_unused_columns: false
 logging_first_step: true
 bf16: true
