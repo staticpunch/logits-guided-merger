@@ -186,7 +186,7 @@ def find_mask_parameter_names(module, mask_param_names_list, parent_name=""):
                 mask_param_names_list.append(full_param_name)
         find_mask_parameter_names(child, mask_param_names_list, full_child_name)
 
-def free_memory():
+def free_memory(logger):
     if not torch.cuda.is_available():
         logger.info("CUDA is not available. No GPU memory to free.")
         return

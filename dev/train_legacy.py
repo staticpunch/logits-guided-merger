@@ -2,31 +2,23 @@
 Model merging training implementation using PyTorch and Transformers.
 Implements custom data collation and training for merged language models.
 """
-
+import math
 from dataclasses import dataclass
-from typing import (
-    Any, Callable, Dict, 
-    List, NewType, Optional, 
-    Tuple, Union, Mapping
-)
+from typing import Any, Callable, Dict, List, NewType, Optional, Tuple, Union, Mapping
 from abc import ABC, abstractmethod
-from datasets import load_dataset, concatenate_datasets
-from accelerate.logging import get_logger
+
+import datasets
+import torch
+import torch.nn.functional as F
+import safetensors
 import numpy as np
 import torch.nn as nn
-import torch.nn.functional as F
-
-import torch
-import safetensors
-import math
-import yaml
 import logging
 import copy
 import gc
 import os
-import argparse
-import sys
 
+from datasets import load_dataset
 from tqdm import tqdm
 from transformers import (
     PreTrainedTokenizerBase,
@@ -34,11 +26,11 @@ from transformers import (
     PretrainedConfig,
     AutoConfig,
     AutoModelForCausalLM,
-    AutoTokenizer,
     LlamaForCausalLM,
     LlamaConfig,
     Trainer,
     TrainingArguments,
+    AutoTokenizer,
     HfArgumentParser,
     default_data_collator,
     is_torch_xla_available,
@@ -65,48 +57,41 @@ from utils import (
     free_memory
 )
 # Configure logger
-from logging_config import configure_logging
-configure_logging()
-logger = logging.getLogger("train")
+logging.basicConfig(
+    level=logging.INFO, 
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 class DataProcessor:
     """Handles data loading and preprocessing."""
     
-    def __init__(self, tokenizer: PreTrainedTokenizerBase, dataset_configs: Dict[str, int], 
-                 data_source_key: List[int], split: str, max_length: int):
+    def __init__(self, tokenizer: PreTrainedTokenizerBase, dataset_configs, data_source_key, split, max_length):
         self.tokenizer = tokenizer
         self.dataset_configs = dataset_configs
         self.data_source_key = data_source_key
         self.split = split
         self.max_length = max_length
 
+    
     def load_dataset(self):
         """Load and prepare the training dataset."""
         logger.info(f">>> Datasets: {self.dataset_configs}")
         datasets_list = []
-        
-        for (data_config, num_samples), source_key in zip(
-            self.dataset_configs.items(), self.data_source_key
-        ):
+        for data_config, source_key in zip(self.dataset_configs, self.data_source_key):
             logger.info(f"Loading {data_config} with source {source_key}.")
-            logger.info(f"Will sample {num_samples} examples from this dataset.")
-            
             new_dataset = load_dataset(data_config, split=self.split)
-            
-            # Randomly sample the specified number of examples
-            if num_samples and num_samples < len(new_dataset):
-                new_dataset = new_dataset.shuffle(seed=42).select(range(num_samples))
-            
             new_dataset = new_dataset.add_column(
-                name="data_source", 
-                column=[source_key for _ in new_dataset]
+                name="data_source", column=[source_key for _ in new_dataset]
             )
             datasets_list.append(new_dataset)
             
-        train_dataset = concatenate_datasets(datasets_list)
-        logger.info(f">>> Training on {len(train_dataset)} samples total.")
-        return train_dataset.shuffle(seed=101)
-
+        train_dataset = datasets.concatenate_datasets([
+            ds for ds in datasets_list[:] # 0 for rewrite, 1 for summarize.
+        ])
+        logger.info(f">>> Training {len(train_dataset)} samples.")
+        return train_dataset.shuffle(seed=101).select(range(20000))
+    
     def tokenize(self, element):
         """Tokenize a single element from the dataset."""
         templated = self.tokenizer.apply_chat_template(
@@ -120,6 +105,27 @@ class DataProcessor:
             max_length=self.max_length,
             add_special_tokens=False
         )
+
+def pad_without_fast_tokenizer_warning(tokenizer, *pad_args, **pad_kwargs):
+    """
+    Pads without triggering the warning about how using the pad function is sub-optimal when using a fast tokenizer.
+    """
+
+    # To avoid errors when using Feature extractors
+    if not hasattr(tokenizer, "deprecation_warnings"):
+        return tokenizer.pad(*pad_args, **pad_kwargs)
+
+    # Save the state of the warning, then disable it
+    warning_state = tokenizer.deprecation_warnings.get("Asking-to-pad-a-fast-tokenizer", False)
+    tokenizer.deprecation_warnings["Asking-to-pad-a-fast-tokenizer"] = True
+
+    try:
+        padded = tokenizer.pad(*pad_args, **pad_kwargs)
+    finally:
+        # Restore the state of the warning.
+        tokenizer.deprecation_warnings["Asking-to-pad-a-fast-tokenizer"] = warning_state
+
+    return padded
 
 @dataclass
 class MergerDataCollator:
@@ -143,7 +149,8 @@ class MergerDataCollator:
             inputs_ids.append({"input_ids": examples[i].pop("input_ids")})
             data_sources.append(examples[i].pop("data_source"))
             
-        batch = self.tokenizer.pad(
+        batch = pad_without_fast_tokenizer_warning(
+            self.tokenizer, 
             inputs_ids, 
             # padding='max_length',  # This forces padding to max_length
             # max_length=3072,
@@ -181,6 +188,27 @@ def selective_logits_target(logits_components, data_source):
 
     return logits_target
 
+def masked_kl_div(logits_a, logits_b, effective_idxs, temperature=1.0):
+    # (batch_size, seq_len, vocab_size) -> (batch_size * seq_len, vocab_size)
+    logits_a = logits_a.view(-1, logits_a.size(-1)) / temperature
+    logits_b = logits_b.view(-1, logits_b.size(-1)) / temperature
+
+    # (batch_size * seq_len,)
+    mask = effective_idxs.view(-1)
+
+    assert mask.size(0) == logits_a.size(0)
+
+    log_probs_a = nn.functional.log_softmax(logits_a, dim=-1)
+    log_probs_b = nn.functional.log_softmax(logits_b, dim=-1)
+
+    # (batch_size * seq_len, vocab_size) -> (batch_size * seq_len)
+    div = log_probs_a.exp() * (log_probs_a - log_probs_b)
+    div = div.sum(-1)
+
+    ## taking average on effective tokens.
+    div = (div * mask).sum() / mask.sum() * (temperature ** 2)
+    return div
+
 def builtin_kl_div(logits_a, logits_b, effective_idxs, temperature=1.0):
     kl_fct = nn.KLDivLoss(reduction="none")
     diff = (
@@ -199,7 +227,8 @@ class MergerTrainer(Trainer):
     """Custom trainer for merged model training."""
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.decay = 0.1
+        self.mean_a = []
+        self.mean_b = []
         
     def track_masks_params(self):
         params_a, params_b = [], []
@@ -244,6 +273,9 @@ class MergerTrainer(Trainer):
             if param.requires_grad and torch.isnan(param).any():
                 print(f"NaN detected in parameter {name}")
                 import pdb; pdb.set_trace()
+
+        params_b = self.track_masks_params()["params_b"]
+        loss_b = torch.mean(params_b **2) * 0.01
         
         labels = inputs.pop("labels")
         data_source = inputs.pop("data_source")
@@ -256,38 +288,73 @@ class MergerTrainer(Trainer):
 
         # Compute target logits and KL divergence
         logits_target = selective_logits_target(logits_components, data_source)
-        loss = builtin_kl_div(logits_merged, logits_target, effective_idxs)
-
-        if False:
-            params_a = self.track_masks_params()["params_a"]
-            params_b = self.track_masks_params()["params_b"]
-
-            mean_a = torch.mean(params_a**2)
-            mean_b = torch.mean(params_b**2)
-            loss_w = self.decay * (mean_b / (mean_a + mean_b))
-            
-            loss = loss + loss_w
-            
+        loss_kl = builtin_kl_div(logits_merged, logits_target, effective_idxs)
+        loss = loss_kl + loss_b
         # if torch.isnan(loss):
         #     import pdb; pdb.set_trace()
 
         return (loss, outputs) if return_outputs else loss
 
+    def _load_from_checkpoint(self, resume_from_checkpoint, model=None):
+        assert model is not None, (
+            "Must pass an initialized model to trainer instead of model path."
+        )
+        # Look for trainable parameters file
+        masks_file = os.path.join(resume_from_checkpoint, "masks.safetensors")
+        if not os.path.isfile(masks_file):
+            masks_file = os.path.join(resume_from_checkpoint, "masks.bin")
+        
+        if not os.path.isfile(masks_file):
+            raise ValueError(
+                f"Can't find trainable parameters file in {resume_from_checkpoint}. "
+                "Expected either masks.safetensors or masks.bin"
+            )
+    
+        config_file = os.path.join(resume_from_checkpoint, CONFIG_NAME)
+        if os.path.isfile(config_file):
+            config = PretrainedConfig.from_json_file(config_file)
+            checkpoint_version = config.transformers_version
+            if checkpoint_version is not None and checkpoint_version != __version__:
+                logger.warning(
+                    f"You are resuming training from a checkpoint trained with {checkpoint_version} of "
+                    f"Transformers but your current version is {__version__}. This is not recommended and could "
+                    "yield to errors or unwanted behaviors."
+                )
+    
+        if os.path.isfile(masks_file):
+            weights_only_kwarg = {"weights_only": True} if is_torch_greater_or_equal_than_1_13 else {}
+            # If the model is on the GPU, it still works!
+            # We load the model state dict on the CPU to avoid an OOM error.
+            if self.args.save_safetensors and masks_file.endswith(".safetensors"):
+                state_dict = safetensors.torch.load_file(masks_file, device="cpu")
+            else:
+                state_dict = torch.load(
+                    masks_file,
+                    map_location="cpu",
+                    **weights_only_kwarg,
+                )
+    
+            # workaround for FSDP bug https://github.com/pytorch/pytorch/issues/82963
+            # which takes *args instead of **kwargs
+            load_result = model.load_state_dict(state_dict, False)
+            if len(load_result.missing_keys) != 0:
+                logger.info(
+                    "There were missing keys in the checkpoint model loaded. "
+                    "However, this is an expected behavior since we are only "
+                    "loading partial weights (masks)."
+                )
+            # release memory
+            del state_dict
+            gc.collect()
+
 @dataclass
-class TrainingConfig:
-    """Configuration for training loaded from YAML."""
-    # Model configuration
+class Args:
     model_paths: List[str]
+    dataset_configs: List[str]
+    data_source_key: List[int]
     mode: str
     constrain_mode: str
-    
-    # Dataset configuration
-    dataset_configs: Dict[str, int]  # Path to dataset -> number of samples
-    source_keys: List[int]
     train_split: str
-    max_length: int
-    
-    # Training parameters
     output_dir: str
     per_device_train_batch_size: int
     per_device_eval_batch_size: int
@@ -297,30 +364,20 @@ class TrainingConfig:
     save_steps: int
     eval_steps: int
     logging_steps: int
+    logging_dir: str
     eval_strategy: str
     report_to: str
-    remove_unused_columns: bool = False
-    logging_first_step: bool = True
-    bf16: bool = True
-    gradient_checkpointing: bool = False
-    validation_split: Optional[str] = None
-
-    @classmethod
-    def from_yaml(cls, yaml_path: str) -> "TrainingConfig":
-        """Load configuration from YAML file."""
-        with open(yaml_path, 'r') as f:
-            config_dict = yaml.safe_load(f)
-            # Convert learning rate to float if it's a string
-            if isinstance(config_dict['learning_rate'], str):
-                config_dict['learning_rate'] = float(config_dict['learning_rate'])
-        return cls(**config_dict)
+    remove_unused_columns: bool
+    logging_first_step: bool
+    bf16: bool
+    gradient_checkpointing: bool
+    validation_split: str = None
+    max_length: int = 4096
 
 def main():
     """Main training function."""
-    parser = argparse.ArgumentParser()
-    parser.add_argument('config_file', help='Path to YAML config file')
-    config_file = parser.parse_args().config_file
-    args = TrainingConfig.from_yaml(config_file)
+    parser = HfArgumentParser(Args)
+    (args,) = parser.parse_args_into_dataclasses()
 
     # Initialize configuration
     merge_config = MergerConfig(
@@ -334,7 +391,7 @@ def main():
     tokenizer.pad_token = tokenizer.eos_token
     data_processor = DataProcessor(
         tokenizer, args.dataset_configs, 
-        args.source_keys, args.train_split, args.max_length
+        args.data_source_key, args.train_split, args.max_length
     )
     train_dataset = data_processor.load_dataset()
     tokenized_dataset = train_dataset.map(
@@ -355,7 +412,7 @@ def main():
         name for name, buffer in merger.named_buffers() 
         if buffer.dtype == torch.bool
     ]
-    set_masks(merger.merger, strategy="uniform", factors=[0.5, 0.5])
+    set_masks(merger.merger, strategy="uniform", factors=[0.99, 0.01])
     # set_masks(merger.merger, strategy="random")
     
     # Setup training arguments and data collator
@@ -370,6 +427,7 @@ def main():
         eval_strategy=args.eval_strategy if args.validation_split else "no",
         eval_steps=args.eval_steps if args.validation_split else None,
         logging_steps=args.logging_steps,
+        logging_dir=args.logging_dir,
         report_to=args.report_to,  # Enable TensorBoard logging
         remove_unused_columns=args.remove_unused_columns,
         logging_first_step=args.logging_first_step,
@@ -394,10 +452,16 @@ def main():
         data_collator=data_collator,
     )
     
-    # Copy config to output directory
-    os.makedirs(args.output_dir, exist_ok=True)
-    with open(os.path.join(args.output_dir, "config.yaml"), "w") as f:
-        yaml.dump(args.__dict__, f)
+    # Monitor memory usage
+    initial_memory = torch.cuda.memory_allocated()
+    logger.info(f"Initial GPU memory allocated: {initial_memory / 1024**3:.2f} GB")
+    
+    gc.collect()
+    torch.cuda.empty_cache()
+    
+    final_memory = torch.cuda.memory_allocated()
+    logger.info(f"Final GPU memory allocated: {final_memory / 1024**3:.2f} GB")
+    logger.info(f"Freed GPU memory: {(initial_memory - final_memory) / 1024**3:.2f} GB")
     
     # Start training
     trainer.train()

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export CUDA_VISIBLE_DEVICES=0,1,2,3
+export CUDA_VISIBLE_DEVICES=1,2
 
 # Define default values for arguments
 MODEL_PATHS=("nguyenthanhdo/llama32_smol_rewrite_50k" "nguyenthanhdo/llama32_smol_summarize_50k")
@@ -31,7 +31,7 @@ MAX_LENGTH=3072
 SCRIPT_NAME=$(basename "$0")
 
 # Construct the command to run the Python script
-CMD="accelerate launch train.py \
+CMD="accelerate launch train_legacy.py \
     --model_paths ${MODEL_PATHS[*]} \
     --dataset_configs ${DATASET_CONFIGS[*]} \
     --data_source_key ${DATA_SOURCE_KEY[*]} \
