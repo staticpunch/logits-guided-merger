@@ -49,12 +49,9 @@ from transformers import (
 from transformers.utils import CONFIG_NAME
 from transformers.pytorch_utils import is_torch_greater_or_equal_than_1_13
 
-# from accurate_masks import (
-# from efficient_masks import (
 from merger import (
     MergerConfig,
-    # Merger,
-    NewMerger,
+    Merger,
     init_masks,
     set_masks
 )
@@ -122,7 +119,7 @@ class DataProcessor:
 @dataclass
 class MergerDataCollator:
     tokenizer: PreTrainedTokenizerBase
-    pad_to_multiple_of: Optional[int] = None
+    pad_to_multiple_of: Optional[int] = 4
     return_tensors: str = "pt"
 
     def __call__(self, examples):
@@ -145,7 +142,7 @@ class MergerDataCollator:
             inputs_ids, 
             # padding='max_length',  # This forces padding to max_length
             # max_length=3072,
-            return_tensors="pt",
+            return_tensors=self.return_tensors,
             pad_to_multiple_of=self.pad_to_multiple_of
         )
 
@@ -323,14 +320,14 @@ def main():
     args = TrainingConfig.from_yaml(config_file)
 
     # Initialize configuration
-    merge_config = MergerConfig(
+    merger_config = MergerConfig(
         model_paths=args.model_paths,
         mode=args.mode,
         constrain_mode=args.constrain_mode
     )
     
     # Setup tokenizer and data processing
-    tokenizer = AutoTokenizer.from_pretrained(merge_config.model_paths[0])
+    tokenizer = AutoTokenizer.from_pretrained(merger_config.model_paths[0])
     tokenizer.pad_token = tokenizer.eos_token
     data_processor = DataProcessor(
         tokenizer, args.dataset_configs, 
@@ -343,9 +340,9 @@ def main():
     )
     
     # Initialize merger model
-    merger = NewMerger.from_pretrained(
+    merger = Merger.from_pretrained(
         None,
-        merge_config,
+        merger_config,
         torch_dtype=torch.bfloat16,
         # device_map="auto",
         attn_implementation="flash_attention_2",
@@ -380,11 +377,7 @@ def main():
         ddp_find_unused_parameters=False
     )
     
-    data_collator = MergerDataCollator(
-        tokenizer,
-        pad_to_multiple_of=8,
-        return_tensors="pt"
-    )
+    data_collator = MergerDataCollator(tokenizer)
     
     # Initialize and start training
     trainer = MergerTrainer(
@@ -397,10 +390,13 @@ def main():
     
     # Copy config to output directory
     os.makedirs(args.output_dir, exist_ok=True)
-    shutil.copy(config_file, os.path.join(args.output_dir, "config.yaml"))
+    shutil.copy(config_file, os.path.join(args.output_dir, "train_config.yaml"))
     
     # Start training
     trainer.train()
+    if trainer.args.should_save:
+        merger.save_merged(args.output_dir)
+        tokenizer.save_pretrained(args.output_dir)
 
 if __name__ == "__main__":
     main()

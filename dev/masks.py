@@ -451,11 +451,6 @@ class EmbeddingsWithMasks(ModulesWithMasks):
             component_weights=[emb.weight for emb in self.embeddings], 
             constrain_mode=constrain_mode, mask_mode=modes[0]
         )
-
-    def forward(self, input_ids):
-        constrained_masks = self.masks_constrainer([m.weight for m in self.masks])
-        masked_weights = [mask * emb.weight for mask, emb in zip(constrained_masks, self.embeddings)]
-        merged_weight = sum(masked_weights)
         
         an_embedding = self.embeddings[0]
         for other_embedding in self.embeddings:
@@ -464,7 +459,13 @@ class EmbeddingsWithMasks(ModulesWithMasks):
             assert an_embedding.norm_type == other_embedding.norm_type
             assert an_embedding.scale_grad_by_freq == other_embedding.scale_grad_by_freq
             assert an_embedding.sparse == other_embedding.sparse
-            
+
+    def forward(self, input_ids):
+        constrained_masks = self.masks_constrainer([m.weight for m in self.masks])
+        masked_weights = [mask * emb.weight for mask, emb in zip(constrained_masks, self.embeddings)]
+        merged_weight = sum(masked_weights)
+        
+        an_embedding = self.embeddings[0]
         return nn.functional.embedding(
             input_ids,
             merged_weight,

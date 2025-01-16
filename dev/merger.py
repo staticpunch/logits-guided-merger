@@ -11,6 +11,8 @@ import logging
 import copy
 import gc
 import os
+import json
+import copy
 
 from datasets import load_dataset
 from accelerate import dispatch_model, infer_auto_device_map
@@ -46,7 +48,8 @@ from utils import (
     generate, 
     get_hidden_states, 
     get_logits,
-    free_memory
+    free_memory,
+    get_hf_token
 )
 
 from masks import (
@@ -62,7 +65,7 @@ from logging_config import configure_logging
 configure_logging()
 logger = logging.getLogger("merger")
 
-HF_TOKEN = "HF_TOKEN"
+HF_TOKEN = get_hf_token()
  
 """
 BEGIN - INIT STRATEGIES
@@ -180,12 +183,13 @@ class MergerConfig(PretrainedConfig):
         self.model_paths = model_paths
         self.mode = mode
         self.constrain_mode = constrain_mode
+        self.model_type = "merger"
         super().__init__(**kwargs)
 
-class NewMerger(PreTrainedModel):
+class Merger(PreTrainedModel):
     def __init__(self, config: MergerConfig):
         super().__init__(config)
-        self.merge_config = config
+        self.merger_config = config
         self.num_models = len(config.model_paths)
 
         # Initialize configs but don't load models yet
@@ -193,7 +197,8 @@ class NewMerger(PreTrainedModel):
             AutoConfig.from_pretrained(path, token=HF_TOKEN) 
             for path in config.model_paths
         ]
-        self.config = self.configs[0]
+        self.config = copy.deepcopy(self.configs[0])
+        self.config.tie_word_embeddings = False ## Hotfix.
         
         # Initialize empty ModuleList for models - will be populated in from_pretrained
         self.models = nn.ModuleList()
@@ -271,7 +276,9 @@ class NewMerger(PreTrainedModel):
             if any(trainable_key in k for trainable_key in [
                 'weight_masks', 'bias_masks', 'masks'
             ])
-        }
+        }   
+        save_directory = os.path.abspath(save_directory)
+        self.config._name_or_path = save_directory
         super().save_pretrained(
             save_directory=save_directory,
             state_dict=trainable_state,
@@ -286,6 +293,14 @@ class NewMerger(PreTrainedModel):
             os.rename(safe_file, os.path.join(save_directory, "masks.safetensors"))
         elif os.path.exists(pytorch_file):
             os.rename(pytorch_file, os.path.join(save_directory, "masks.bin"))
+
+        merger_config_file = os.path.join(save_directory, "merger_config.json")
+        # logger.info(f"Saving merger config to {merger_config_file}")
+        self.merger_config.to_json_file(merger_config_file)
+        config_to_copy = AutoConfig.from_pretrained(self.merger_config.model_paths[0])
+        config_to_copy._name_or_path = save_directory
+        config_to_copy.save_pretrained(save_directory)
+        
         
 
     @classmethod
@@ -297,7 +312,6 @@ class NewMerger(PreTrainedModel):
         **kwargs,
     ):
         device_map = kwargs.pop('device_map', None)  # Remove device_map from kwargs
-        
         # Initialize model instance
         model = cls(config, *model_args)
         
@@ -381,6 +395,130 @@ class NewMerger(PreTrainedModel):
             state_dict, strict=False
         )
 
+    def save_merged(
+        self, 
+        save_directory: Union[str, os.PathLike],
+        state_dict: Optional[dict] = None,
+        **kwargs
+    ):
+        """
+        Compute merged weights using masks and component weights, then save to directory.
+        Removes component weights and masks from the final state dict.
+        """
+        def compute(mask, weight):
+            computed = mask * weight
+            return computed.to(dtype=weight.dtype)
+    
+        def merge_linears(name, module):
+            merged_state = {}
+            keys_to_remove = set()
+            for i in range(len(module.linears)):
+                keys_to_remove.add(f"{name}.linears.{i}.weight")
+                if module.linears[i].bias is not None:
+                    keys_to_remove.add(f"{name}.linears.{i}.bias")
+                keys_to_remove.add(f"{name}.weight_masks.{i}.weight")
+                if module.bias_masks[i] is not None:
+                    keys_to_remove.add(f"{name}.bias_masks.{i}.weight")
+            
+            # Get merged weights
+            weight_masks = module.get_constrained_masks()["weight_masks"]
+            merged_weight = sum(
+                compute(mask, linear.weight)
+                for mask, linear in zip(weight_masks, module.linears)
+            ).cpu().detach()
+            merged_state[f"{name}.weight"] = merged_weight
+            
+            # Get merged biases if they exist
+            if hasattr(module, "bias_masks") and module.bias_masks[0] is not None:
+                bias_masks = module.get_constrained_masks()["bias_masks"]
+                merged_bias = sum(
+                    compute(mask, linear.bias) if linear.bias is not None else 0
+                    for mask, linear in zip(bias_masks, module.linears)
+                ).cpu().detach()
+                merged_state[f"{name}.bias"] = merged_bias
+            return merged_state, keys_to_remove
+    
+        def merge_embeddings(name, module):
+            merged_state = {}
+            keys_to_remove = set()
+            # Remove component embeddings and their masks
+            for i in range(len(module.embeddings)):
+                keys_to_remove.add(f"{name}.embeddings.{i}.weight")
+                keys_to_remove.add(f"{name}.masks.{i}.weight")
+            
+            # Get merged weights
+            masks = module.get_constrained_masks()["masks"]
+            merged_weight = sum(
+                compute(mask, emb.weight)
+                for mask, emb in zip(masks, module.embeddings)
+            ).cpu().detach()
+            merged_state[f"{name}.weight"] = merged_weight
+            return merged_state, keys_to_remove
+    
+        def merge_rmsnorms(name, module):
+            merged_state = {}
+            keys_to_remove = set()
+            # Remove component norms and their masks
+            for i in range(len(module.rms_norms)):
+                keys_to_remove.add(f"{name}.rms_norms.{i}.weight")
+                keys_to_remove.add(f"{name}.masks.{i}.weight")
+            
+            # Get merged weights
+            masks = module.get_constrained_masks()["masks"]
+            merged_weight = sum(
+                compute(mask, norm.weight)
+                for mask, norm in zip(masks, module.rms_norms)
+            ).cpu().detach()
+            merged_state[f"{name}.weight"] = merged_weight
+            return merged_state, keys_to_remove
+    
+        # Initialization.
+        save_directory = os.path.abspath(save_directory)
+        self.config._name_or_path = save_directory
+        
+        merged_state = {}
+        keys_to_remove = set()
+        masked_modules = []
+        for name, module in self.merger.named_modules():
+            if any(mask_type in type(module).__name__ for mask_type in [
+                "LinearsWithMasks", "EmbeddingsWithMasks", "RMSNormsWithMasks"
+            ]):
+                masked_modules.append((name, module))
+    
+        # Work, bitches. Mark component and mask keys for removal
+        for name, module in tqdm(masked_modules, desc="Merging masked modules"):
+            if isinstance(module, LinearsWithMasks):
+                state, keys = merge_linears(name, module)
+            elif isinstance(module, EmbeddingsWithMasks):
+                state, keys = merge_embeddings(name, module)
+            elif isinstance(module, RMSNormsWithMasks):
+                state, keys = merge_rmsnorms(name, module)
+            merged_state.update(state)
+            keys_to_remove = keys_to_remove | keys
+
+        # Copy over non-masked parameters
+        full_state = self.merger.state_dict()
+        keys_to_copy = set()
+        
+        for key, value in full_state.items():
+            if any(remove_key in key for remove_key in keys_to_remove): continue
+            if any(mask_key in key for mask_key in [
+                "masks", "linears.", "embeddings.", "rms_norms."
+            ]): continue
+            keys_to_copy.add(key)
+
+        if len(keys_to_copy) > 0:
+            for key in tqdm(keys_to_copy, desc="Copying non-masked parameters"):
+                merged_state[key] = full_state[key].to("cpu")
+
+        ## Save the merged model.
+        super().save_pretrained(
+            save_directory=save_directory,
+            state_dict=merged_state,
+            **kwargs
+        )
+        
+
 def find_modules_to_add_masks(target_module):
     module_names_to_replace = []
     for parent_name, parent_module in target_module.named_modules():
@@ -392,7 +530,7 @@ def find_modules_to_add_masks(target_module):
 
     return module_names_to_replace
 
-def init_masks(target_module: nn.Module, ref_modules: nn.Module, merge_config: MergerConfig):
+def init_masks(target_module: nn.Module, ref_modules: nn.Module, merger_config: MergerConfig):
     """
     Replaces eligible submodules in target_module with masked versions, 
     using corresponding modules from ref_modules as a reference for weights.
@@ -402,8 +540,8 @@ def init_masks(target_module: nn.Module, ref_modules: nn.Module, merge_config: M
         ref_modules: A list of modules to use as a reference for weights.
         strategy: The initialization strategy for factors ("naive" or others to be implemented).
     """
-    mode = merge_config.mode
-    constrain_mode = merge_config.constrain_mode
+    mode = merger_config.mode
+    constrain_mode = merger_config.constrain_mode
     module_names_to_replace = find_modules_to_add_masks(target_module)
     
     for module_name in tqdm(module_names_to_replace, desc="Initializing masks"):

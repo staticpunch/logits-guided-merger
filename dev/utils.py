@@ -4,6 +4,7 @@ from typing import List, Optional, Tuple, Union
 import torch
 import logging
 import numpy as np
+import json
 from transformers import GenerationConfig, TextStreamer
 
 def generate(
@@ -201,3 +202,7 @@ def free_memory(logger):
 
     freed_memory = initial_memory - final_memory
     logger.info(f"Freed GPU memory: {freed_memory / 1024**3:.2f} GB")
+
+def get_hf_token(secret_file="SECRET.json"):
+    hf_token = json.load(open(secret_file))["hf_token"]
+    return hf_token

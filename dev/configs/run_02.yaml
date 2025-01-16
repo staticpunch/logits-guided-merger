@@ -23,10 +23,10 @@ mask_init:
 #   strategy: "random"
 
 # Training parameters
-output_dir: /workspace/logits-guided-merger/results/run_01a
+output_dir: /workspace/logits-guided-merger/results/run_02
 per_device_train_batch_size: 1
 per_device_eval_batch_size: 8
-gradient_accumulation_steps: 64
+gradient_accumulation_steps: 32
 learning_rate: 5e-3
 num_train_epochs: 3
 save_steps: 10
