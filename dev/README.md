@@ -4,5 +4,5 @@ pip install transformers datasets accelerate
 ```
 # Run
 ```
-bash run.sh
+CUDA_VISIBLE_DEVICES=0,1 accelerate launch train.py configs/dryrun.yaml
 ```
