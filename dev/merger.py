@@ -66,7 +66,10 @@ configure_logging()
 logger = logging.getLogger("merger")
 
 HF_TOKEN = get_hf_token()
- 
+MERGER_CONFIG = "merger_config.json"
+MASKS_SAFE = "masks.safetensors"
+MASKS_TORCH = "masks.bin"
+
 """
 BEGIN - INIT STRATEGIES
 """
@@ -79,7 +82,8 @@ def odd_one_out(masked_module: nn.Module, selected_idx: int):
     for name, child in masked_module.named_children():
         if not isinstance(child, nn.ModuleList): continue
         assert selected_idx < len(child), (
-            f"There are only {len(child)} component models, passed model index is {selected_idx}"
+            f"There are only {len(child)} component models, "
+            f"passed model index is {selected_idx}"
         )
         ## exclude sub_module that is None, aka bias_masks.
         if all(isinstance(sub_module, Mask) for sub_module in child):
@@ -110,7 +114,8 @@ def uniform_init(masked_module: nn.Module, factors: List[float]):
     for name, child in masked_module.named_children():
         if not isinstance(child, nn.ModuleList): continue
         assert len(factors) == len(child), (
-            f"There are {len(child)} component models, but your passed factors have {len(factors)} values."
+            f"There are {len(child)} component models, "
+            f"but your passed factors have {len(factors)} values."
         )
         ## exclude sub_module that is None, aka bias_masks.
         if all(isinstance(sub_module, Mask) for sub_module in child):
@@ -168,10 +173,10 @@ def set_masks(merger, mask_init):
         logger.info(f"Applying random masks.")
         _set_masks(merger.merger, strategy="random")
     else:
-        raise ValueError(f"Unknown mask initialization strategy: {mask_strategy}.")
+        raise ValueError(
+            f"Unknown mask initialization strategy: {mask_strategy}."
+        )
     
-
-
 class MergerConfig(PretrainedConfig):
     def __init__(
         self,
@@ -197,6 +202,16 @@ class Merger(PreTrainedModel):
             AutoConfig.from_pretrained(path, token=HF_TOKEN) 
             for path in config.model_paths
         ]
+        """
+        NOTE: Current implementation applies different masks to
+        `embed_tokens` and `lm_head` layers. Therefore, despite
+        these layers may initially be tied weights, after train-
+        ing masks, the merged weights of these layers will be
+        different from each other. An aesthetic pleasing solu-
+        tion to this will be apply tied weight masks. However,
+        for quick fix I only attempt for unsetting the untying
+        weight config.
+        """
         self.config = copy.deepcopy(self.configs[0])
         self.config.tie_word_embeddings = False ## Hotfix.
         
@@ -262,9 +277,13 @@ class Merger(PreTrainedModel):
         **kwargs,
     ):
         """
-        Every save calls during training point back to this function.
-        Trainer._save_checkpoint() -> Trainer.save_model() -> Trainer._save()
+        Every save calls during training point back to this function:
+        ```
+        Trainer._save_checkpoint() 
+        -> Trainer.save_model() 
+        -> Trainer._save()
         -> Merger.save_pretrained()
+        ```
         Basically I only have to customize .save_pretrained()
         """
         if state_dict is None:
@@ -290,30 +309,25 @@ class Merger(PreTrainedModel):
         pytorch_file = os.path.join(save_directory, "pytorch_model.bin")
         
         if os.path.exists(safe_file):
-            os.rename(safe_file, os.path.join(save_directory, "masks.safetensors"))
+            os.rename(safe_file, os.path.join(save_directory, MASKS_SAFE))
         elif os.path.exists(pytorch_file):
-            os.rename(pytorch_file, os.path.join(save_directory, "masks.bin"))
+            os.rename(pytorch_file, os.path.join(save_directory, MASKS_TORCH))
 
-        merger_config_file = os.path.join(save_directory, "merger_config.json")
+        merger_config_file = os.path.join(save_directory, MERGER_CONFIG)
         # logger.info(f"Saving merger config to {merger_config_file}")
         self.merger_config.to_json_file(merger_config_file)
-        config_to_copy = AutoConfig.from_pretrained(self.merger_config.model_paths[0])
+        config_to_copy = AutoConfig.from_pretrained(
+            self.merger_config.model_paths[0]
+        )
         config_to_copy._name_or_path = save_directory
         config_to_copy.save_pretrained(save_directory)
         
-        
 
     @classmethod
-    def from_pretrained(
-        cls,
-        pretrained_model_name_or_path: Optional[Union[str, os.PathLike]],
-        config: Optional[Union[PretrainedConfig, str, os.PathLike]] = None,
-        *model_args,
-        **kwargs,
-    ):
+    def from_config(cls, config, **kwargs):
         device_map = kwargs.pop('device_map', None)  # Remove device_map from kwargs
         # Initialize model instance
-        model = cls(config, *model_args)
+        model = cls(config)
         
         # Load component models without device_map
         for i in range(model.num_models):
@@ -332,23 +346,21 @@ class Merger(PreTrainedModel):
         # Initialize masks before device mapping
         init_masks(model.merger, model.models, config)
         
-        # If loading from a checkpoint, load saved trainable parameters
-        if pretrained_model_name_or_path is not None:
-            state_dict = model.load_masks_state_dict(pretrained_model_name_or_path)
-            missing_keys, unexpected_keys = model.load_state_dict(
-                state_dict, strict=False
-            )
         # Apply device mapping after masks are initialized
         if device_map is None:
             return model
             
         if not is_fsdp_enabled() and not is_deepspeed_zero3_enabled():
             return model
-            
+
         if device_map == "auto":
+            calculate_memory = lambda i: int(
+                torch.cuda.get_device_properties(i)
+                .total_memory / 1024**3 - 2
+            )
             # Reserve 2GB buffer per GPU
             max_memory = {
-                i: f"{int(torch.cuda.get_device_properties(i).total_memory / 1024**3 - 2)}GiB" 
+                i: f"{calculate_memory(i)}GiB" 
                 for i in range(torch.cuda.device_count())
             }
             
@@ -362,17 +374,38 @@ class Merger(PreTrainedModel):
                     "RMSNormsWithMasks"
                 ]
             )
-            
         return dispatch_model(model, device_map=device_map)
+
+    @classmethod
+    def from_pretrained(
+        cls,
+        pretrained_model_name_or_path: Optional[Union[str, os.PathLike]],
+        *model_args,
+        **kwargs,
+    ):
+        config = MergerConfig.from_pretrained(
+            os.path.join(pretrained_model_name_or_path, MERGER_CONFIG)
+        )
+        model = cls.from_config(config, **kwargs)
+        assert pretrained_model_name_or_path, (
+            "You must specify the path or name to your pretrained model."
+        )
+        state_dict = model.load_masks_state_dict(pretrained_model_name_or_path)
+        missing_keys, unexpected_keys = model.load_state_dict(
+            state_dict, strict=False
+        )
+        logger.info(f"Loaded masks from {pretrained_model_name_or_path}")
+        return model
+        
 
     def load_masks_state_dict(
         self, 
         pretrained_model_name_or_path: Optional[Union[str, os.PathLike]]
     ):
         # Try loading from safetensors first
-        trainable_path = os.path.join(pretrained_model_name_or_path, "masks.safetensors")
+        trainable_path = os.path.join(pretrained_model_name_or_path, MASKS_SAFE)
         if not os.path.exists(trainable_path):
-            trainable_path = os.path.join(pretrained_model_name_or_path, "masks.bin")
+            trainable_path = os.path.join(pretrained_model_name_or_path, MASKS_TORCH)
         if os.path.exists(trainable_path):
             if trainable_path.endswith('.safetensors'):
                 from safetensors.torch import load_file as safe_load_file
@@ -402,8 +435,9 @@ class Merger(PreTrainedModel):
         **kwargs
     ):
         """
-        Compute merged weights using masks and component weights, then save to directory.
-        Removes component weights and masks from the final state dict.
+        Compute merged weights using masks and component weights, 
+        then save to directory. Removes component weights and masks 
+        from the final state dict.
         """
         def compute(mask, weight):
             computed = mask * weight
@@ -527,31 +561,43 @@ def find_modules_to_add_masks(target_module):
             if (isinstance(child, (nn.Linear, nn.Embedding)) 
                 or "RMSNorm" in type(child).__name__):
                 module_names_to_replace.append(full_child_name)
-
     return module_names_to_replace
 
-def init_masks(target_module: nn.Module, ref_modules: nn.Module, merger_config: MergerConfig):
+def init_masks(
+    target_module: nn.Module, 
+    ref_modules: nn.Module, 
+    merger_config: MergerConfig
+):
     """
-    Replaces eligible submodules in target_module with masked versions, 
-    using corresponding modules from ref_modules as a reference for weights.
+    Replaces eligible submodules in target_module with masked 
+    versions, using corresponding modules from ref_modules as 
+    a reference for weights.
 
     Args:
         target_module: The module in which to replace submodules.
-        ref_modules: A list of modules to use as a reference for weights.
-        strategy: The initialization strategy for factors ("naive" or others to be implemented).
+        ref_modules: A list of modules to use as a reference 
+            for weights.
+        strategy: The initialization strategy for factors 
+            ("naive" or others to be implemented).
     """
     mode = merger_config.mode
     constrain_mode = merger_config.constrain_mode
     module_names_to_replace = find_modules_to_add_masks(target_module)
     
-    for module_name in tqdm(module_names_to_replace, desc="Initializing masks"):
+    for module_name in tqdm(
+        module_names_to_replace, 
+        desc="Initializing masks"
+    ):
         module_names = module_name.split(".")
         target_child = target_module
         ref_children = ref_modules
 
         for m_name in module_names:
             target_child = getattr(target_child, m_name)
-            ref_children = [getattr(ref_module, m_name) for ref_module in ref_children]
+            ref_children = [
+                getattr(ref_module, m_name) 
+                for ref_module in ref_children
+            ]
 
         num_components = len(ref_modules)
         modes = [mode for _ in ref_children]
@@ -568,14 +614,24 @@ def init_masks(target_module: nn.Module, ref_modules: nn.Module, merger_config: 
             )
 
         elif isinstance(target_child, nn.Embedding):
-            new_module = EmbeddingsWithMasks(ref_children, modes, factors, constrain_mode)
+            new_module = EmbeddingsWithMasks(
+                embeddings=ref_children, 
+                modes=modes, 
+                values=factors, 
+                constrain_mode=constrain_mode
+            )
         elif "RMSNorm" in type(target_child).__name__:
-            new_module = RMSNormsWithMasks(ref_children, modes, factors, constrain_mode)
-
+            new_module = RMSNormsWithMasks(
+                rms_norms=ref_children, 
+                modes=modes, 
+                values=factors, 
+                constrain_mode=constrain_mode
+            )
         # Move new module's mask parameters to correct dtype
         target_dtype = ref_children[0].weight.dtype
         for param in new_module.parameters():
-            if param.requires_grad:  # Only convert mask parameters, not the frozen model weights
+            # Only convert mask parameters, not the frozen model weights
+            if param.requires_grad:
                 param.data = param.data.to(dtype=target_dtype)
 
         # Replace the original module with the new masked module

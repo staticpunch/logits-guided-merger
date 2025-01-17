@@ -340,11 +340,9 @@ def main():
     )
     
     # Initialize merger model
-    merger = Merger.from_pretrained(
-        None,
+    merger = Merger.from_config(
         merger_config,
         torch_dtype=torch.bfloat16,
-        # device_map="auto",
         attn_implementation="flash_attention_2",
     )
     set_masks(merger, args.mask_init)
@@ -396,6 +394,7 @@ def main():
     trainer.train()
     if trainer.args.should_save:
         merger.save_merged(args.output_dir)
+        merger.save_pretrained(args.output_dir)
         tokenizer.save_pretrained(args.output_dir)
 
 if __name__ == "__main__":
