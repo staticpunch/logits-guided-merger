@@ -1,0 +1,19 @@
+sources:
+  - model: /workspace/models/llama-3.2-3b-wizard
+  - model: /workspace/models/llama-3.2-3b-math
+
+layer_range: [0, 28]
+merge_method: slerp
+base_model: /workspace/models/llama-3.2-3b-wizard
+output_dir: /workspace/models/baselines/acl-slerp-custom
+
+parameters:
+  t:
+    - filter: self_attn
+      value: [0, 0.3, 0.5, 0.7, 1]
+    - filter: mlp
+      value: [1, 0.7, 0.5, 0.3, 0]
+    - filter: fallback_value
+      value: 0.5  # Clarified fallback key
+
+dtype: bfloat16

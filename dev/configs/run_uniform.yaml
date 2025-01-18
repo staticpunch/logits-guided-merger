@@ -7,8 +7,8 @@ constrain_mode: identity
 
 # Dataset configuration
 dataset_configs:
-  "/workspace/data/wizard-en-10k": 5000
-  "/workspace/data/numina-20k": 5000
+  "/workspace/data/wizard-en-10k": 10000
+  "/workspace/data/numina-20k": 10000
 source_keys: [0, 1]
 train_split: train
 max_length: 3072
@@ -18,12 +18,17 @@ mask_init:
   strategy: uniform
   factors: [0.5, 0.5]
 
-# # OR for random initialization:
 # mask_init:
-#   strategy: "random"
+#   strategy: spherical
+#   parameters:
+#     self_attn: [0, 0.3, 0.5, 0.7, 1]
+#     mlp: [1, 0.7, 0.5, 0.3, 0]
+#     default: 0.5
 
 # Training parameters
-output_dir: /workspace/logits-guided-merger/results/run_03a
+loss_func_name: kl_div
+mask_decay:
+output_dir: /workspace/logits-guided-merger/results/run_uniform
 per_device_train_batch_size: 1
 per_device_eval_batch_size: 8
 gradient_accumulation_steps: 32

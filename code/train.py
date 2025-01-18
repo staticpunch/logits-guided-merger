@@ -46,11 +46,22 @@ from transformers import (
     set_seed,
 )
 
+from transformers.utils import CONFIG_NAME
+from transformers.pytorch_utils import is_torch_greater_or_equal_than_1_13
+
 from merger import (
     MergerConfig,
     Merger,
+    init_masks,
+    set_masks
 )
-from initializer import MaskInitializer
+
+from utils import (
+    generate, 
+    get_hidden_states, 
+    get_logits,
+    free_memory
+)
 # Configure logger
 from logging_config import configure_logging
 configure_logging()
@@ -88,7 +99,7 @@ class DataProcessor:
             datasets_list.append(new_dataset)
             
         train_dataset = concatenate_datasets(datasets_list)
-        logger.info(f"Training on {len(train_dataset)} samples total.")
+        logger.info(f">>> Training on {len(train_dataset)} samples total.")
         return train_dataset.shuffle(seed=101)
 
     def tokenize(self, element):
@@ -165,50 +176,27 @@ def selective_logits_target(logits_components, data_source):
 
     return logits_target
 
-def compute_kl_div(logits_a, logits_b, effective_idxs, temperature=1.0):
+def builtin_kl_div(logits_a, logits_b, effective_idxs, temperature=1.0):
     kl_fct = nn.KLDivLoss(reduction="none")
     diff = (
         kl_fct(
             F.log_softmax(logits_b / temperature, dim=-1),
             F.softmax(logits_a / temperature, dim=-1)
         )
-        * (temperature**2)
+        * (temperature) ** 2
     )
     
     # Calculate final loss
     loss = (diff.sum(-1) * effective_idxs).sum() / effective_idxs.sum()
     return loss
 
-def compute_entropy(logits, effective_idxs, temperature=1.0):
-    softmax = F.softmax(logits / temperature, dim=-1)
-    log_softmax = F.log_softmax(logits / temperature, dim=-1)
-    entropy = (- softmax * log_softmax) * (temperature**2)
-    loss = (entropy.sum(-1) * effective_idxs).sum() / effective_idxs.sum()
-    return loss
-
 class MergerTrainer(Trainer):
-    """
-    Hello it's Nguyen Thanh Do.
-    """
-    def __init__(self, *args, loss_func_name="kl_div", mask_decay=None, **kwargs):
+    """Custom trainer for merged model training."""
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.loss_func_name = loss_func_name
-        if self.args.should_save:
-            assert self.loss_func_name in ("entropy", "kl_div"), (
-                f"Loss function {self.loss_func_name} is not supported. "
-                f"Please select a loss function of type `entropy` or `kl_div`."
-            )
-            loss_func_full_name = (
-                "Minimizing Entropy loss (AdaMerging)" if loss_func_name == "entropy"
-                else "Disentangled KL Divergence loss" if loss_func_name == "kl_div"
-                else "Not yet supported loss"
-            )
-            logger.info(f"You are training masks with {loss_func_full_name}.")
-            
-        self.mask_decay = mask_decay
-        self.track_masks_params(print_param_count=True)
+        self.decay = 0.1
         
-    def track_masks_params(self, print_param_count=False):
+    def track_masks_params(self):
         params_a, params_b = [], []
         for name, param in self.model.named_parameters():
             if param.requires_grad:
@@ -216,29 +204,23 @@ class MergerTrainer(Trainer):
                     params_a.append(param.flatten())
                 elif "masks.1." in name:
                     params_b.append(param.flatten())
-                    
-        statistics =  {
+        return {
             "params_a": torch.cat(params_a),
             "params_b": torch.cat(params_b)
         }
-        
-        if print_param_count and self.args.should_save:
-            count_millions = (
-                statistics["params_a"].numel() 
-                + statistics["params_b"].numel()
-            ) / 1_000_000
-            logger.info(f"Trainable parameters (masks): {count_millions:.2f}M")
-            
-        return statistics
-            
+                
         
     def log(self, logs: Dict[str, float], start_time: Optional[float] = None) -> None:
         with torch.no_grad():
             all_params = self.track_masks_params()
             params_a, params_b = all_params["params_a"], all_params["params_b"]
 
+            count_millions = (params_a.numel() + params_b.numel()) / 1_000_000
+            formatted_count = f"{count_millions:.2f}M"
+
             logs["mean_a"] = params_a.mean().item()
             logs["mean_b"] = params_b.mean().item()
+            logs["trainable_params"] = formatted_count
         
         if self.state.epoch is not None:
             logs["epoch"] = self.state.epoch
@@ -251,7 +233,13 @@ class MergerTrainer(Trainer):
         self.state.log_history.append(output)
         self.control = self.callback_handler.on_log(self.args, self.state, self.control, logs)
     
-    def compute_kl_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
+    def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
+        # Before computing loss
+        for name, param in model.named_parameters():
+            if param.requires_grad and torch.isnan(param).any():
+                print(f"NaN detected in parameter {name}")
+                import pdb; pdb.set_trace()
+        
         labels = inputs.pop("labels")
         data_source = inputs.pop("data_source")
         effective_idxs = (labels != -100).float()
@@ -263,48 +251,21 @@ class MergerTrainer(Trainer):
 
         # Compute target logits and KL divergence
         logits_target = selective_logits_target(logits_components, data_source)
-        loss = compute_kl_div(logits_merged, logits_target, effective_idxs)
-        return loss
+        loss_kl = builtin_kl_div(logits_merged, logits_target, effective_idxs)
+        loss = loss_kl
 
-    def compute_entropy_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
-        labels = inputs.pop("labels")
-        effective_idxs = (labels != -100).float()
-        
-        outputs = model(**inputs)
-        logits_merged = outputs["merger_outputs"].logits
-
-        loss = compute_entropy(logits_merged, effective_idxs)
-        return (loss, outputs) if return_outputs else loss
-
-    def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
-        ## Debug: Before computing loss.
-        # ------------------------------------------------------
-        for name, param in model.named_parameters():
-            if param.requires_grad and torch.isnan(param).any():
-                logger.info(f"NaN detected in parameter {name}")
-                import pdb; pdb.set_trace()
-        # ------------------------------------------------------
-        
-        loss_func = (
-            self.compute_kl_loss if self.loss_func_name == "kl_div"
-            else self.compute_entropy_loss
-        )
-        loss = loss_func(model, inputs, return_outputs, num_items_in_batch)
-        if self.mask_decay is not None:
+        if False:
             params_a = self.track_masks_params()["params_a"]
             params_b = self.track_masks_params()["params_b"]
 
             mean_a = torch.mean(params_a**2)
             mean_b = torch.mean(params_b**2)
-            loss_w = self.mask_decay * (mean_b / (mean_a + mean_b))
-            loss += loss_w
+            loss_w = self.decay * (mean_b / (mean_a + mean_b))
             
-        ## Debug: After computing loss.
-        # ------------------------------------------------------
-        if torch.isnan(loss):
-            logger.info(f"Loss became NaN")
-            import pdb; pdb.set_trace()
-        # ------------------------------------------------------
+            loss = loss_kl + loss_w
+            
+        # if torch.isnan(loss):
+        #     import pdb; pdb.set_trace()
 
         return (loss, outputs) if return_outputs else loss
         
@@ -340,8 +301,6 @@ class TrainingConfig:
     bf16: bool = True
     gradient_checkpointing: bool = False
     validation_split: Optional[str] = None
-    loss_func_name: str = "kl_div"
-    mask_decay: Optional[float] = None
 
     @classmethod
     def from_yaml(cls, yaml_path: str) -> "TrainingConfig":
@@ -386,9 +345,7 @@ def main():
         torch_dtype=torch.bfloat16,
         attn_implementation="flash_attention_2",
     )
-    
-    # set_masks(merger, args.mask_init)
-    MaskInitializer().initialize(merger, args.mask_init)
+    set_masks(merger, args.mask_init)
     
     # torch distributed hack
     merger._ddp_params_and_buffers_to_ignore = [
@@ -424,10 +381,6 @@ def main():
     trainer = MergerTrainer(
         model=merger,
         args=training_args,
-        ## ----- additional arguments -----
-        loss_func_name=args.loss_func_name,
-        mask_decay=args.mask_decay,
-        ## --------------------------------
         train_dataset=tokenized_dataset,
         eval_dataset=None,
         data_collator=data_collator,

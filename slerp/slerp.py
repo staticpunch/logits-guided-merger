@@ -8,6 +8,7 @@ import json
 import math
 import yaml
 import re
+import argparse
 from tqdm import tqdm
 from safetensors import safe_open
 from safetensors.torch import save_file
@@ -172,7 +173,7 @@ def merge_layer(tensors, merge_config):
             .to(tensor_a.dtype)
             .to(tensor_a.device)
         )
-        print(np.linalg.norm(tensor_computed.float()))
+        # print(np.linalg.norm(tensor_computed.float()))
         tensors[0][weight_name] = tensor_computed
         # torch.testing.assert_close(tensor_merged, tensor_computed)
     return tensors[0]
@@ -207,7 +208,9 @@ def run_merge(
     save_checkpoint(merge_config)
 
 if __name__ == "__main__":
-    CONFIG_FILE = "config-datht.yaml"
+    parser = argparse.ArgumentParser()
+    parser.add_argument('config_file', help='Path to YAML config file')
+    CONFIG_FILE = parser.parse_args().config_file
     with open(CONFIG_FILE, "r", encoding="utf-8") as f:
         merge_config = yaml.safe_load(f)
         

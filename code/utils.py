@@ -60,7 +60,7 @@ def generate(
     output = output.split(tokenizer.eos_token)[0]
     return output.strip()
 
-def load_layer(path, layer_idx=8):
+def load_layer(path, layer_idx=33):
     state_dict = {}
     shard_paths = [f for f in os.listdir(path) if f.endswith('.safetensors')]
     for shard_path in sorted(shard_paths, key=lambda x: int(x.split('-')[1])):
@@ -70,6 +70,65 @@ def load_layer(path, layer_idx=8):
                 if f"layers.{str(layer_idx)}." in key:
                     state_dict[key] = f.get_tensor(key)
     return state_dict
+    
+def lerp(
+    t: float, v0: Union[np.ndarray, torch.Tensor], v1: Union[np.ndarray, torch.Tensor]
+) -> Union[np.ndarray, torch.Tensor]:
+    return (1 - t) * v0 + t * v1
+
+def weighted_sum(
+    factors: List[float], 
+    tensors: Union[List[np.ndarray], List[torch.Tensor]]
+) -> Union[np.ndarray, torch.Tensor]:
+
+    return sum([tensor * factor for tensor, factor in zip(tensors, factors)])
+
+def merge_tensors(modules, weight_factors, bias_factors):
+    param_names = sorted([name for name, _ in modules[0].named_parameters()])
+    for module in modules:
+        other_param_names = sorted([name for name, _ in module.named_parameters()])
+        assert param_names == other_param_names, "Mismatch tensor names."
+        
+    module_out = copy.deepcopy(modules[0])
+    out_dict = module_out.state_dict()
+    
+    tensor_dicts_list = [m.state_dict() for m in modules]
+    tensor_names = [key for key in tensor_dicts_list[0].keys()]
+    
+    for tensor_name in tensor_names:
+        tensors_list = [tensor_dicts_list[i][tensor_name]
+                       for i in range(len(modules))]
+        if "weight" in tensor_name:
+            factors = weight_factors
+        elif "bias" in tensor_name:
+            factors = bias_factors
+        else:
+            raise ValueError("Hey this tensor is neither weight or bias.")
+            
+        tensor_computed = (
+            weighted_sum(
+                factors=factors,
+                tensors=tensors_list
+            )
+            .to(tensors_list[0].dtype)
+            .to(tensors_list[0].device)
+        )
+        out_dict[tensor_name] = tensor_computed
+    module_out.load_state_dict(out_dict)
+    return module_out
+
+
+def find_mask_parameter_names(module, mask_param_names_list, parent_name=""):
+    """
+    Recursively finds full names of parameters that belong to modules of class "Mask".
+    """
+    for name, child in module.named_children():
+        full_child_name = f"{parent_name}.{name}" if parent_name else name
+        if child.__class__.__name__ == "Mask":
+            for param_name, _ in child.named_parameters():
+                full_param_name = f"{full_child_name}.{param_name}"
+                mask_param_names_list.append(full_param_name)
+        find_mask_parameter_names(child, mask_param_names_list, full_child_name)
 
 def free_memory(logger):
     if not torch.cuda.is_available():

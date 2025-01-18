@@ -1,27 +1,57 @@
-import os
+import math
+from typing import List, Optional, Tuple, Union
+from abc import ABC, abstractmethod
+
+import datasets
 import torch
+import torch.nn.functional as F
+import numpy as np
 import torch.nn as nn
 import logging
 import copy
-from typing import List, Optional, Tuple, Union
+import gc
+import os
+import json
+import copy
+
+from datasets import load_dataset
+from accelerate import dispatch_model, infer_auto_device_map
+from tqdm import tqdm
 
 from transformers import (
     PreTrainedModel,
     PretrainedConfig,
     AutoConfig,
     AutoModelForCausalLM,
-    AutoTokenizer
+    LlamaForCausalLM,
+    LlamaConfig,
+    Trainer,
+    TrainingArguments,
+    AutoTokenizer,
+    HfArgumentParser,
+    default_data_collator,
+    is_torch_xla_available,
+    set_seed,
 )
+
 from transformers.modeling_utils import (
-    is_fsdp_enabled,
+    is_fsdp_enabled, 
     is_deepspeed_zero3_enabled
 )
-from transformers.modeling_outputs import CausalLMOutputWithPast
-from accelerate import dispatch_model, infer_auto_device_map
-from tqdm import tqdm
 
-# Assuming these are custom modules that are required
-from utils import get_hf_token
+from transformers.modeling_outputs import (
+    BaseModelOutputWithPast,
+    CausalLMOutputWithPast
+)
+
+from utils import (
+    generate, 
+    get_hidden_states, 
+    get_logits,
+    free_memory,
+    get_hf_token
+)
+
 from masks import (
     Mask, MaskConfig,
     Constrainer,
@@ -39,6 +69,113 @@ HF_TOKEN = get_hf_token()
 MERGER_CONFIG = "merger_config.json"
 MASKS_SAFE = "masks.safetensors"
 MASKS_TORCH = "masks.bin"
+
+"""
+BEGIN - INIT STRATEGIES
+"""
+
+def odd_one_out(masked_module: nn.Module, selected_idx: int):  
+    assert selected_idx is not None and isinstance(selected_idx, int), (
+        "Must provide valid model index. Check whether passed index is `int`"
+    )
+    masks_modules = []
+    for name, child in masked_module.named_children():
+        if not isinstance(child, nn.ModuleList): continue
+        assert selected_idx < len(child), (
+            f"There are only {len(child)} component models, "
+            f"passed model index is {selected_idx}"
+        )
+        ## exclude sub_module that is None, aka bias_masks.
+        if all(isinstance(sub_module, Mask) for sub_module in child):
+            masks_modules.append(child)
+        
+    for masks in masks_modules:
+        for i, mask in enumerate(masks):
+            value = 1.0 if i == selected_idx else 0.0
+            with torch.no_grad():
+                mask.weight.data.fill_(value)
+
+def random_init(masked_module: nn.Module):
+    masks_modules = []
+    for name, child in masked_module.named_children():
+        if not isinstance(child, nn.ModuleList): continue
+        ## exclude sub_module that is None, aka bias_masks.
+        if all(isinstance(sub_module, Mask) for sub_module in child):
+            masks_modules.append(child)
+        
+    for masks in masks_modules:
+        for i, mask in enumerate(masks):
+            with torch.no_grad():
+                random_value = torch.rand_like(mask.weight.data)
+                mask.weight.data = random_value
+
+def uniform_init(masked_module: nn.Module, factors: List[float]):  
+    masks_modules = []
+    for name, child in masked_module.named_children():
+        if not isinstance(child, nn.ModuleList): continue
+        assert len(factors) == len(child), (
+            f"There are {len(child)} component models, "
+            f"but your passed factors have {len(factors)} values."
+        )
+        ## exclude sub_module that is None, aka bias_masks.
+        if all(isinstance(sub_module, Mask) for sub_module in child):
+            masks_modules.append(child)
+
+    for masks in masks_modules:
+        for factor, mask in zip(factors, masks):
+            with torch.no_grad():
+                mask.weight.data.fill_(factor)
+"""
+END - INIT STRATEGIES
+"""
+
+def find_masked_modules(module):
+    masked_module_names = []
+    for parent_name, parent_module in module.named_modules():
+        for name, child in parent_module.named_children():
+            full_child_name = f"{parent_name}.{name}" if parent_name else name
+            if ("WithMasks" in type(child).__name__):
+                masked_module_names.append(full_child_name)
+
+    return masked_module_names
+
+def get_init_method(strategy):
+    MAP = {
+        "random": random_init,
+        "odd_one_out": odd_one_out,
+        "uniform": uniform_init
+    }
+    selected_init_method = MAP[strategy]
+    
+    return selected_init_method
+
+def set_masks(merger, mask_init):
+    def _set_masks(root_module, strategy="random", **kwargs):
+        init_method = get_init_method(strategy)
+        masked_module_names = find_masked_modules(root_module)
+        
+        for module_name in tqdm(masked_module_names, desc="Setting up masks"):
+            module_names = module_name.split(".")
+            target_module = root_module
+            for m_name in module_names:
+                target_module = getattr(target_module, m_name)
+    
+            init_method(target_module, **kwargs)
+    # Initialize masks based on config
+    mask_strategy = mask_init["strategy"]
+    if mask_strategy == "uniform":
+        if not mask_init["factors"]:
+            raise ValueError("Factors must be provided for uniform strategy")
+        factors = mask_init["factors"]
+        logger.info(f"Applying uniform masks with factors = {factors}.")
+        _set_masks(merger.merger, strategy="uniform", factors=factors)
+    elif mask_strategy == "random":
+        logger.info(f"Applying random masks.")
+        _set_masks(merger.merger, strategy="random")
+    else:
+        raise ValueError(
+            f"Unknown mask initialization strategy: {mask_strategy}."
+        )
     
 class MergerConfig(PretrainedConfig):
     def __init__(
@@ -207,7 +344,7 @@ class Merger(PreTrainedModel):
                 param.requires_grad = False
         
         # Initialize masks before device mapping
-        create_masks(model.merger, model.models, config)
+        init_masks(model.merger, model.models, config)
         
         # Apply device mapping after masks are initialized
         if device_map is None:
@@ -265,13 +402,6 @@ class Merger(PreTrainedModel):
         return model
         
 
-    def get_masks_state_dict(self):
-        state_dict = {
-            k: v for k, v in self.state_dict().items()
-            if "masks" in k
-        }
-        return state_dict
-        
     def load_masks_state_dict(
         self, 
         pretrained_model_name_or_path: Optional[Union[str, os.PathLike]]
@@ -298,7 +428,7 @@ class Merger(PreTrainedModel):
     ):  
         # Load only the trainable parameters
         state_dict = self.load_masks_state_dict(pretrained_model_name_or_path)
-        missing_keys, unexpected_keys = self.load_state_dict(
+        missing_keys, unexpected_keys = self.merger.load_state_dict(
             state_dict, strict=False
         )
 
@@ -446,7 +576,7 @@ def find_modules_to_add_masks(target_module):
                 module_names_to_replace.append(full_child_name)
     return module_names_to_replace
 
-def create_masks(
+def init_masks(
     target_module: nn.Module, 
     ref_modules: nn.Module, 
     merger_config: MergerConfig
@@ -469,7 +599,7 @@ def create_masks(
     
     for module_name in tqdm(
         module_names_to_replace, 
-        desc="Creating masks"
+        desc="Initializing masks"
     ):
         module_names = module_name.split(".")
         target_child = target_module
