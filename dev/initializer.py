@@ -198,7 +198,7 @@ class MaskInitializer:
             masks = masked_module.masks
             sub_modules = masked_module.embeddings
             compute_and_assign_masks(
-                masks=masks
+                masks=masks,
                 v0=sub_modules[0].weight.data,
                 v1=sub_modules[1].weight.data,
             )
@@ -207,7 +207,7 @@ class MaskInitializer:
             masks = masked_module.masks
             sub_modules = masked_module.rms_norms
             compute_and_assign_masks(
-                masks=masks
+                masks=masks,
                 v0=sub_modules[0].weight.data,
                 v1=sub_modules[1].weight.data,
             )
