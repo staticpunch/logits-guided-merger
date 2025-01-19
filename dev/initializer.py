@@ -169,49 +169,32 @@ class MaskInitializer:
     ):
         """Initialize masks using spherical interpolation."""
         logger.info_once("You are playing with `SLURRRRRP`")
-
-        def compute_and_assign_masks(masks, v0, v1):
-            """Helper function to compute SLERP and assign mask values."""
-            s0, s1 = slerp(t, v0, v1)
-            self._assign_spherical_masks(masks, s0, s1)
-
         t = compute_t(module_name, parameters, num_layers)
+        
         if isinstance(masked_module, LinearsWithMasks):
             weight_masks = masked_module.weight_masks
             bias_masks = masked_module.bias_masks
-            sub_modules = masked_module.linears
-
-            compute_and_assign_masks(
-                masks=weight_masks,
-                v0=sub_modules[0].weight.data,
-                v1=sub_modules[1].weight.data
-            )
+            v0, v1 = (x.weight.data for x in masked_module.linears)
+            s0, s1 = slerp(t, v0, v1)
+            self._assign_spherical_masks(weight_masks, s0, s1)
             
             if all(isinstance(mask, Mask) for mask in bias_masks):
-                compute_and_assign_masks(
-                    masks=bias_masks,
-                    v0=sub_modules[0].bias.data,
-                    v1=sub_modules[1].bias.data
-                )
-    
+                v0, v1 = (x.bias.data for x in masked_module.linears)
+                s0, s1 = slerp(t, v0, v1)
+                self._assign_spherical_masks(bias_masks, s0, s1)
+            
         elif isinstance(masked_module, EmbeddingsWithMasks):
             masks = masked_module.masks
-            sub_modules = masked_module.embeddings
-            compute_and_assign_masks(
-                masks=masks,
-                v0=sub_modules[0].weight.data,
-                v1=sub_modules[1].weight.data,
-            )
+            v0, v1 = (x.weight.data for x in masked_module.embeddings)
+            s0, s1 = slerp(t, v0, v1)
+            self._assign_spherical_masks(masks, s0, s1)
             
         elif isinstance(masked_module, RMSNormsWithMasks):
             masks = masked_module.masks
-            sub_modules = masked_module.rms_norms
-            compute_and_assign_masks(
-                masks=masks,
-                v0=sub_modules[0].weight.data,
-                v1=sub_modules[1].weight.data,
-            )
-
+            v0, v1 = (x.weight.data for x in masked_module.rms_norms)
+            s0, s1 = slerp(t, v0, v1)
+            self._assign_spherical_masks(masks, s0, s1)
+    
         else:
             raise ValueError(
                 f"Does not support class {type(masked_module).__name__} yet."
