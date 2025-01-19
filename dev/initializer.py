@@ -12,7 +12,7 @@ from masks import (
     RMSNormsWithMasks,
     EmbeddingsWithMasks
 )
-from slerp import slerp, compute_t
+from slerp import slerp, compute_t, blend
 from logging_config import configure_logging
 
 # Configure logger
@@ -169,39 +169,77 @@ class MaskInitializer:
     ):
         """Initialize masks using spherical interpolation."""
         logger.info_once("You are playing with `SLURRRRRP`")
-        t = compute_t(module_name, parameters, num_layers)
+        n_children = len(next(
+            child for child in masked_module.children()
+            if isinstance(child, nn.ModuleList)
+        ))
+        assert n_children == 2, (
+            f"SLERP initialization only supports 2 component modules. "
+            f"Found {n_children}."
+        )
         
+        t = compute_t(module_name, parameters, num_layers)
         if isinstance(masked_module, LinearsWithMasks):
             weight_masks = masked_module.weight_masks
             bias_masks = masked_module.bias_masks
             v0, v1 = (x.weight.data for x in masked_module.linears)
             s0, s1 = slerp(t, v0, v1)
-            self._assign_spherical_masks(weight_masks, s0, s1)
+            self._assign_two_masks(weight_masks, s0, s1)
             
             if all(isinstance(mask, Mask) for mask in bias_masks):
                 v0, v1 = (x.bias.data for x in masked_module.linears)
                 s0, s1 = slerp(t, v0, v1)
-                self._assign_spherical_masks(bias_masks, s0, s1)
+                self._assign_two_masks(bias_masks, s0, s1)
             
         elif isinstance(masked_module, EmbeddingsWithMasks):
             masks = masked_module.masks
             v0, v1 = (x.weight.data for x in masked_module.embeddings)
             s0, s1 = slerp(t, v0, v1)
-            self._assign_spherical_masks(masks, s0, s1)
+            self._assign_two_masks(masks, s0, s1)
             
         elif isinstance(masked_module, RMSNormsWithMasks):
             masks = masked_module.masks
             v0, v1 = (x.weight.data for x in masked_module.rms_norms)
             s0, s1 = slerp(t, v0, v1)
-            self._assign_spherical_masks(masks, s0, s1)
+            self._assign_two_masks(masks, s0, s1)
     
         else:
             raise ValueError(
                 f"Does not support class {type(masked_module).__name__} yet."
             )
 
+    def _blend_init(
+        self,
+        masked_module: nn.Module,
+        module_name: str,
+        parameters: Mapping = None,
+        num_layers: int = None,
+        **kwargs
+    ):
+        """Initialize masks using spherical interpolation."""
+        logger.info_once("You are playing with `SLURRRRRP`")
+        
+        find_layer = re.search(r"layers\.([^\.]*)\.", weight_name)
+        layer_idx = int(find_layer.group(1)) if find_layer else None
+        t = blend(module_name, parameters, layer_idx, num_layers)
+        
+        n_children = len(next(
+            child for child in masked_module.children()
+            if isinstance(child, nn.ModuleList)
+        ))
+        assert n_children == 2, (
+            f"Blending initialization only supports 2 component modules. "
+            f"Found {n_children}."
+        )
+        masks_modules = [
+            child for child in masked_module.children()
+            if all(isinstance(sub_module, Mask) for sub_module in child)
+        ]
             
-    def _assign_spherical_masks(self, masks, s0, s1):
+        for masks in masks_modules:
+            self._assign_two_masks(masks, 1 - t, t)
+            
+    def _assign_two_masks(self, masks, s0, s1):
         """Assign spherical mask values to a pair of masks."""
         assert len(masks) == 2, (
             "Spherical initialization only supports 2 models. "

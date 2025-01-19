@@ -1,5 +1,6 @@
 from typing import (
-    Any, Dict, List, Optional, Union
+    Any, Dict, List, 
+    Optional, Union, NoneType
 )
 
 import numpy as np
@@ -126,3 +127,50 @@ def compute_t(weight_name, parameters, num_layers):
         blend_value = anchors[0]
         
     return blend_value
+
+def blend(
+    parameters: dict, 
+    weight_name: str, 
+    layer_idx: int, 
+    num_layers: int
+):
+    assert isinstance(layer_idx, (int, NoneType)), (
+        f"If the weight {weight_name} belongs to an i-th layer, "
+        f"the argument `layer_idx` should be an integer. Otherwise "
+        f"it should be a NoneType object. Found `layer_idx` = "
+        f"{layer_idx}."
+    )
+    assert isinstance(num_layers, int), (
+        f"You must specify proper argument `num_layers` "
+        f"of type `int`. Found `num_layers` = {num_layers}."
+    )
+    assert layer_idx <= num_layers - 1, (
+        f"The argument `layer_idx` must have lower value than "
+        f"the argument `num_layers`. Found "
+        f"`layer_idx` = {layer_idx}, `num_layers` = {num_layers}."
+    )
+    
+    matching_filter = next(
+        (f for f in parameters if f in weight_name),
+        'default'
+    )
+    anchors = parameters[matching_filter]
+    if not isinstance(anchors, list):
+        anchors = [anchors]
+
+    if layer_idx is None:
+        return anchors[0]
+        
+    # Calculate interpolation for layer-specific weights
+    layer_fraction = layer_idx / (num_layers - 1)
+    anchor_position = layer_fraction * (len(anchors) - 1)
+    
+    lower_idx = math.floor(anchor_position)
+    upper_idx = min(len(anchors) - 1, lower_idx + 1)
+    fraction = anchor_position - lower_idx
+
+    interpolated = (
+        (1 - fraction) * anchors[lower_idx]
+        + fraction * anchors[upper_idx]
+    )
+    return interpolated
