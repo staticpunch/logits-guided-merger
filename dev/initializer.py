@@ -4,6 +4,7 @@ from abc import ABC
 import torch
 import torch.nn as nn
 import logging
+import re
 from tqdm import tqdm
 
 from masks import (
@@ -26,7 +27,8 @@ class MaskInitializer:
             "random": self._random_init,
             "odd_one_out": self._odd_one_out,
             "uniform": self._uniform_init,
-            "spherical": self._spherical_init
+            "spherical": self._spherical_init,
+            "blend": self._blend_init
         }
 
     def _find_masked_modules(self, module):
@@ -54,7 +56,7 @@ class MaskInitializer:
         for module_name in tqdm(masked_module_names, desc="Setting up masks"):
             target_module = self._get_target_module(root_module, module_name)
             
-            if strategy == "spherical":
+            if strategy in ("spherical", "blend"):
                 kwargs["module_name"] = module_name
                 
             init_method(target_module, **kwargs)
@@ -97,6 +99,17 @@ class MaskInitializer:
             self._init_module(
                 merger.merger,
                 strategy="spherical",
+                parameters=parameters,
+                num_layers=num_layers
+            )
+            
+        elif strategy == "blend":
+            logger.info("Applying blended masks.")
+            parameters = mask_init["parameters"]
+            num_layers = len(merger.merger.model.layers)
+            self._init_module(
+                merger.merger,
+                strategy="blend",
                 parameters=parameters,
                 num_layers=num_layers
             )
@@ -178,7 +191,11 @@ class MaskInitializer:
             f"Found {n_children}."
         )
         
-        t = compute_t(module_name, parameters, num_layers)
+        # t = compute_t(module_name, parameters, num_layers)
+        find_layer = re.search(r"layers\.([^\.]*)\.", module_name)
+        layer_idx = int(find_layer.group(1)) if find_layer else None
+        t = blend(module_name, parameters, layer_idx, num_layers)
+        
         if isinstance(masked_module, LinearsWithMasks):
             weight_masks = masked_module.weight_masks
             bias_masks = masked_module.bias_masks
@@ -217,9 +234,8 @@ class MaskInitializer:
         **kwargs
     ):
         """Initialize masks using spherical interpolation."""
-        logger.info_once("You are playing with `SLURRRRRP`")
         
-        find_layer = re.search(r"layers\.([^\.]*)\.", weight_name)
+        find_layer = re.search(r"layers\.([^\.]*)\.", module_name)
         layer_idx = int(find_layer.group(1)) if find_layer else None
         t = blend(module_name, parameters, layer_idx, num_layers)
         
@@ -231,18 +247,19 @@ class MaskInitializer:
             f"Blending initialization only supports 2 component modules. "
             f"Found {n_children}."
         )
-        masks_modules = [
-            child for child in masked_module.children()
-            if all(isinstance(sub_module, Mask) for sub_module in child)
-        ]
+        masks_modules = []
+        for name, child in masked_module.named_children():
+            if not isinstance(child, nn.ModuleList): continue
+            if all(isinstance(sub_module, Mask) for sub_module in child):
+                masks_modules.append(child)
             
         for masks in masks_modules:
-            self._assign_two_masks(masks, 1 - t, t)
+            self._assign_two_masks(masks, 1.0 - t, t)
             
     def _assign_two_masks(self, masks, s0, s1):
         """Assign spherical mask values to a pair of masks."""
         assert len(masks) == 2, (
-            "Spherical initialization only supports 2 models. "
+            "Only supports assigning 2 mask modules. "
             f"Found {len(masks)}."
         )
         with torch.no_grad():

@@ -389,6 +389,7 @@ def main():
     
     # set_masks(merger, args.mask_init)
     MaskInitializer().initialize(merger, args.mask_init)
+    # import pdb; pdb.set_trace()
     
     # torch distributed hack
     merger._ddp_params_and_buffers_to_ignore = [
@@ -424,13 +425,13 @@ def main():
     trainer = MergerTrainer(
         model=merger,
         args=training_args,
+        train_dataset=tokenized_dataset,
+        eval_dataset=None,
+        data_collator=data_collator,
         ## ----- additional arguments -----
         loss_func_name=args.loss_func_name,
         mask_decay=args.mask_decay,
         ## --------------------------------
-        train_dataset=tokenized_dataset,
-        eval_dataset=None,
-        data_collator=data_collator,
     )
     
     # Copy config to output directory

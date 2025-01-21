@@ -1,6 +1,6 @@
 from typing import (
     Any, Dict, List, 
-    Optional, Union, NoneType
+    Optional, Union
 )
 
 import numpy as np
@@ -129,12 +129,12 @@ def compute_t(weight_name, parameters, num_layers):
     return blend_value
 
 def blend(
-    parameters: dict, 
     weight_name: str, 
+    parameters: dict, 
     layer_idx: int, 
     num_layers: int
 ):
-    assert isinstance(layer_idx, (int, NoneType)), (
+    assert isinstance(layer_idx, int) or layer_idx is None, (
         f"If the weight {weight_name} belongs to an i-th layer, "
         f"the argument `layer_idx` should be an integer. Otherwise "
         f"it should be a NoneType object. Found `layer_idx` = "
@@ -144,11 +144,12 @@ def blend(
         f"You must specify proper argument `num_layers` "
         f"of type `int`. Found `num_layers` = {num_layers}."
     )
-    assert layer_idx <= num_layers - 1, (
-        f"The argument `layer_idx` must have lower value than "
-        f"the argument `num_layers`. Found "
-        f"`layer_idx` = {layer_idx}, `num_layers` = {num_layers}."
-    )
+    if isinstance(layer_idx, int):
+        assert layer_idx <= num_layers - 1, (
+            f"The argument `layer_idx` must have lower value than "
+            f"the argument `num_layers`. Found "
+            f"`layer_idx` = {layer_idx}, `num_layers` = {num_layers}."
+        )
     
     matching_filter = next(
         (f for f in parameters if f in weight_name),
