@@ -17,6 +17,7 @@ class ColorfulFormatter(Formatter):
     """
 
     COLORS = {
+        "DEBUG": Fore.GREEN,
         "WARNING": Fore.YELLOW,
         "ERROR": Fore.RED,
         "CRITICAL": Fore.RED + Style.BRIGHT,

@@ -24,7 +24,7 @@ mask_init:
 # Training parameters
 loss_func_name: kl_div
 mask_decay:
-output_dir: /workspace/logits-guided-merger/results/dryrun
+output_dir: /workspace/logits-guided-merger/results/run-math-50k-uniform-37
 per_device_train_batch_size: 1
 per_device_eval_batch_size: 8
 gradient_accumulation_steps: 32

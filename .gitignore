@@ -10,4 +10,6 @@ src/results
 data/
 *SECRET.json*
 dev/SECRET.json
-src/SECRET.jon
+src/SECRET.json
+slerp/merge_slerp.ipynb
+
