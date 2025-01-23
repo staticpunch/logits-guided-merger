@@ -4,8 +4,8 @@ models:
 - model: /workspace/models/llama-3.2-3b-wizard/
   parameters:
     density: 1
-    weight: 0.7
+    weight: 0.2
 - model: /workspace/models/experts/llama-3.2-3b-wizard-expert-math-100k/checkpoint-264
   parameters:
     density: 1
-    weight: 0.30000000000000004
+    weight: 0.8

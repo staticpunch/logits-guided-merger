@@ -1,19 +1,75 @@
+import math
 from typing import List, Optional, Tuple, Union
 from abc import ABC, abstractmethod
 
+import datasets
 import torch
 import torch.nn.functional as F
+import numpy as np
 import torch.nn as nn
 import logging
+import copy
+import gc
+import os
 
-from transformers import PretrainedConfig
+from datasets import load_dataset
+from accelerate import dispatch_model, infer_auto_device_map
+from tqdm import tqdm
+
+from transformers import (
+    PreTrainedModel,
+    PretrainedConfig,
+    AutoConfig,
+    AutoModelForCausalLM,
+    LlamaForCausalLM,
+    LlamaConfig,
+    Trainer,
+    TrainingArguments,
+    AutoTokenizer,
+    HfArgumentParser,
+    default_data_collator,
+    is_torch_xla_available,
+    set_seed,
+)
+
+from transformers.modeling_utils import (
+    is_fsdp_enabled, 
+    is_deepspeed_zero3_enabled
+)
+
+from transformers.modeling_outputs import (
+    BaseModelOutputWithPast,
+    CausalLMOutputWithPast
+)
+
+from utils import (
+    generate, 
+    get_hidden_states, 
+    get_logits,
+    free_memory
+)
 
 # Configure logger
-from logging_config import configure_logging
-configure_logging()
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-
 logger.info("--------- ACCURATE MASKS ----------")
+
+def free_memory():
+    if not torch.cuda.is_available():
+        logger.info("CUDA is not available. No GPU memory to free.")
+        return
+        
+    initial_memory = torch.cuda.memory_allocated()
+    logger.info(f"Initial GPU memory allocated: {initial_memory / 1024**3:.2f} GB")
+    gc.collect()
+    torch.cuda.empty_cache()
+
+    final_memory = torch.cuda.memory_allocated()
+    logger.info(f"Final GPU memory allocated: {final_memory / 1024**3:.2f} GB")
+
+    freed_memory = initial_memory - final_memory
+    logger.info(f"Freed GPU memory: {freed_memory / 1024**3:.2f} GB")
+
 
 class MaskConfig(PretrainedConfig):
     def __init__(
@@ -37,15 +93,11 @@ class Mask(nn.Module):
 
         value = mask_config.value
         if value is not None:
-            logger.warning(
-                "Highly reccommend initializing mask value "
-                "using dedicated setup functions."
-            )
+            logger.warning("Highly reccommend initializing mask value using dedicated setup functions.")
             if not isinstance(value, torch.Tensor): 
                 try: value = torch.tensor(value)
                 except: raise ValueError(
-                    f"Unable to convert {value} to torch.Tensor "
-                    "required for initializing a mask's weight."
+                    f"Unable to convert {value} to torch.Tensor required for initializing a mask's weight."
                 )
 
         ## TODO: might refactor later: modify _get_ones() to handle scalar mode.
@@ -89,9 +141,21 @@ class Mask(nn.Module):
     def extra_repr(self):
         return f"mask_mode={self.config.mode}"
 
+class ModuleWithMask(nn.Module, ABC):
+    def __init__(self, *args, **kwargs):
+        super(ModuleWithMask, self).__init__()
+
+    @abstractmethod
+    def forward(self, x):
+        pass
+
 class ModulesWithMasks(nn.Module, ABC):
     def __init__(self, *args, **kwargs):
         super(ModulesWithMasks, self).__init__()
+
+    @abstractmethod
+    def forward(self, x):
+        pass
         
     @abstractmethod
     def get_raw_masks(self):
@@ -120,17 +184,10 @@ class Constrainer(nn.Module):
         self.statistics = None
         self.constrain_mode = constrain_mode
         self.mask_mode = mask_mode
-        if self.constrain_mode not in (
-            "identity", "01", "-11", "spherical", "sum1", "cosine"
-        ):
-            raise ValueError(
-                f"Does not support {self.constrain_mode} constraint yet!"
-            )
+        if self.constrain_mode not in ("identity", "01", "-11", "spherical", "sum1", "cosine"):
+            raise ValueError(f"Does not support {self.constrain_mode} constraint yet!")
             
-        if (
-            self.constrain_mode == "spherical" 
-            and all([w is not None for w in component_weights])
-        ):
+        if (self.constrain_mode == "spherical" and all([w is not None for w in component_weights])):
             self._get_spherical_stats(component_weights)
 
     def _get_spherical_stats(
@@ -140,22 +197,18 @@ class Constrainer(nn.Module):
     ):
         with torch.no_grad():
             if any([w is None for w in component_weights]):
-                raise ValueError(
-                    "Spherical constraint (SLERP) does not support None weights."
-                )
+                raise ValueError("Spherical constraint (SLERP) does not support None weights.")
             if len(component_weights) != 2: 
                 raise ValueError(
-                    f"Spherical constraint (SLERP) only supports 2 component "
-                    f"weights, {len(component_weights)} components found."
+                    "Spherical constraint (SLERP) only supports 2 component weights, " +
+                    f"{len(component_weights)} components found."
                 )
 
             
             dim = 0 if self.mask_mode in ("vector_input") else None
             v0 = normalize(component_weights[0], dim=dim)
             v1 = normalize(component_weights[1], dim=dim)
-
-            ## (out_features, in_features) -> (in_features, )
-            self.dots = torch.sum(v0 * v1, dim=dim, keepdim=False) 
+            self.dots = torch.sum(v0 * v1, dim=dim, keepdim=False) ## (out_features, in_features) -> (in_features, )
             self.theta_0s = torch.arccos(self.dots)
             self.sin_theta_0s = torch.sin(self.theta_0s)
         
@@ -180,11 +233,7 @@ class Constrainer(nn.Module):
         # W = [2 * torch.sigmoid(w) - 1 for w in mask_weights]
         return mask_weights
 
-    def _constrain_spherical(
-        self, 
-        mask_weights: List[torch.Tensor], 
-        DOT_THRESHOLD: float = 0.9995
-    ):
+    def _constrain_spherical(self, mask_weights: List[torch.Tensor], DOT_THRESHOLD: float = 0.9995):
         assert len(mask_weights) == 2, (
             "Spherical constraint (SLERP) only supports 2 mask weights"
         )
@@ -231,9 +280,7 @@ class Constrainer(nn.Module):
         elif self.constrain_mode == "spherical":
             return self._constrain_spherical(mask_weights)
         else:
-            raise ValueError(
-                f"Does not support {self.constrain_mode} constraint yet!"
-            )
+            raise ValueError(f"Does not support {self.constrain_mode} constraint yet!")
 
     def extra_repr(self):
         return f"constrain_mode={self.constrain_mode}"
@@ -251,21 +298,17 @@ class LinearsWithMasks(ModulesWithMasks):
         super().__init__()
 
         if not all(isinstance(linear, nn.Linear) for linear in linears):
-            raise ValueError(
-                "All elements in 'linears' must be instances of nn.Linear."
-            )
+            raise ValueError("All elements in 'linears' must be instances of nn.Linear.")
 
         if weight_values is None or len(weight_values) != len(linears):
             raise ValueError(
-                f"Weight values for masks: {weight_values} do not match "
-                f"with linear layers: {linears}"
+                f"Weight values for masks: {weight_values} do not match with linear layers: {linears}"
             )
         if bias_values is None:
             bias_values = [None] * len(linears)
         if len(bias_values) != len(linears):
             raise ValueError(
-                f"Bias values for masks: {bias_values} do not match with "
-                f"linear layers: {linears}"
+                f"Bias values for masks: {bias_values} do not match with linear layers: {linears}"
             )
 
         self.linears = nn.ModuleList(linears)
@@ -282,26 +325,19 @@ class LinearsWithMasks(ModulesWithMasks):
         )
 
         self.bias_masks = nn.ModuleList([
-            Mask(MaskConfig(mode, value, linear.bias.shape)) 
-            if linear.bias is not None else None
+            Mask(MaskConfig(mode, value, linear.bias.shape)) if linear.bias is not None else None
             for mode, value, linear in zip(bias_modes, bias_values, linears)
         ])
         
         self.bias_masks_constrainer = Constrainer(
-            component_weights=[
-                x.bias if x.bias is not None 
-                else None for x in self.linears
-            ],
+            component_weights=[x.bias if x.bias is not None else None for x in self.linears],
             constrain_mode=constrain_mode, mask_mode=bias_modes[0]
         )
 
     def forward(self, x):
-        constrained_weight_masks = self.weight_masks_constrainer(
-            [m.weight for m in self.weight_masks]
-        )
+        constrained_weight_masks = self.weight_masks_constrainer([m.weight for m in self.weight_masks])
         masked_weights = [
-            w_mask * linear.weight 
-            for w_mask, linear in zip(constrained_weight_masks, self.linears)
+            w_mask * linear.weight for w_mask, linear in zip(constrained_weight_masks, self.linears)
         ]
         merged_weight = sum(masked_weights)
 
@@ -309,20 +345,14 @@ class LinearsWithMasks(ModulesWithMasks):
             [m.weight if m is not None else None for m in self.bias_masks]
         )
         masked_biases = [
-            b_mask * linear.bias 
-            if (linear.bias is not None and b_mask is not None) 
-            else linear.bias 
+            b_mask * linear.bias if linear.bias is not None and b_mask is not None else linear.bias
             for b_mask, linear in zip(constrained_bias_masks, self.linears)
         ]
 
-        if not all(b is None for b in masked_biases):
-            merged_bias = sum(
-                b if b is not None
-                else torch.zeros_like(merged_weight[:, 0]) 
-                for b in masked_biases
-            )
-        else:
-            merged_bias = None
+        merged_bias = (
+            sum(b if b is not None else torch.zeros_like(merged_weight[:, 0]) for b in masked_biases)
+            if not all(b is None for b in masked_biases) else None
+        )
 
         return nn.functional.linear(x, merged_weight, merged_bias)
 
@@ -330,21 +360,17 @@ class LinearsWithMasks(ModulesWithMasks):
         with torch.no_grad():
             return {
                 "weight_masks": [m.weight for m in self.weight_masks],
-                "bias_masks": [
-                    m.weight if m is not None else None 
-                    for m in self.bias_masks
-                ],
+                "bias_masks": [m.weight if m is not None else None for m in self.bias_masks],
             }
 
     def get_constrained_masks(self):
         with torch.no_grad():
-            constrained_weight_masks = self.weight_masks_constrainer([
-                m.weight for m in self.weight_masks
-            ])
-            constrained_bias_masks = self.bias_masks_constrainer([
-                m.weight if m is not None else None 
-                for m in self.bias_masks
-            ])
+            constrained_weight_masks = self.weight_masks_constrainer(
+                [m.weight for m in self.weight_masks]
+            )
+            constrained_bias_masks = self.bias_masks_constrainer(
+                [m.weight if m is not None else None for m in self.bias_masks]
+            )
             return {
                 "weight_masks": constrained_weight_masks,
                 "bias_masks": constrained_bias_masks,
@@ -362,17 +388,14 @@ class RMSNormsWithMasks(ModulesWithMasks):
         sizes = [norm.weight.shape for norm in rms_norms]
         if any([mode != "scalar" for mode in modes]):
             logger.warning_once(
-                f"Though you want to make a masks of modes {modes} "
-                "for RMSNorms' weights, by default only scalar masks "
-                "are acceptable. Converting modes to `scalar`."
+                f"Though you want to make a masks of modes {modes} " + \
+                "for RMSNorms' weights, by default a mask only accepts a scalar mask. " + \
+                "Converting modes to `scalar`."
             )
             modes = ["scalar"] * len(modes)
             
         if values is None or len(values) != len(rms_norms):
-            raise ValueError(
-                f"values for masks: {values} do not match with "
-                f"RMSNorm layers: {rms_norms}"
-            )
+            raise ValueError(f"values for masks: {values} do not match with RMSNorm layers: {rms_norms}")
 
         self.rms_norms = nn.ModuleList(rms_norms)
         self.masks = nn.ModuleList([
@@ -386,16 +409,11 @@ class RMSNormsWithMasks(ModulesWithMasks):
 
     def forward(self, hidden_states):
         constrained_masks = self.masks_constrainer([m.weight for m in self.masks])
-        masked_weights = [
-            mask * norm.weight 
-            for mask, norm in zip(constrained_masks, self.rms_norms)
-        ]
+        masked_weights = [mask * norm.weight for mask, norm in zip(constrained_masks, self.rms_norms)]
         merged_weight = sum(masked_weights)
         variance_epsilon = self.rms_norms[0].variance_epsilon
         for norm in self.rms_norms:
-            assert variance_epsilon == norm.variance_epsilon, (
-                "Variance epsilon among models must be consistent"
-            )
+            assert variance_epsilon == norm.variance_epsilon, ("Variance epsilon among models must be consistent")
         input_dtype = hidden_states.dtype
         hidden_states = hidden_states.to(torch.float32)
         variance = hidden_states.pow(2).mean(-1, keepdim=True)
@@ -408,9 +426,7 @@ class RMSNormsWithMasks(ModulesWithMasks):
 
     def get_constrained_masks(self):
         with torch.no_grad():
-            constrained_masks = self.masks_constrainer(
-                [m.weight for m in self.masks]
-            )
+            constrained_masks = self.masks_constrainer([m.weight for m in self.masks])
             return {"masks": constrained_masks}
 
 class EmbeddingsWithMasks(ModulesWithMasks):
@@ -423,10 +439,7 @@ class EmbeddingsWithMasks(ModulesWithMasks):
     ):
         super().__init__()
         if values is None or len(values) != len(embeddings):
-            raise ValueError(
-                f"values for masks: {values} do not match with "
-                f"Embedding layers: {embeddings}"
-            )
+            raise ValueError(f"values for masks: {values} do not match with Embedding layers: {embeddings}")
 
         self.embeddings = nn.ModuleList(embeddings)
         sizes = [emb.weight.shape for emb in embeddings]
@@ -438,24 +451,20 @@ class EmbeddingsWithMasks(ModulesWithMasks):
             component_weights=[emb.weight for emb in self.embeddings], 
             constrain_mode=constrain_mode, mask_mode=modes[0]
         )
-        
-        a = self.embeddings[0]
-        for b in self.embeddings:
-            assert a.padding_idx == b.padding_idx
-            assert a.max_norm == b.max_norm
-            assert a.norm_type == b.norm_type
-            assert a.scale_grad_by_freq == b.scale_grad_by_freq
-            assert a.sparse == b.sparse
 
     def forward(self, input_ids):
         constrained_masks = self.masks_constrainer([m.weight for m in self.masks])
-        masked_weights = [
-            mask * emb.weight 
-            for mask, emb in zip(constrained_masks, self.embeddings)
-        ]
+        masked_weights = [mask * emb.weight for mask, emb in zip(constrained_masks, self.embeddings)]
         merged_weight = sum(masked_weights)
         
         an_embedding = self.embeddings[0]
+        for other_embedding in self.embeddings:
+            assert an_embedding.padding_idx == other_embedding.padding_idx
+            assert an_embedding.max_norm == other_embedding.max_norm
+            assert an_embedding.norm_type == other_embedding.norm_type
+            assert an_embedding.scale_grad_by_freq == other_embedding.scale_grad_by_freq
+            assert an_embedding.sparse == other_embedding.sparse
+            
         return nn.functional.embedding(
             input_ids,
             merged_weight,
@@ -472,7 +481,5 @@ class EmbeddingsWithMasks(ModulesWithMasks):
 
     def get_constrained_masks(self):
         with torch.no_grad():
-            constrained_masks = self.masks_constrainer(
-                [m.weight for m in self.masks]
-            )
+            constrained_masks = self.masks_constrainer([m.weight for m in self.masks])
             return {"masks": constrained_masks}

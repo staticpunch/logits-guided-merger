@@ -93,7 +93,7 @@ class DataProcessor:
 
     def tokenize(self, element):
         """Tokenize a single element and mark tokens for loss computation based on train_on_inputs."""
-        assistant_spans = []
+        effective_spans = []
         current_position = 0
         
         # Track positions of assistant messages
@@ -105,7 +105,7 @@ class DataProcessor:
             )
             
             if message["role"] == "assistant" or (self.train_on_inputs and message["role"] == "user"):
-                assistant_spans.append((
+                effective_spans.append((
                     current_position,
                     current_position + len(message_tokens)
                 ))
@@ -125,7 +125,7 @@ class DataProcessor:
 
         # Create labels with -100 for tokens we don't want to compute loss on
         labels = [-100] * len(tokenized["input_ids"])
-        for start, end in assistant_spans:
+        for start, end in effective_spans:
             for i in range(start, min(end, len(labels))):
                 labels[i] = tokenized["input_ids"][i]
                 

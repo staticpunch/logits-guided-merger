@@ -9,8 +9,8 @@ constrain_mode: identity
 
 # Dataset configuration
 dataset_configs:
-  /workspace/data/magpie-synthetic/11k: 10000
-  /workspace/data/expert-math/20k: 20000
+  /workspace/data/wizard-en-10k: 10000
+  /workspace/data/expert-math/10k: 10000
   
 source_keys: [0, 1]
 train_split: train
@@ -19,16 +19,15 @@ max_length: 3072
 # For uniform initialization:
 mask_init:
   strategy: uniform
-  factors: [0.3, 0.7]
+  factors: [0.5, 0.5]
 
 # Training parameters
 loss_func_name: kl_div
 mask_decay:
-output_dir: /workspace/logits-guided-merger/results/sythetic/merge-math-3b-uniform
+output_dir: /workspace/logits-guided-merger/results/run-math-50k-uniform
 per_device_train_batch_size: 1
 per_device_eval_batch_size: 8
 gradient_accumulation_steps: 32
-lr_scheduler: cosine
 learning_rate: 5e-3
 num_train_epochs: 3
 save_steps: 100
@@ -40,5 +39,3 @@ remove_unused_columns: false
 logging_first_step: true
 bf16: true
 gradient_checkpointing: false
-train_on_inputs: true
-
